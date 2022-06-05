@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "825839032375",
+    "project_id": "notificationstest-54611",
+    "storage_bucket": "notificationstest-54611.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:825839032375:android:7336c63a254d8906f047b2",
+        "android_client_info": {
+          "package_name": "com.rahul.notificationstest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "825839032375-gqpgren4kilu2ctunrav8kvcm53ne3ae.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCG_fONYuOGS1_G-gL6tPncSqyqmWVviw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "825839032375-gqpgren4kilu2ctunrav8kvcm53ne3ae.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
