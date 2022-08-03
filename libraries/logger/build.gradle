@@ -4,5 +4,5 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation "androidx.core:core-ktx:${coreKtxVersion}"
-    implementation "com.datadoghq:dd-sdk-android:$dataDogVersion"
+    api "com.datadoghq:dd-sdk-android:$dataDogVersion"
 }

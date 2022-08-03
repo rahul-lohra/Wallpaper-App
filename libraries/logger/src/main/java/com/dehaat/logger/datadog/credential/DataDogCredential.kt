@@ -1,7 +1,7 @@
-package com.dehaat.logger.datadog
+package com.dehaat.logger.datadog.credential
 
 import com.datadog.android.core.configuration.Credentials
-import com.dehaat.logger.Credential
+import com.dehaat.logger.datadog.credential.Credential
 
 class DataDogCredential(
     private val clientToken: String,

@@ -7,15 +7,12 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.ktx.app
 import com.google.firebase.messaging.FirebaseMessaging
 import com.moengage.core.MoEngage
-import com.moengage.core.config.NotificationConfig
 import com.moengage.firebase.MoEFireBaseHelper
 import com.moengage.pushbase.MoEPushHelper
 import com.moengage.pushbase.push.PushMessageListener
-import com.rahul.notificationstest.logger.ServerLoggerInitializer
+import com.rahul.notificationstest.logger.ServerLoggerInitializerImpl
 
 class App : Application() {
 
@@ -29,8 +26,8 @@ class App : Application() {
     }
 
     fun initDataDog(){
-//        ServerLoggerInitializer(this)
-//            .initialize()
+        ServerLoggerInitializerImpl(this)
+            .initialize()
     }
 
     fun checkFcm(){

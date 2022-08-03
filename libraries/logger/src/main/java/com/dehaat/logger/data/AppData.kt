@@ -1,4 +1,4 @@
-package com.dehaat.logger
+package com.dehaat.logger.data
 
 class AppData(
     val versionName: String,

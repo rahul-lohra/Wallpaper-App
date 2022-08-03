@@ -1,8 +1,7 @@
-package com.dehaat.logger.datadog
+package com.dehaat.logger.datadog.initializer
 
 import android.content.Context
 import android.util.Log
-import com.datadog.android.BuildConfig
 import com.datadog.android.Datadog
 import com.datadog.android.core.configuration.Configuration
 import com.datadog.android.core.configuration.Credentials
@@ -10,9 +9,9 @@ import com.datadog.android.log.Logger
 import com.datadog.android.privacy.TrackingConsent
 import com.datadog.android.rum.GlobalRum
 import com.datadog.android.rum.RumMonitor
-import com.dehaat.logger.AppData
-import com.dehaat.logger.Initializer
+import com.dehaat.logger.data.AppData
 import com.dehaat.logger.ServerLoggerContract
+import com.dehaat.logger.datadog.DataDogLogger
 
 internal class DataDogInitializer(val configuration: Configuration, val credential: Credentials) :
     Initializer {
@@ -24,7 +23,7 @@ internal class DataDogInitializer(val configuration: Configuration, val credenti
         return prepareLogger(context.applicationContext.packageName, appData)
     }
 
-    private fun prepareLogger(packageName:String, appData:AppData): ServerLoggerContract {
+    private fun prepareLogger(packageName:String, appData: AppData): ServerLoggerContract {
 
         if (Datadog.isInitialized()) {
             val log = Logger.Builder()

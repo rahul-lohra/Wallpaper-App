@@ -1,5 +1,8 @@
 package com.dehaat.logger
 
+import com.dehaat.logger.data.Priority
+import com.dehaat.logger.data.Tag
+
 object ServerLogger {
     internal var logger: ServerLoggerContract? = null
 
