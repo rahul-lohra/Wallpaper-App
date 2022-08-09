@@ -1,11 +1,11 @@
 package com.rahul.notificationstest.feature.search.data.apis.pixabay
 
 import androidx.annotation.StringDef
-import com.rahul.notificationstest.feature.search.data.apis.pixabay.Pixabay.QueryParams.IMAGE_TYPE
+import com.rahul.notificationstest.feature.search.data.apis.pixabay.PixabayApi.QueryParams.IMAGE_TYPE
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface Pixabay {
+interface PixabayApi {
     object Config {
         private const val API_KEY = "29120282-1da40772ceadefa581cf310a0"
         const val BASE_URL = "https://pixabay.com/api/?key=$API_KEY"

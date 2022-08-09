@@ -1,30 +1,33 @@
 package com.rahul.notificationstest.feature.search.di.modules
 
 import com.rahul.notificationstest.di.modules.AppNetworkModule
-import com.rahul.notificationstest.feature.search.data.apis.pexels.Pexels
-import com.rahul.notificationstest.feature.search.data.apis.pixabay.Pixabay
+import com.rahul.notificationstest.feature.search.data.apis.pexels.PexelsApi
+import com.rahul.notificationstest.feature.search.data.apis.pixabay.PixabayApi
+import com.rahul.notificationstest.feature.search.di.scopes.SearchScope
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
 
-@Module(includes = [AppNetworkModule::class])
+@Module
 class SearchNetworkModule {
 
+    @SearchScope
     @Provides
-    fun providePixaBayApi(retrofitBuilder: Retrofit.Builder): Pixabay {
+    fun providePixaBayApi(retrofitBuilder: Retrofit.Builder): PixabayApi {
         val retrofit = retrofitBuilder
-            .baseUrl(Pixabay.Config.BASE_URL)
+            .baseUrl(PixabayApi.Config.BASE_URL)
             .build()
 
-        return retrofit.create(Pixabay::class.java)
+        return retrofit.create(PixabayApi::class.java)
     }
 
+    @SearchScope
     @Provides
-    fun providePexelsApi(retrofitBuilder: Retrofit.Builder): Pexels {
+    fun providePexelsApi(retrofitBuilder: Retrofit.Builder): PexelsApi {
         val retrofit = retrofitBuilder
-            .baseUrl(Pixabay.Config.BASE_URL)
+            .baseUrl(PixabayApi.Config.BASE_URL)
             .build()
 
-        return retrofit.create(Pexels::class.java)
+        return retrofit.create(PexelsApi::class.java)
     }
 }

@@ -4,11 +4,14 @@ import android.content.Context
 import com.rahul.notificationstest.di.scope.AppScope
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 
 @Module
-interface AppContextModule {
+class AppContextModule(val context: Context) {
 
     @AppScope
-    @Binds
-    fun provideContext(context: Context): Context
+    @Provides
+    fun providesContext(): Context {
+        return context
+    }
 }

@@ -4,7 +4,7 @@ import androidx.annotation.IntRange
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface Pexels {
+interface PexelsApi {
     object Config {
         const val API_KEY = "563492ad6f91700001000001412aae37559a47e78a9caf52139a4669"
     }

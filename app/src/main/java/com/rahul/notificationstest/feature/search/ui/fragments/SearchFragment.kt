@@ -11,6 +11,7 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.rahul.notificationstest.App
 import com.rahul.notificationstest.R
 import com.rahul.notificationstest.feature.search.di.components.DaggerSearchComponent
 import com.rahul.notificationstest.feature.search.ui.adapters.SearchAdapter
@@ -38,9 +39,10 @@ class SearchFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-//        DaggerSearchComponent.factory().create()
-//            .build()
-//            .inject(this)
+
+        DaggerSearchComponent.factory()
+            .create((context.applicationContext as App).appComponent)
+            .inject(this)
     }
 
     override fun onCreateView(
