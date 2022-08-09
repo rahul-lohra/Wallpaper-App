@@ -69,23 +69,37 @@ dependencies {
 
     implementation project(path: ':libraries:logger')
 
-    implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation 'com.github.bumptech.glide:glide:4.13.2'
     kapt "com.github.bumptech.glide:compiler:4.13.2"
     implementation("com.github.bumptech.glide:okhttp3-integration:4.13.2")
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation "com.squareup.retrofit2:converter-moshi:2.9.0"
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2")
 
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    def espresso = '3.4.0'
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso"
+    androidTestImplementation "androidx.test.espresso:espresso-intents:$espresso"
 
     localImplementation "com.github.ChuckerTeam.Chucker:library:3.5.2"
     debugImplementation "com.github.ChuckerTeam.Chucker:library:3.5.2"
     releaseImplementation "com.github.ChuckerTeam.Chucker:library-no-op:3.5.2"
+
+    def dagger = '2.43.1'
+    implementation "com.google.dagger:dagger:$dagger"
+    kapt "com.google.dagger:dagger-compiler:$dagger"
+
+    implementation "com.squareup.okhttp3:okhttp:4.10.0"
+    implementation "com.squareup.moshi:moshi-kotlin:1.13.0"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.13.0"
+
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
 
 }
 apply plugin: 'com.google.gms.google-services'

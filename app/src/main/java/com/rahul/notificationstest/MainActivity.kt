@@ -8,7 +8,8 @@ import com.dehaat.logger.ServerLogger
 import com.dehaat.logger.data.Priority
 import com.google.android.gms.common.GoogleApiAvailability
 import com.rahul.notificationstest.logger.DatadogLogger
-import com.rahul.notificationstest.network.NetworkClient
+import com.rahul.notificationstest.di.modules.AppNetworkModule
+import com.rahul.notificationstest.di.modules.InterceptorFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -19,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var btn:Button
     val TAG = "MainActivity"
     lateinit var datadog: DatadogLogger
-    val networkClient = NetworkClient()
+    val networkClient = AppNetworkModule(this)
     lateinit var okHttpClient:OkHttpClient
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity() {
             .isGooglePlayServicesAvailable(this)
         datadog = DatadogLogger()
         datadog.setupDatadog(this)
-        okHttpClient = networkClient.setupOkHttp()
+        okHttpClient = networkClient.setupOkHttp((hashSetOf()))
 
         Log.d("Noob","is play service available = $playServiceResult")
         btn = findViewById(R.id.btn)

@@ -12,6 +12,7 @@ import com.moengage.core.MoEngage
 import com.moengage.firebase.MoEFireBaseHelper
 import com.moengage.pushbase.MoEPushHelper
 import com.moengage.pushbase.push.PushMessageListener
+import com.rahul.notificationstest.di.component.DaggerAppComponent
 import com.rahul.notificationstest.logger.ServerLoggerInitializerImpl
 
 class App : Application() {
@@ -20,17 +21,23 @@ class App : Application() {
     var fcmToken = ""
     override fun onCreate() {
         super.onCreate()
+        initDagger()
         checkFcm()
         initialiseMoEngage()
         initDataDog()
     }
 
-    fun initDataDog(){
+    fun initDagger() {
+        val component = DaggerAppComponent.create()
+        component.inject(this)
+    }
+
+    fun initDataDog() {
         ServerLoggerInitializerImpl(this)
             .initialize()
     }
 
-    fun checkFcm(){
+    fun checkFcm() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
                 Log.d("Noob", "Fetching FCM registration token failed", task.exception)
