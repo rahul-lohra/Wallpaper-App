@@ -1,6 +1,6 @@
 package com.rahul.notificationstest.feature.search.di.modules
 
-import com.rahul.notificationstest.di.modules.AppNetworkModule
+import dagger.Lazy
 import com.rahul.notificationstest.feature.search.data.apis.pexels.PexelsApi
 import com.rahul.notificationstest.feature.search.data.apis.pixabay.PixabayApi
 import com.rahul.notificationstest.feature.search.di.scopes.SearchScope
@@ -13,8 +13,8 @@ class SearchNetworkModule {
 
     @SearchScope
     @Provides
-    fun providePixaBayApi(retrofitBuilder: Retrofit.Builder): PixabayApi {
-        val retrofit = retrofitBuilder
+    fun providePixaBayApi(retrofitBuilder: Lazy<Retrofit.Builder>): PixabayApi {
+        val retrofit = retrofitBuilder.get()
             .baseUrl(PixabayApi.Config.BASE_URL)
             .build()
 
@@ -23,8 +23,8 @@ class SearchNetworkModule {
 
     @SearchScope
     @Provides
-    fun providePexelsApi(retrofitBuilder: Retrofit.Builder): PexelsApi {
-        val retrofit = retrofitBuilder
+    fun providePexelsApi(retrofitBuilder: Lazy<Retrofit.Builder>): PexelsApi {
+        val retrofit = retrofitBuilder.get()
             .baseUrl(PixabayApi.Config.BASE_URL)
             .build()
 
