@@ -1,5 +1,5 @@
-ext{
+ext {
     libraries = [
-        logger:":libraries:logger"
+            logger: ":libraries:logger"
     ]
 }

@@ -11,6 +11,7 @@ class SearchAdapter(val textList: ArrayList<String>) : RecyclerView.Adapter<Recy
         return SearchViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.list_item_search, parent, false)
+
         )
     }
 
