@@ -85,6 +85,15 @@ dependencies {
     debugImplementation devTools.chucker
     releaseImplementation devTools.chuckerNoOp
 
+    implementation jetpackCompose.composeUi
+    implementation jetpackCompose.preview
+    implementation jetpackCompose.foundation
+    implementation jetpackCompose.materialDesign
+    implementation jetpackCompose.materialDesignIcons
+    implementation jetpackCompose.materialDesignIconsExtended
+    implementation jetpackCompose.composeLiveData
+    androidTestImplementation jetpackCompose.composeUiTest
+
 
 }
 apply plugin: 'com.google.gms.google-services'

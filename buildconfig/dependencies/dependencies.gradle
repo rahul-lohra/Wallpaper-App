@@ -69,4 +69,21 @@ ext {
     jetbrains = [
             coroutinesCore: "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines",
     ]
+
+    def compose = "1.1.1"
+    jetpackCompose = [
+            composeUi: "androidx.compose.ui:ui:$compose",
+
+            preview: "androidx.compose.ui:ui-tooling:$compose",
+
+            foundation: "androidx.compose.foundation:foundation:$compose",
+
+            materialDesign:"androidx.compose.material:material:$compose",
+            materialDesignIcons:"androidx.compose.material:material-icons-core:$compose",
+            materialDesignIconsExtended:"androidx.compose.material:material-icons-extended:$compose",
+
+            composeLiveData:"androidx.compose.runtime:runtime-livedata:$compose",
+
+            composeUiTest:"androidx.compose.ui:ui-test-junit4:$compose"
+    ]
 }
