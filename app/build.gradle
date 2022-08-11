@@ -1,6 +1,6 @@
 plugins {
     id 'com.android.application'
-    id 'kotlin-android'
+    id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
 }
 apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
@@ -43,6 +43,14 @@ android {
         jvmTarget = '11'
     }
 
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion composeCompilerVersion
+    }
+
+
 //    lintOptions {
 //        abortOnError false
 //        xmlReport true
@@ -58,6 +66,8 @@ dependencies {
     implementation androidx.constraintlayout
     implementation androidx.lifecyclerViewmodelKtx
     implementation androidx.recyclerview
+
+    implementation design.androidMaterialDesign
 
     implementation di.dagger
     kapt di.daggerCompiler

@@ -1,22 +1,42 @@
 ext {
-    def nav_version = "2.5.1"
+
+    def navVersion = "2.5.1"
+    def dagger = '2.43.2'
+
+    def okHttp = '4.10.0'
+    def retrofit = '2.9.0'
+
+    def ktx = "1.8.0"
+    def appcompat = "1.4.2"
+    def constraintlayout = "2.1.4"
+    def lifecyclerViewmodelKtx = "2.5.1"
+    def recyclerview = "1.2.1"
+    def androidMaterial = "1.6.1"
+
+    def junit = "4.13.2"
+    def espresso = '3.4.0'
+    def androidxJunit = '1.1.3'
+
+    def chucker = '3.4.0'
+    def moshi = "1.13.0"
+    def coroutines = "1.6.4"
+    def compose = "1.2.0"
 
     navigation = [
-            fragment     : "androidx.navigation:navigation-fragment-ktx:$nav_version",
-            ui           : "androidx.navigation:navigation-ui-ktx:$nav_version",
-            featureModule: "androidx.navigation:navigation-dynamic-features-fragment:$nav_version",
-            testing      : "androidx.navigation:navigation-testing:$nav_version",
-            compose      : "androidx.navigation:navigation-compose:$nav_version",
+            fragment     : "androidx.navigation:navigation-fragment-ktx:$navVersion",
+            ui           : "androidx.navigation:navigation-ui-ktx:$navVersion",
+            featureModule: "androidx.navigation:navigation-dynamic-features-fragment:$navVersion",
+            testing      : "androidx.navigation:navigation-testing:$navVersion",
+            compose      : "androidx.navigation:navigation-compose:$navVersion",
     ]
 
-    def dagger = '2.43.2'
+
     di = [
             dagger        : "com.google.dagger:dagger:$dagger",
             daggerCompiler: "com.google.dagger:dagger-compiler:$dagger"
     ]
 
-    def okHttp = '4.10.0'
-    def retrofit = '2.9.0'
+
     network = [
             okhttp        : "com.squareup.okhttp3:okhttp:$okHttp",
 
@@ -25,65 +45,65 @@ ext {
             converterMoshi: "com.squareup.retrofit2:converter-moshi:$retrofit",
     ]
 
-    def ktx = "1.8.0"
-    def appcompat = "1.4.2"
-    def constraintlayout = "2.1.4"
-    def lifecycler_viewmodel_ktx = "2.5.1"
-    def recyclerview = "1.2.1"
+
     androidx = [
             coreKtx               : "androidx.core:core-ktx:$ktx",
             appcompat             : "androidx.appcompat:appcompat:$appcompat",
             constraintlayout      : "androidx.constraintlayout:constraintlayout:$constraintlayout",
-            lifecyclerViewmodelKtx: "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycler_viewmodel_ktx",
+            lifecyclerViewmodelKtx: "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecyclerViewmodelKtx",
             recyclerview          : "androidx.recyclerview:recyclerview:$recyclerview",
     ]
 
-    def junit = "4.13.2"
+
     unitTesting = [
             junit: "junit:junit:$junit"
     ]
 
-    def espresso = '3.4.0'
-    def androidx_junit = '1.1.3'
+
     uiTesting = [
             espressoContrib: "androidx.test.espresso:espresso-contrib:$espresso",
             espressoCore   : "androidx.test.espresso:espresso-core:$espresso",
             espressoIntents: "androidx.test.espresso:espresso-intents:$espresso",
 
-            androidXJUnit: "androidx.test.ext:junit:$androidx_junit",
+            androidXJUnit  : "androidx.test.ext:junit:$androidxJunit",
     ]
 
-    def chucker = '3.4.0'
+
     devTools = [
             chucker    : "com.github.ChuckerTeam.Chucker:library:$chucker",
             chuckerNoOp: "com.github.ChuckerTeam.Chucker:library-no-op:$chucker",
     ]
 
-    def moshi = "1.13.0"
+
     parsers = [
             moshiKotlin       : "com.squareup.moshi:moshi-kotlin:$moshi",
             moshiKotlinCodegen: "com.squareup.moshi:moshi-kotlin-codegen:$moshi",
     ]
 
-    def coroutines = "1.6.4"
+
     jetbrains = [
             coroutinesCore: "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines",
     ]
 
-    def compose = "1.1.1"
+
+    composeCompilerVersion = compose
     jetpackCompose = [
-            composeUi: "androidx.compose.ui:ui:$compose",
+            composeUi                  : "androidx.compose.ui:ui:$compose",
 
-            preview: "androidx.compose.ui:ui-tooling:$compose",
+            preview                    : "androidx.compose.ui:ui-tooling:$compose",
 
-            foundation: "androidx.compose.foundation:foundation:$compose",
+            foundation                 : "androidx.compose.foundation:foundation:$compose",
 
-            materialDesign:"androidx.compose.material:material:$compose",
-            materialDesignIcons:"androidx.compose.material:material-icons-core:$compose",
-            materialDesignIconsExtended:"androidx.compose.material:material-icons-extended:$compose",
+            materialDesign             : "androidx.compose.material:material:$compose",
+            materialDesignIcons        : "androidx.compose.material:material-icons-core:$compose",
+            materialDesignIconsExtended: "androidx.compose.material:material-icons-extended:$compose",
 
-            composeLiveData:"androidx.compose.runtime:runtime-livedata:$compose",
+            composeLiveData            : "androidx.compose.runtime:runtime-livedata:$compose",
 
-            composeUiTest:"androidx.compose.ui:ui-test-junit4:$compose"
+            composeUiTest              : "androidx.compose.ui:ui-test-junit4:$compose"
+    ]
+
+    design = [
+            androidMaterialDesign: "com.google.android.material:material:$androidMaterial"
     ]
 }
