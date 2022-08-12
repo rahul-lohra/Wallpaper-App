@@ -1,5 +1,7 @@
 package com.rahul.notificationstest.feature.search.data.apis.unsplash
 
-sealed class UnsplashException(message: String) : Exception(message)
+import java.io.IOException
+
+sealed class UnsplashException(message: String) : IOException(message)
 
 class RateLimitReachedException : UnsplashException("Rate Limit Reached")

@@ -7,6 +7,7 @@ import com.rahul.notificationstest.di.modules.AppNetworkModule
 import com.rahul.notificationstest.di.modules.ViewModelFactoryModule
 import com.rahul.notificationstest.di.scope.AppScope
 import dagger.Component
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
@@ -23,6 +24,7 @@ interface AppComponent {
 
     fun context(): Context
     fun retrofitBuilder(): Retrofit.Builder
+    fun okHttpClient(): OkHttpClient
 
     fun moshiConvertorFactory():MoshiConverterFactory
 

@@ -95,6 +95,7 @@ dependencies {
     localImplementation devTools.chucker
     debugImplementation devTools.chucker
     releaseImplementation devTools.chuckerNoOp
+    implementation devTools.timber
 
     implementation jetpackCompose.composeUi
     implementation jetpackCompose.preview

@@ -9,3 +9,7 @@ annotation class PixaBay
 @Qualifier
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Pexels
+
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Unsplash

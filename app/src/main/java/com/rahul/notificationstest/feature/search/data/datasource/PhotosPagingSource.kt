@@ -29,7 +29,6 @@ class PhotosPagingSource @Inject constructor(val api: UnsplashApi) : PagingSourc
                 nextKey = currentKey + 1
             )
         } catch (ex: Exception) {
-            ex.printStackTrace()
             return LoadResult.Error(ex)
         }
     }

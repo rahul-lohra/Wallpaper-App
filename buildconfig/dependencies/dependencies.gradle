@@ -73,6 +73,7 @@ ext {
     devTools = [
             chucker    : "com.github.ChuckerTeam.Chucker:library:$chucker",
             chuckerNoOp: "com.github.ChuckerTeam.Chucker:library-no-op:$chucker",
+            timber     : "com.jakewharton.timber:timber:5.0.1"
     ]
 
 

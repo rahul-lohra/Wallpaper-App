@@ -1,26 +1,29 @@
 package com.rahul.notificationstest.di.modules
 
+import android.content.Context
 import com.rahul.notificationstest.di.scope.AppScope
 import dagger.Module
 import dagger.Provides
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 
-@Module(includes = [AppInterceptorsModule::class])
+@Module
 class AppNetworkModule {
 
     @Provides
-    fun setupOkHttp1(interceptors: MutableSet<Interceptor>): OkHttpClient {
+    fun setupOkHttp(context: Context, appInterceptorsModule: AppInterceptorsModule): OkHttpClient {
         val builder = OkHttpClient.Builder()
-        builder.interceptors().addAll(interceptors)
+        builder.interceptors().addAll(appInterceptorsModule.getInterceptorList(context))
         return builder.build()
     }
 
-//    @AppScope
+    //    @AppScope
     @Provides
-    fun setupRetroFit(client: dagger.Lazy<OkHttpClient>, moshiConverterFactory: MoshiConverterFactory): Retrofit.Builder {
+    fun setupRetroFit(
+        client: dagger.Lazy<OkHttpClient>,
+        moshiConverterFactory: MoshiConverterFactory
+    ): Retrofit.Builder {
         return Retrofit.Builder()
             .client(client.get())
             .addConverterFactory(moshiConverterFactory)
