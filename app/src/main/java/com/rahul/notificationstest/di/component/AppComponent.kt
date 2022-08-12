@@ -4,15 +4,18 @@ import android.content.Context
 import com.rahul.notificationstest.App
 import com.rahul.notificationstest.di.modules.AppContextModule
 import com.rahul.notificationstest.di.modules.AppNetworkModule
+import com.rahul.notificationstest.di.modules.ViewModelFactoryModule
 import com.rahul.notificationstest.di.scope.AppScope
 import dagger.Component
 import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 @AppScope
 @Component(
     modules = [
         AppContextModule::class,
-        AppNetworkModule::class
+        AppNetworkModule::class,
+        ViewModelFactoryModule::class,
     ],
 )
 interface AppComponent {
@@ -20,7 +23,8 @@ interface AppComponent {
 
     fun context(): Context
     fun retrofitBuilder(): Retrofit.Builder
-//    fun interceptorSet(): MutableSet<Interceptor>
+
+    fun moshiConvertorFactory():MoshiConverterFactory
 
     @Component.Factory
     interface Factory {

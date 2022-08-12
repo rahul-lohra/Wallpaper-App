@@ -1,5 +1,6 @@
 package com.rahul.notificationstest.di.modules
 
+import com.rahul.notificationstest.di.scope.AppScope
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
@@ -17,11 +18,15 @@ class AppNetworkModule {
         return builder.build()
     }
 
-    //    @AppScope
+//    @AppScope
     @Provides
-    fun setupRetroFit(client: dagger.Lazy<OkHttpClient>): Retrofit.Builder {
+    fun setupRetroFit(client: dagger.Lazy<OkHttpClient>, moshiConverterFactory: MoshiConverterFactory): Retrofit.Builder {
         return Retrofit.Builder()
             .client(client.get())
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(moshiConverterFactory)
     }
+
+    @AppScope
+    @Provides
+    fun provideMoshiConvertorFactory() = MoshiConverterFactory.create()
 }

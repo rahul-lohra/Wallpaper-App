@@ -6,12 +6,12 @@ plugins {
 apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.rahul.notificationstest"
         minSdk 24
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -74,6 +74,7 @@ dependencies {
 
     implementation network.okhttp
     implementation network.retrofit
+    implementation network.okHttploggingInterceptor
     implementation network.converterGson
     implementation network.converterGson
     implementation network.converterMoshi
@@ -103,6 +104,7 @@ dependencies {
     implementation jetpackCompose.materialDesignIconsExtended
     implementation jetpackCompose.composeLiveData
     implementation jetpackCompose.composeViewModel
+    implementation jetpackCompose.paging
     androidTestImplementation jetpackCompose.composeUiTest
 
     implementation others.coil

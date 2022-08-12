@@ -2,6 +2,7 @@ package com.rahul.notificationstest.feature.search.data.apis.unsplash
 
 import androidx.annotation.StringDef
 import com.rahul.notificationstest.feature.search.data.apis.pixabay.PixabayApi.QueryParams.IMAGE_TYPE
+import kotlinx.coroutines.flow.Flow
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -44,7 +45,7 @@ interface UnsplashApi {
     }
 
     @GET("/photos")
-    fun getPhotos(
+    suspend fun getPhotos(
         @Query(QueryParams.PAGE) pageNumber: Int
-    ): UnsplashResponse
+    ): List<UnsplashResponse>
 }

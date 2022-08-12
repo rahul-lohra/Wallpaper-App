@@ -1,61 +1,50 @@
 package com.rahul.notificationstest.feature.search.ui.fragments
 
-import android.content.res.Configuration
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.StringRes
-import androidx.appcompat.widget.Toolbar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Spa
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.scaleMatrix
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.PagingData
+import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
+import com.rahul.notificationstest.App
 import com.rahul.notificationstest.R
+import com.rahul.notificationstest.di.component.AppComponent
 import com.rahul.notificationstest.feature.search.data.datasource.DummyDataProvider
-import com.rahul.notificationstest.feature.search.ui.viewmodels.WellnessViewModel
-import com.rahul.notificationstest.ui.theme.DarkColorPalette
-import com.rahul.notificationstest.ui.theme.LightColorPalette
-import com.rahul.notificationstest.ui.theme.MySootheTheme
+import com.rahul.notificationstest.feature.search.di.components.DaggerSearchComponent
+import com.rahul.notificationstest.feature.search.ui.viewmodels.SearchViewModel
 import com.rahul.notificationstest.ui.theme.typography
-import java.util.*
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
 class UnsplashHomeFragment : Fragment() {
+
+    @Inject
+    lateinit var searchViewModel: SearchViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -66,25 +55,26 @@ class UnsplashHomeFragment : Fragment() {
             // is destroyed
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                UnsplashHomeComposeLayout()
+                UnsplashHomeComposeLayout(photosFlow = searchViewModel.photosFlow)
             }
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        DaggerSearchComponent.factory()
+            .create((context.applicationContext as App).appComponent)
+            .inject(this)
+    }
+
 }
 
-@Preview(name = "Light Mode")
-//@Preview(
-//    uiMode = Configuration.UI_MODE_NIGHT_YES,
-//    showBackground = true,
-//    name = "Dark Mode"
-//)
 @Composable
-fun UnsplashHomeComposeLayout() {
+fun UnsplashHomeComposeLayout(photosFlow: Flow<PagingData<String>>) {
     MaterialTheme(content = {
         Scaffold(
             topBar = { HomeToolbar() },
-            content = { padding -> HomeScreen(Modifier.padding(padding)) })
+            content = { padding -> HomeScreen(Modifier.padding(padding), photosFlow) })
     })
 }
 
@@ -121,13 +111,12 @@ fun HomeToolbar() {
 
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
-    Column() {
+fun HomeScreen(modifier: Modifier = Modifier, photosFlow: Flow<PagingData<String>>) {
+    Column {
         Header()
-        PhotosList()
-        WellnessScreen()
+        WeekdaysList()
+        PhotosDisplayList(photosFlow = photosFlow)
     }
-
 }
 
 @Preview
@@ -148,10 +137,10 @@ fun Header() {
 
 @Preview
 @Composable
-fun PhotosList() {
+fun WeekdaysList() {
     val lazyDataItems = DummyDataProvider().getDataArrayList()
     val maxColumnSpan = 2
-    val minColumnSpan = 2
+    val minColumnSpan = 1
     LazyVerticalGrid(columns = GridCells.Fixed(maxColumnSpan), content = {
         items(lazyDataItems.size, span = { index ->
             if (index % 3 == 0) {
@@ -163,9 +152,27 @@ fun PhotosList() {
     })
 }
 
+@Composable
+fun PhotosDisplayList(photosFlow: Flow<PagingData<String>>) {
+    val dataList = photosFlow.collectAsLazyPagingItems()
+    val maxColumnSpan = 2
+    val minColumnSpan = 1
+    LazyVerticalGrid(columns = GridCells.Fixed(maxColumnSpan), content = {
+        items(
+            dataList.itemCount,
+            span = { index ->
+                if (index % 3 == 0) {
+                    GridItemSpan(maxColumnSpan)
+                } else {
+                    GridItemSpan(minColumnSpan)
+                }
+            },
+            itemContent = { index -> PhotosListItem(url = dataList[index]!!) }) //TODO Rahul why force null?
+    })
+}
+
 
 @Composable
 fun PhotosListItem(url: String) {
     AsyncImage(model = url, contentDescription = null)
-//    Image(painter = , contentDescription = )
 }

@@ -1,7 +1,9 @@
 package com.rahul.notificationstest.feature.search.data.apis.pixabay
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class PixabayResponse(
 
     @Json(name = "total") var total: Int? = null,
@@ -9,6 +11,7 @@ data class PixabayResponse(
     @Json(name = "hits") var hits: ArrayList<Hits> = arrayListOf()
 
 ) {
+    @JsonClass(generateAdapter = true)
     data class Hits(
 
         @Json(name = "id") var id: Int? = null,

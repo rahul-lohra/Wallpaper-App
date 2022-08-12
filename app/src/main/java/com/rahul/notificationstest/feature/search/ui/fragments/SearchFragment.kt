@@ -1,6 +1,5 @@
 package com.rahul.notificationstest.feature.search.ui.fragments
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -40,9 +39,9 @@ class SearchFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-//        DaggerSearchComponent.factory()
-//            .create((context.applicationContext as App).appComponent)
-//            .inject(this)
+        DaggerSearchComponent.factory()
+            .create((context.applicationContext as App).appComponent)
+            .inject(this)
     }
 
     override fun onCreateView(

@@ -1,7 +1,9 @@
 package com.rahul.notificationstest.feature.search.data.apis.pexels
 
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class PexelsResponse(
 
     @Json(name = "page") var page: Int? = null,
@@ -10,6 +12,7 @@ data class PexelsResponse(
     @Json(name = "total_results") var totalResults: Int? = null,
     @Json(name = "next_page") var nextPage: String? = null
 ) {
+    @JsonClass(generateAdapter = true)
     data class Src(
 
         @Json(name = "original") var original: String? = null,
@@ -23,6 +26,7 @@ data class PexelsResponse(
 
     )
 
+    @JsonClass(generateAdapter = true)
     data class Photos(
 
         @Json(name = "id") var id: Int? = null,

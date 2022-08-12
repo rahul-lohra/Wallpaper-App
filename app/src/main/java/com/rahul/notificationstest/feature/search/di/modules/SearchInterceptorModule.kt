@@ -1,5 +1,6 @@
 package com.rahul.notificationstest.feature.search.di.modules
 
+import com.rahul.notificationstest.feature.search.data.apis.unsplash.UnsplashInterceptor
 import com.rahul.notificationstest.feature.search.di.qualifiers.Pexels
 import com.rahul.notificationstest.feature.search.di.qualifiers.PixaBay
 import dagger.Module
@@ -44,4 +45,9 @@ class SearchInterceptorModule {
             }
         }
     }
+
+    @Provides
+    @Pexels
+    @IntoSet
+    fun providesUnsplashInterceptor() = UnsplashInterceptor()
 }
