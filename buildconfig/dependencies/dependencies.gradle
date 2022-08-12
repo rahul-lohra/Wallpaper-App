@@ -112,7 +112,11 @@ ext {
             androidMaterialDesign: "com.google.android.material:material:$androidMaterial"
     ]
 
+    accompanist = [
+            viewpager: "com.google.accompanist:accompanist-pager:0.26.1-alpha"
+    ]
+
     others = [
-            coil: "io.coil-kt:coil-compose:2.1.0"
+            coil: "io.coil-kt:coil-compose:2.1.0",
     ]
 }
