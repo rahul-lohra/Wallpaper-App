@@ -2,6 +2,7 @@ package com.rahul.notificationstest.feature.search.ui.fragments
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,16 +11,24 @@ import androidx.appcompat.widget.Toolbar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Spa
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,7 +44,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.scaleMatrix
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.rahul.notificationstest.R
+import com.rahul.notificationstest.feature.search.data.datasource.DummyDataProvider
+import com.rahul.notificationstest.feature.search.ui.viewmodels.WellnessViewModel
 import com.rahul.notificationstest.ui.theme.DarkColorPalette
 import com.rahul.notificationstest.ui.theme.LightColorPalette
 import com.rahul.notificationstest.ui.theme.MySootheTheme
@@ -61,11 +74,11 @@ class UnsplashHomeFragment : Fragment() {
 }
 
 @Preview(name = "Light Mode")
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES,
-    showBackground = true,
-    name = "Dark Mode"
-)
+//@Preview(
+//    uiMode = Configuration.UI_MODE_NIGHT_YES,
+//    showBackground = true,
+//    name = "Dark Mode"
+//)
 @Composable
 fun UnsplashHomeComposeLayout() {
     MaterialTheme(content = {
@@ -109,7 +122,12 @@ fun HomeToolbar() {
 
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier) {
-    Header()
+    Column() {
+        Header()
+        PhotosList()
+        WellnessScreen()
+    }
+
 }
 
 @Preview
@@ -126,4 +144,28 @@ fun Header() {
             style = typography.caption,
         )
     }
+}
+
+@Preview
+@Composable
+fun PhotosList() {
+    val lazyDataItems = DummyDataProvider().getDataArrayList()
+    val maxColumnSpan = 2
+    val minColumnSpan = 2
+    LazyVerticalGrid(columns = GridCells.Fixed(maxColumnSpan), content = {
+        items(lazyDataItems.size, span = { index ->
+            if (index % 3 == 0) {
+                GridItemSpan(maxColumnSpan)
+            } else {
+                GridItemSpan(minColumnSpan)
+            }
+        }, itemContent = { index -> Text(text = lazyDataItems[index]) })
+    })
+}
+
+
+@Composable
+fun PhotosListItem(url: String) {
+    AsyncImage(model = url, contentDescription = null)
+//    Image(painter = , contentDescription = )
 }

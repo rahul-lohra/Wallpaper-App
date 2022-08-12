@@ -102,8 +102,9 @@ dependencies {
     implementation jetpackCompose.materialDesignIcons
     implementation jetpackCompose.materialDesignIconsExtended
     implementation jetpackCompose.composeLiveData
+    implementation jetpackCompose.composeViewModel
     androidTestImplementation jetpackCompose.composeUiTest
 
-
+    implementation others.coil
 }
 apply plugin: 'com.google.gms.google-services'

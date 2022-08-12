@@ -100,10 +100,16 @@ ext {
 
             composeLiveData            : "androidx.compose.runtime:runtime-livedata:$compose",
 
-            composeUiTest              : "androidx.compose.ui:ui-test-junit4:$compose"
+            composeUiTest              : "androidx.compose.ui:ui-test-junit4:$compose",
+
+            composeViewModel           : "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1"
     ]
 
     design = [
             androidMaterialDesign: "com.google.android.material:material:$androidMaterial"
+    ]
+
+    others = [
+            coil: "io.coil-kt:coil-compose:2.1.0"
     ]
 }

@@ -5,7 +5,17 @@ import javax.inject.Inject
 
 class DummyDataProvider @Inject constructor() {
 
-    suspend fun getData() = flowOf(
+    fun getData() = flowOf(
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+    )
+
+    fun getDataArrayList() = arrayListOf(
         "Sunday",
         "Monday",
         "Tuesday",

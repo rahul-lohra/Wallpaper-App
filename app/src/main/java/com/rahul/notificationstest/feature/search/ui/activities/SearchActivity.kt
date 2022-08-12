@@ -18,10 +18,10 @@ class SearchActivity : AppCompatActivity() {
 //        supportFragmentManager.beginTransaction()
 //            .add(R.id.container, SearchFragment())
 //            .commit()
-
-        supportFragmentManager.beginTransaction()
-            .add(R.id.container, UnsplashHomeFragment())
-            .commit()
-
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .add(R.id.container, UnsplashHomeFragment())
+                .commit()
+        }
     }
 }
