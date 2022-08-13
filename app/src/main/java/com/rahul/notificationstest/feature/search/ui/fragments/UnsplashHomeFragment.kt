@@ -8,10 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -20,9 +18,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -36,6 +34,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
@@ -50,11 +49,14 @@ import com.rahul.notificationstest.R
 import com.rahul.notificationstest.feature.search.data.datasource.DummyDataProvider
 import com.rahul.notificationstest.feature.search.di.components.DaggerSearchComponent
 import com.rahul.notificationstest.feature.search.ui.viewmodels.SearchViewModel
+import com.rahul.notificationstest.onNoRippleClick
+import com.rahul.notificationstest.toDp
 import com.rahul.notificationstest.ui.theme.typography
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.math.absoluteValue
 
 class UnsplashHomeFragment : Fragment() {
 
@@ -139,17 +141,75 @@ fun HomeScreen(modifier: Modifier = Modifier, photosFlow: Flow<PagingData<String
 @Preview
 @Composable
 fun Header() {
-    Column() {
+    Column(
+        modifier = Modifier
+            .padding(top = 14.dp, start = 18.dp)
+            .height(165.dp)
+    ) {
         Text(
             "UnSplash",
             style = typography.h1
         )
         Text(
+            modifier = Modifier.padding(end = 73.dp),
+            text =
             "Beautiful, free photos.\n" +
                     "Gifted by the world’s most generous community of photographers.",
             style = typography.caption,
         )
+        TabViewSmallTextContainer()
     }
+}
+
+@Composable
+fun TabViewSmallTextContainer() {
+    var selected by rememberSaveable { mutableStateOf(0) }
+
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+            .padding(end = 17.dp, bottom = 12.dp),
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.Bottom
+    ) {
+        TabViewSmallText(text = "Editorial", selected.absoluteValue == 0) {
+            selected = 0
+        }
+        Box(modifier = Modifier.width(20.dp))
+        TabViewSmallText(text = "Following", selected.absoluteValue == 1) {
+            selected = 1
+        }
+    }
+}
+
+@Composable
+fun TabViewSmallText(text: String, selected: Boolean, onClick: () -> Unit) {
+    var dividerWidth by remember { mutableStateOf(0) }
+
+    Column(modifier = Modifier.onNoRippleClick { onClick() }) {
+        if (selected) {
+            if (dividerWidth > 0) {
+                Divider(
+                    color = colorResource(id = R.color.black),
+                    modifier = Modifier.width(dividerWidth.toFloat().toDp().dp)
+                )
+            }
+            Text(
+                text = text,
+                style = typography.body2,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(top = 11.dp),
+                onTextLayout = {
+                    dividerWidth = it.size.width
+                    Timber.d("$text width = ${it.size.width}")
+                })
+        } else {
+            Text(text = text, style = typography.body2)
+        }
+
+    }
+
 }
 
 @Preview
