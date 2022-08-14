@@ -15,11 +15,11 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
         frameLayout = findViewById(R.id.container)
 
-//        supportFragmentManager.beginTransaction()
-//            .add(R.id.container, SearchFragment())
-//            .commit()
+
         if (savedInstanceState == null) {
+
             supportFragmentManager.beginTransaction()
+//                .add(R.id.container, SearchFragment())
                 .add(R.id.container, UnsplashHomeFragment())
                 .commit()
         }

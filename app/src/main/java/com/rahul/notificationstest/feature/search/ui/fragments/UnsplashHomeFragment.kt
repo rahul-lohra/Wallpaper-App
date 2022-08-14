@@ -4,16 +4,20 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -21,6 +25,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -29,6 +34,9 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.RequestDisallowInterceptTouchEvent
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -128,15 +136,68 @@ fun HomeToolbar() {
     )
 }
 
+var prevY = 0f
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier, photosFlow: Flow<PagingData<String>>) {
-    Column {
+fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
+    var yOffset by rememberSaveable { mutableStateOf(0f) }
+    var requestDisallowInterceptTouchEvent=  RequestDisallowInterceptTouchEvent()
+    Column(
+        modifier
+            .offset(y = (yOffset).toDp().dp)
+            .scrollable(orientation = Orientation.Vertical, state = rememberScrollableState { delta ->
+                Timber.d("delta = $delta")
+                delta
+            }).pointerInput("a") {  }
+//            .pointerInteropFilter(requestDisallowInterceptTouchEvent) { mv ->
+//                when (mv.action) {
+//                    MotionEvent.ACTION_DOWN -> {
+//                        prevY = mv.rawY
+//                    }
+//                    MotionEvent.ACTION_MOVE -> {
+//                        val tempYOffset = yOffset + (mv.rawY - prevY)
+//                        yOffset = if (tempYOffset >= 0f) {
+//                            0f
+//                        } else if (tempYOffset <= -180f) {
+//                            -180f
+//                        } else {
+//                            tempYOffset
+//                        }
+//                        prevY = mv.rawY
+//                    }
+//                    MotionEvent.ACTION_UP -> {}
+//                }
+//                Timber.d("action = ${mv.action}, yOffset = $yOffset")
+//
+//                yOffset in (-178f..0f)
+////                false
+//            }
+    ) {
         Header()
         UnsplashViewPager(photosFlow)
-//        PhotosDisplayList(photosFlow = photosFlow)
     }
 }
+
+//fun handleMotionEvent(mv:MotionEvent,yOffset:Int, callback:(Int)->Int){
+//    when (mv.action) {
+//        MotionEvent.ACTION_DOWN -> {
+//            prevY = mv.rawY
+//        }
+//        MotionEvent.ACTION_MOVE -> {
+//            val tempYOffset = yOffset + (mv.rawY - prevY)
+//            yOffset = if (tempYOffset >= 0f) {
+//                0f
+//            } else if (tempYOffset <= -180f) {
+//                -180f
+//            } else {
+//                tempYOffset
+//            }
+//            prevY = mv.rawY
+//        }
+//        MotionEvent.ACTION_UP -> {}
+//    }
+//}
 
 @Preview
 @Composable
@@ -202,7 +263,6 @@ fun TabViewSmallText(text: String, selected: Boolean, onClick: () -> Unit) {
                 modifier = Modifier.padding(top = 11.dp),
                 onTextLayout = {
                     dividerWidth = it.size.width
-                    Timber.d("$text width = ${it.size.width}")
                 })
         } else {
             Text(text = text, style = typography.body2)
@@ -242,7 +302,7 @@ fun PhotosDisplayList(photosFlow: Flow<PagingData<String>>) {
         gridState.scroll {
             val endOffset = gridState.layoutInfo.viewportEndOffset
             val startOffset = gridState.layoutInfo.viewportStartOffset
-            Timber.d("startOffset = $startOffset, endOffset = $endOffset")
+//            Timber.d("startOffset = $startOffset, endOffset = $endOffset")
         }
     }
     val nestedScrollConnection = remember {
@@ -250,7 +310,7 @@ fun PhotosDisplayList(photosFlow: Flow<PagingData<String>>) {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 val delta = available.y
 
-                Timber.d("delta Y = ${delta}, index = ${gridState.firstVisibleItemIndex}, offset = ${gridState.firstVisibleItemScrollOffset}")
+//                Timber.d("delta Y = ${delta}, index = ${gridState.firstVisibleItemIndex}, offset = ${gridState.firstVisibleItemScrollOffset}")
                 return Offset.Zero
             }
         }
@@ -274,13 +334,14 @@ fun PhotosDisplayList(photosFlow: Flow<PagingData<String>>) {
         })
 }
 
+const val PHOTO_LIST_ITEM_HEIGHT = 300
 
 @Composable
 fun PhotosListItem(url: String) {
     AsyncImage(
         model = url,
         contentDescription = null,
-        modifier = Modifier.height(300.dp),
+        modifier = Modifier.height(PHOTO_LIST_ITEM_HEIGHT.dp),
         contentScale = ContentScale.Crop
     )
 }
