@@ -9,15 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -142,14 +140,26 @@ var prevY = 0f
 @Composable
 fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
     var yOffset by rememberSaveable { mutableStateOf(0f) }
-    var requestDisallowInterceptTouchEvent=  RequestDisallowInterceptTouchEvent()
+    var requestDisallowInterceptTouchEvent = RequestDisallowInterceptTouchEvent()
+//    requestDisallowInterceptTouchEvent.invoke()
     Column(
         modifier
             .offset(y = (yOffset).toDp().dp)
-            .scrollable(orientation = Orientation.Vertical, state = rememberScrollableState { delta ->
-                Timber.d("delta = $delta")
-                delta
-            }).pointerInput("a") {  }
+            .pointerInput("a") {
+                this.forEachGesture {
+
+                }
+                this.awaitPointerEventScope {
+                    if(this.currentEvent.changes.isNotEmpty()){
+                        val offset = this.currentEvent.changes[0].position
+                        Timber.d("offset = $offset")
+                    }
+
+                }
+//                this.detectVerticalDragGestures { change, dragAmount ->
+//                    Timber.d("drag  change = $change, dragAmount = $dragAmount")
+//                }
+            }
 //            .pointerInteropFilter(requestDisallowInterceptTouchEvent) { mv ->
 //                when (mv.action) {
 //                    MotionEvent.ACTION_DOWN -> {
@@ -168,9 +178,11 @@ fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
 //                    }
 //                    MotionEvent.ACTION_UP -> {}
 //                }
-//                Timber.d("action = ${mv.action}, yOffset = $yOffset")
 //
-//                yOffset in (-178f..0f)
+//
+//                val result = yOffset in (-178f..0f)
+//                Timber.d("action = ${mv.getActionFromMotionEvent()}, result = $result")
+//                result
 ////                false
 //            }
     ) {
