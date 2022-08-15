@@ -3,7 +3,9 @@ package com.rahul.notificationstest.feature.search.ui.fragments
 import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.View
 import android.widget.LinearLayout
+import androidx.core.view.NestedScrollingParent3
 import timber.log.Timber
 
 fun MotionEvent.getActionFromMotionEvent(): String {
@@ -17,30 +19,16 @@ fun MotionEvent.getActionFromMotionEvent(): String {
 
 class ScrollableLinearLayout @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
-) : LinearLayout(context, attrs, 0) {
+) : LinearLayout(context, attrs, 0), NestedScrollingParent3 {
 
     var prevY = 0f
     var yOffset = 0f
 
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-//        val result = super.dispatchTouchEvent(ev)
         handleTouchEvent(ev)
-//        Timber.d("dispatchTouchEvent = $result, action = ${ev.getActionFromMotionEvent()}")
         return super.dispatchTouchEvent(ev)
     }
-
-//    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-//        val result = handleTouchEvent(ev)
-//        Timber.d("onInterceptTouchEvent = $result, action = ${ev.getActionFromMotionEvent()}")
-//        return false
-//    }
-
-//    override fun onTouchEvent(ev: MotionEvent): Boolean {
-//        val result = handleTouchEvent(ev)
-//        Timber.d("onTouchEvent = $result, action = ${ev.getActionFromMotionEvent()}")
-//        return false
-//    }
 
     private fun handleTouchEvent(event: MotionEvent?): Boolean {
         if (event != null) {
@@ -66,12 +54,45 @@ class ScrollableLinearLayout @JvmOverloads constructor(
         Timber.d("action = ${event?.action}, yOffset = $yOffset")
         val result = yOffset in (-178f..0f)
         return result
-//        if (result) {
-//            requestDisallowInterceptTouchEvent(false)
-//            return true
-//        } else {
-//            requestDisallowInterceptTouchEvent(true)
-//            return false
-//        }
+    }
+
+    override fun onStartNestedScroll(child: View, target: View, axes: Int, type: Int): Boolean {
+        Timber.d("onStartNestedScroll")
+        return super.onStartNestedScroll(child, target, axes)
+    }
+
+    override fun onNestedScrollAccepted(child: View, target: View, axes: Int, type: Int) {
+        super.onNestedScrollAccepted(child, target, axes)
+    }
+
+    override fun onStopNestedScroll(target: View, type: Int) {
+        super.onStopNestedScroll(target)
+    }
+
+    override fun onNestedScroll(
+        target: View,
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        type: Int,
+        consumed: IntArray
+    ) {
+
+    }
+
+    override fun onNestedScroll(
+        target: View,
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        type: Int
+    ) {
+
+    }
+
+    override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray, type: Int) {
+
     }
 }

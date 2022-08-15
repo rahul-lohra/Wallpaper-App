@@ -4,13 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
-import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -23,7 +20,6 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -32,9 +28,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.input.pointer.RequestDisallowInterceptTouchEvent
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -59,7 +52,6 @@ import com.rahul.notificationstest.onNoRippleClick
 import com.rahul.notificationstest.toDp
 import com.rahul.notificationstest.ui.theme.typography
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.absoluteValue
@@ -134,82 +126,53 @@ fun HomeToolbar() {
     )
 }
 
-var prevY = 0f
+const val MIN_SCROLL = -180f
+const val MAX_SCROLL = 0f
+val HEADER_SCROLL_RANGE = (MIN_SCROLL..MAX_SCROLL)
+var firstItemVisibleOffset = 0
 
-@OptIn(ExperimentalComposeUiApi::class)
+fun getValidOffset(tempYOffset: Float): Float {
+    return if (tempYOffset >= MAX_SCROLL) {
+        MAX_SCROLL
+    } else if (tempYOffset <= MIN_SCROLL) {
+        MIN_SCROLL
+    } else {
+        tempYOffset
+    }
+}
+
 @Composable
 fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
     var yOffset by rememberSaveable { mutableStateOf(0f) }
-    var requestDisallowInterceptTouchEvent = RequestDisallowInterceptTouchEvent()
-//    requestDisallowInterceptTouchEvent.invoke()
+    val nestedScrollConnection = remember {
+        object : NestedScrollConnection {
+
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+
+                val delta = available.y
+                val tempYOffset = yOffset + delta
+                if (firstItemVisibleOffset == 0) {
+                    yOffset = getValidOffset(tempYOffset)
+                }
+                Timber.d("onPreScroll delta = $delta, yOffset = $yOffset,tempYOffset = $tempYOffset, tempYOffset in range = ${tempYOffset in HEADER_SCROLL_RANGE}, firstItemVisibleOffset = $firstItemVisibleOffset")
+
+                if (tempYOffset in HEADER_SCROLL_RANGE && firstItemVisibleOffset == 0) {
+                    return Offset(0f, delta)
+                } else {
+                    return Offset.Zero
+                }
+            }
+        }
+    }
     Column(
         modifier
             .offset(y = (yOffset).toDp().dp)
-            .pointerInput("a") {
-                this.forEachGesture {
-
-                }
-                this.awaitPointerEventScope {
-                    if(this.currentEvent.changes.isNotEmpty()){
-                        val offset = this.currentEvent.changes[0].position
-                        Timber.d("offset = $offset")
-                    }
-
-                }
-//                this.detectVerticalDragGestures { change, dragAmount ->
-//                    Timber.d("drag  change = $change, dragAmount = $dragAmount")
-//                }
-            }
-//            .pointerInteropFilter(requestDisallowInterceptTouchEvent) { mv ->
-//                when (mv.action) {
-//                    MotionEvent.ACTION_DOWN -> {
-//                        prevY = mv.rawY
-//                    }
-//                    MotionEvent.ACTION_MOVE -> {
-//                        val tempYOffset = yOffset + (mv.rawY - prevY)
-//                        yOffset = if (tempYOffset >= 0f) {
-//                            0f
-//                        } else if (tempYOffset <= -180f) {
-//                            -180f
-//                        } else {
-//                            tempYOffset
-//                        }
-//                        prevY = mv.rawY
-//                    }
-//                    MotionEvent.ACTION_UP -> {}
-//                }
-//
-//
-//                val result = yOffset in (-178f..0f)
-//                Timber.d("action = ${mv.getActionFromMotionEvent()}, result = $result")
-//                result
-////                false
-//            }
+            .nestedScroll(nestedScrollConnection)
     ) {
         Header()
         UnsplashViewPager(photosFlow)
     }
 }
-
-//fun handleMotionEvent(mv:MotionEvent,yOffset:Int, callback:(Int)->Int){
-//    when (mv.action) {
-//        MotionEvent.ACTION_DOWN -> {
-//            prevY = mv.rawY
-//        }
-//        MotionEvent.ACTION_MOVE -> {
-//            val tempYOffset = yOffset + (mv.rawY - prevY)
-//            yOffset = if (tempYOffset >= 0f) {
-//                0f
-//            } else if (tempYOffset <= -180f) {
-//                -180f
-//            } else {
-//                tempYOffset
-//            }
-//            prevY = mv.rawY
-//        }
-//        MotionEvent.ACTION_UP -> {}
-//    }
-//}
 
 @Preview
 @Composable
@@ -307,22 +270,14 @@ fun PhotosDisplayList(photosFlow: Flow<PagingData<String>>) {
     val dataList = photosFlow.collectAsLazyPagingItems()
     val maxColumnSpan = 2
     val minColumnSpan = 1
-    val coroutineScope = rememberCoroutineScope()
     val gridState = rememberLazyGridState()
-    coroutineScope.launch {
-
-        gridState.scroll {
-            val endOffset = gridState.layoutInfo.viewportEndOffset
-            val startOffset = gridState.layoutInfo.viewportStartOffset
-//            Timber.d("startOffset = $startOffset, endOffset = $endOffset")
-        }
-    }
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
                 val delta = available.y
-
-//                Timber.d("delta Y = ${delta}, index = ${gridState.firstVisibleItemIndex}, offset = ${gridState.firstVisibleItemScrollOffset}")
+                Timber.d("grid delta = ${delta}")
+                firstItemVisibleOffset = gridState.firstVisibleItemScrollOffset
+                Timber.d("firstItemScrollOffset = ${gridState.firstVisibleItemScrollOffset}, firstVisibleItemIndex = ${gridState.firstVisibleItemIndex}")
                 return Offset.Zero
             }
         }
@@ -330,7 +285,8 @@ fun PhotosDisplayList(photosFlow: Flow<PagingData<String>>) {
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(maxColumnSpan),
-        modifier = Modifier.nestedScroll(nestedScrollConnection),
+        modifier = Modifier
+            .nestedScroll(nestedScrollConnection),
         state = gridState,
         content = {
             items(
