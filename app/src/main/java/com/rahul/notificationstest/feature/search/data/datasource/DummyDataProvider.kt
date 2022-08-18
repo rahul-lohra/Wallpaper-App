@@ -24,4 +24,13 @@ class DummyDataProvider @Inject constructor() {
         "Friday",
         "Saturday"
     )
+    fun getTabViewItems() = arrayListOf(
+        "Editorial",
+        "Following",
+        "Nature",
+        "Architecture",
+        "Travel",
+        "Friday",
+        "Saturday"
+    )
 }

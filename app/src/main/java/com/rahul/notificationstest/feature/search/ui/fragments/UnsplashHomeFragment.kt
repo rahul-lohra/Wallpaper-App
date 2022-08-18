@@ -25,11 +25,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.*
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -88,6 +90,7 @@ class UnsplashHomeFragment : Fragment() {
 
 @Composable
 fun UnsplashHomeComposeLayout(photosFlow: Flow<PagingData<String>>) {
+
     MaterialTheme(content = {
         Scaffold(
             topBar = { HomeToolbar() },
@@ -143,6 +146,11 @@ fun getValidOffset(tempYOffset: Float): Float {
 
 @Composable
 fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
+    LocalConfiguration.current.apply {
+        val h = screenHeightDp
+        val w = screenWidthDp
+        Timber.d("Screen w:$w, h:$h")
+    }
     var yOffset by rememberSaveable { mutableStateOf(0f) }
     val nestedScrollConnection = remember {
         object : NestedScrollConnection {
@@ -164,14 +172,21 @@ fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
             }
         }
     }
-    Column(
-        modifier
-            .offset(y = (yOffset).toDp().dp)
-            .nestedScroll(nestedScrollConnection)
-    ) {
-        Header()
-        UnsplashViewPager(photosFlow)
+    Box(contentAlignment = Alignment.TopStart) {
+        Column(
+            modifier
+                .graphicsLayer { translationY = yOffset }
+                .padding(top = 100.dp)
+                .requiredHeight(800.dp)
+                .nestedScroll(nestedScrollConnection)
+                .background(Color.Cyan),
+            verticalArrangement = Arrangement.aligned(Alignment.Top),
+        ) {
+            Header()
+            UnsplashViewPager(photosFlow)
+        }
     }
+
 }
 
 @Preview
@@ -179,7 +194,7 @@ fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
 fun Header() {
     Column(
         modifier = Modifier
-            .padding(top = 14.dp, start = 18.dp)
+            .padding(top = 0.dp, start = 18.dp)
             .height(165.dp)
     ) {
         Text(

@@ -19,8 +19,8 @@ class SearchActivity : AppCompatActivity() {
         if (savedInstanceState == null) {
 
             supportFragmentManager.beginTransaction()
-                .add(R.id.container, SearchFragment())
-//                .add(R.id.container, UnsplashHomeFragment())
+//                .add(R.id.container, SearchFragment())
+                .add(R.id.container, UnsplashHomeFragment())
                 .commit()
         }
     }
