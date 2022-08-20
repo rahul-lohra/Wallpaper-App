@@ -1,4 +1,8 @@
 def apiKeysPropertiesFile = rootProject.file("$rootProject.projectDir/gradleProperties/apikeys.properties")
+
+if (!apiKeysPropertiesFile.exists()) {
+    apiKeysPropertiesFile.createNewFile()
+}
 def apiKeysProperties = new Properties()
 apiKeysProperties.load(new FileInputStream(apiKeysPropertiesFile))
 
