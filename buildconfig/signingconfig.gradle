@@ -1,5 +1,18 @@
 def propertiesFile = rootProject.file("$rootProject.projectDir/gradleProperties/keystore.properties")
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 if (!propertiesFile.exists()) {
     propertiesFile.createNewFile()
 }
