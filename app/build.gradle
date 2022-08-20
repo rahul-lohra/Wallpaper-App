@@ -3,10 +3,10 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
 }
-apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
-apply from: "$rootProject.projectDir/buildconfig/signingconfig.gradle"
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
-apply from: "$rootProject.projectDir/buildconfig/apikeys.gradle"
+apply from: "$rootDir/buildconfig/dependencies/dependencies.gradle"
+apply from: "$rootDir/buildconfig/signingconfig.gradle"
+apply from: "$rootDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootDir/buildconfig/apikeys.gradle"
 
 android {
 
@@ -112,15 +112,3 @@ dependencies {
     implementation accompanist.viewpager
 }
 apply plugin: 'com.google.gms.google-services'
-
-task printpath  {
-    println "current project path: $projectDir"
-    def parentDirPath = parent.projectDir
-    println "parent project path: $parentDirPath"
-    def rootDirPath = rootProject.projectDir
-    println "root project path: $rootDirPath"
-    println "root project path: $rootDir" // this will be same as above.
-    for (file in rootDir.listFiles()){
-        println "Files in root dir : ${file.path}"
-    }
-}

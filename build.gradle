@@ -18,3 +18,15 @@ apply from: 'configuration.gradle'
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+task printpath  {
+    println "current project path: $projectDir"
+//    def parentDirPath = parent.projectDir
+//    println "parent project path: $parentDirPath"
+    def rootDirPath = rootProject.projectDir
+    println "root project path: $rootDirPath"
+    println "root project path: $rootDir" // this will be same as above.
+    for (file in rootDir.listFiles()){
+        println "Files in root dir : ${file.path}"
+    }
+}
