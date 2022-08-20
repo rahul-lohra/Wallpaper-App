@@ -32,15 +32,28 @@ fun ScrollableTabLayout() {
 
     LazyRow(
         modifier = Modifier.height(44.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
         content = {
             items(
                 lazyDataItems.size,
                 itemContent = { index ->
-                    ScrollableTabView(
-                        text = lazyDataItems[index],
-                        index == 0
-                    )
+                    val textToDisplay = lazyDataItems[index]
+                    if (textToDisplay == "-") {
+                        Divider(
+                            modifier = Modifier
+                                .height(35.dp)
+                                .width(1.dp)
+                                .padding(top = 2.dp),
+                            color = colorResource(id = R.color.grey_3)
+                        )
+                    } else {
+                        ScrollableTabView(
+                            text = textToDisplay,
+                            index == 0
+                        )
+                    }
+
                 })
         })
 }
@@ -55,7 +68,9 @@ fun ScrollableTabView(text: String, selected: Boolean) {
 fun TabViewText(text: String, selected: Boolean, onClick: () -> Unit) {
     var dividerWidth by remember { mutableStateOf(0) }
 
-    Column(modifier = Modifier.onNoRippleClick { onClick() }) {
+    Column(modifier = Modifier
+        .onNoRippleClick { onClick() }
+        .fillMaxHeight()) {
         val tvModifier = Modifier.padding(top = 11.dp)
 
         if (selected) {
@@ -68,13 +83,26 @@ fun TabViewText(text: String, selected: Boolean, onClick: () -> Unit) {
                     dividerWidth = it.size.width
                 })
             if (dividerWidth > 0) {
+
                 Divider(
                     color = colorResource(id = R.color.black),
-                    modifier = Modifier.width(dividerWidth.toFloat().toDp().dp)
+                    modifier = Modifier
+                        .width(
+                            dividerWidth
+                                .toFloat()
+                                .toDp().dp
+                        )
+                        .fillMaxHeight()
+                        .padding(top = 14.dp)
                 )
             }
         } else {
-            Text(text = text, style = typography.body2, modifier = tvModifier)
+            Text(
+                text = text,
+                color = colorResource(id = R.color.grey_4),
+                style = typography.body2,
+                modifier = tvModifier
+            )
         }
     }
 }
@@ -85,8 +113,8 @@ fun SearchView(modifier: Modifier) {
     Row(
         modifier = modifier
             .height(36.dp)
-            .background(colorResource(id = R.color.grey_1))
-            .clip(RoundedCornerShape(4.dp)),
+            .clip(RoundedCornerShape(4.dp))
+            .background(colorResource(id = R.color.grey_1)),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(

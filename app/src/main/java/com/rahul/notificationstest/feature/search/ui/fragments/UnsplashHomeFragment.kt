@@ -155,7 +155,7 @@ fun SearchBarWithHorizontalTabs(scrollChange: Float, heightOfComponentCallback: 
         }
     ) {
         Spacer(modifier = Modifier.height(24.dp))
-        SearchView(Modifier.padding(start = 16.dp, end = 16.dp))
+        SearchView(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 10.dp))
         ScrollableTabLayout()
     }
 }

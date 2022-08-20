@@ -27,6 +27,7 @@ class DummyDataProvider @Inject constructor() {
     fun getTabViewItems() = arrayListOf(
         "Editorial",
         "Following",
+        "-",
         "Nature",
         "Architecture",
         "Travel",
