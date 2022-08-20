@@ -13,25 +13,25 @@ jobs:
     environment: release
 
     steps:
-      - uses: actions/checkout@v3
-      - name: set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-          cache: gradle
-      - name: set up secrets
-        env:
-          DEBUG_KEY_BASE64: ${{secrets.DEBUG_STORE_FILE}}
-          RELEASE_KEY_BASE64: ${{secrets.RELEASE_STORE_FILE}}
-          API_KEYS_BASE64: ${{secrets.API_KEY_PROPERTIES_FILE}}
-          KEYSTORE_BASE64: ${{secrets.KEYSTORE_PROPERTIES_FILE}}
-      - run: echo $DEBUG_KEY_BASE64 | base64 --decode > releaseKeys/debugkey.jks
-      - run: echo $RELEASE_KEY_BASE64 | base64 --decode > releaseKeys/releasekey.jks
-      - run: echo $API_KEYS_BASE64 | base64 --decode > gradleProperties/apikeys.properties
-      - run: echo $KEYSTORE_BASE64 | base64 --decode > gradleProperties/keystore.properties
+    - uses: actions/checkout@v3
+    - name: set up JDK 11
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: gradle
+    - name: set up secrets
+      env:
+        DEBUG_KEY_BASE64: ${{secrets.DEBUG_STORE_FILE}}
+        RELEASE_KEY_BASE64: ${{secrets.RELEASE_STORE_FILE}}
+        API_KEYS_BASE64: ${{secrets.API_KEY_PROPERTIES_FILE}}
+        KEYSTORE_BASE64: ${{secrets.KEYSTORE_PROPERTIES_FILE}}
+    - run:  echo $DEBUG_KEY_BASE64 | base64 --decode > releaseKeys/debugkey.jks
+    - run:  echo $RELEASE_KEY_BASE64 | base64 --decode > releaseKeys/releasekey.jks
+    - run:  echo $API_KEYS_BASE64 | base64 --decode > gradleProperties/apikeys.properties
+    - run:  echo $KEYSTORE_BASE64 | base64 --decode > gradleProperties/keystore.properties
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - name: Build with Gradle
-        run: ./gradlew buildDebug
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew buildDebug
