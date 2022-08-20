@@ -46,12 +46,10 @@ import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
-import com.rahul.notificationstest.App
+import com.rahul.notificationstest.*
 import com.rahul.notificationstest.R
 import com.rahul.notificationstest.feature.search.di.components.DaggerSearchComponent
 import com.rahul.notificationstest.feature.search.ui.viewmodels.SearchViewModel
-import com.rahul.notificationstest.onNoRippleClick
-import com.rahul.notificationstest.toDp
 import com.rahul.notificationstest.ui.theme.typography
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
@@ -108,21 +106,26 @@ fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
     }
 
     Box {
-        ScrollableContent(modifier = modifier, photosFlow = photosFlow) {
+        ScrollableContent(
+            modifier = modifier,
+            photosFlow = photosFlow,
+            minScroll = -340f,
+            maxScroll = 0f
+        ) {
             scrollChange.value = it
         }
 
         Column(modifier = Modifier
             .alpha(1f - scrollChange.value)
             .graphicsLayer {
-                translationY = - scrollChange.value * heightOfSearchBarComponent.value
+                translationY = -scrollChange.value * heightOfSearchBarComponent.value
             }
             .onGloballyPositioned {
                 val h = it.size.height
                 heightOfSearchBarComponent.value = h
             }
         ) {
-            SearchView()
+            SearchView(Modifier.padding(start = 16.dp, end = 16.dp, top = 56.dp))
             ScrollableTabLayout()
         }
     }
@@ -130,7 +133,8 @@ fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
 
 @Composable
 fun HomeToolbar(modifier: Modifier) {
-    TopAppBar(elevation = 8.dp,
+    TopAppBar(
+        elevation = 8.dp,
         title = {},
         navigationIcon = {
             Icon(
@@ -158,35 +162,37 @@ fun HomeToolbar(modifier: Modifier) {
     )
 }
 
-const val MIN_SCROLL = -340f
-const val MAX_SCROLL = 0f
-val HEADER_SCROLL_RANGE = (MIN_SCROLL..MAX_SCROLL)
 var firstItemVisibleOffset = 0
 
-fun getValidOffset(tempYOffset: Float): Float {
-    return if (tempYOffset >= MAX_SCROLL) {
-        MAX_SCROLL
-    } else if (tempYOffset <= MIN_SCROLL) {
-        MIN_SCROLL
+fun getValidOffset(tempYOffset: Float, maxScroll: Float, minScroll: Float): Float {
+    return if (tempYOffset >= maxScroll) {
+        maxScroll
+    } else if (tempYOffset <= minScroll) {
+        minScroll
     } else {
         tempYOffset
     }
 }
 
-fun getAlpha(tempYOffset: Float): Float {
-    return 1f - tempYOffset / MIN_SCROLL
+fun getAlpha(tempYOffset: Float, minScroll: Float): Float {
+    return 1f - tempYOffset / minScroll
 }
 
 @Composable
 fun ScrollableContent(
     modifier: Modifier,
     photosFlow: Flow<PagingData<String>>,
-    scrollIngPercentage: (Float) -> Unit
-) {
+    minScroll: Float,
+    maxScroll: Float,
+    scrollIngPercentage: (Float) -> Unit,
+    ) {
+    val headerScrollRange = (minScroll..maxScroll)
+    var screenHeight = 0
+
     LocalConfiguration.current.apply {
-        val h = screenHeightDp
+        screenHeight = screenHeightDp
         val w = screenWidthDp
-        Timber.d("Screen w:$w, h:$h")
+        Timber.d("Screen w:$w, h:$screenHeight")
     }
     var yOffset by rememberSaveable { mutableStateOf(0f) }
     val nestedScrollConnection = remember {
@@ -197,12 +203,12 @@ fun ScrollableContent(
                 val delta = available.y
                 val tempYOffset = yOffset + delta
                 if (firstItemVisibleOffset == 0) {
-                    yOffset = getValidOffset(tempYOffset)
-                    scrollIngPercentage.invoke(getAlpha(yOffset))
+                    yOffset = getValidOffset(tempYOffset, maxScroll, minScroll)
+                    scrollIngPercentage.invoke(getAlpha(yOffset, minScroll))
                 }
-                Timber.d("onPreScroll delta = $delta, yOffset = $yOffset,tempYOffset = $tempYOffset, tempYOffset in range = ${tempYOffset in HEADER_SCROLL_RANGE}, firstItemVisibleOffset = $firstItemVisibleOffset")
+                Timber.d("onPreScroll delta = $delta, yOffset = $yOffset,tempYOffset = $tempYOffset, tempYOffset in range = ${tempYOffset in headerScrollRange}, firstItemVisibleOffset = $firstItemVisibleOffset")
 
-                if (tempYOffset in HEADER_SCROLL_RANGE && firstItemVisibleOffset == 0) {
+                if (tempYOffset in headerScrollRange && firstItemVisibleOffset == 0) {
                     return Offset(0f, delta)
                 } else {
                     return Offset.Zero
@@ -210,18 +216,21 @@ fun ScrollableContent(
             }
         }
     }
+    val scrollableContentHeight = minScroll.absoluteValue
+    val requiredHeight = (screenHeight.toFloat().toPx() + scrollableContentHeight).toDp().dp
+    val topPadding = (scrollableContentHeight.toDp()).dp
     Box(contentAlignment = Alignment.TopStart) {
         Column(
             modifier
                 .graphicsLayer {
                     translationY = yOffset
                 }
-                .padding(top = 60.dp)
-                .requiredHeight(810.dp)
+                .padding(top = topPadding)
+                .requiredHeight(requiredHeight) //screen height(735.dp) in pixel 3a emulator + scrollable content height
                 .nestedScroll(nestedScrollConnection),
             verticalArrangement = Arrangement.aligned(Alignment.Top),
         ) {
-            val alphaModifier = Modifier.graphicsLayer { alpha = getAlpha(yOffset) }
+            val alphaModifier = Modifier.graphicsLayer { alpha = getAlpha(yOffset, minScroll) }
             HomeToolbar(alphaModifier)
             Header(alphaModifier)
             UnsplashViewPager(photosFlow)

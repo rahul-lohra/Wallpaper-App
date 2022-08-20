@@ -5,13 +5,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
@@ -79,26 +79,47 @@ fun TabViewText(text: String, selected: Boolean, onClick: () -> Unit) {
     }
 }
 
-@Preview
 @Composable
-fun SearchView() {
+fun SearchView(modifier: Modifier) {
 
-    Row() {
-        TextField(value = "", onValueChange = {}, textStyle = typography.body1,
-            colors = TextFieldDefaults.textFieldColors(textColor = colorResource(id = R.color.grey_2)),
-            leadingIcon = {
-                Image(
-                    imageVector = Icons.Default.Search,
-                    colorFilter = ColorFilter.tint(colorResource(id = R.color.grey_2)),
-                    contentDescription = "Search"
-                )
-            }, modifier = Modifier
-                .background(colorResource(id = R.color.grey_1))
-                .fillMaxWidth()
-                .clip(
-                    RoundedCornerShape(4.dp)
-                ),
-            placeholder = { Text(text = "Search") }
+    Row(
+        modifier = modifier
+            .height(36.dp)
+            .background(colorResource(id = R.color.grey_1))
+            .clip(RoundedCornerShape(4.dp)),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
+            imageVector = Icons.Default.Search,
+            colorFilter = ColorFilter.tint(colorResource(id = R.color.grey_2)),
+            contentDescription = "Search",
+            modifier = Modifier.padding(start = 9.dp)
         )
+
+        BasicTextField(
+            value = "Search",
+            onValueChange = {},
+            textStyle = typography.body1.copy(color = colorResource(id = R.color.grey_2)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 15.dp, end = 9.dp)
+
+        )
+
+//        TextField(value = "Hello", onValueChange = {}, textStyle = typography.body1,
+//            colors = TextFieldDefaults.textFieldColors(textColor = colorResource(id = R.color.purple_700)),
+//            leadingIcon = {
+//                Image(
+//                    imageVector = Icons.Default.Search,
+//                    colorFilter = ColorFilter.tint(colorResource(id = R.color.grey_2)),
+//                    contentDescription = "Search"
+//                )
+//            },
+//            modifier = Modifier
+//                .background(colorResource(id = R.color.grey_1))
+//                .fillMaxWidth()
+//                .height(36.dp)
+//                .clip(RoundedCornerShape(4.dp)), placeholder = { Text(text = "Search") }
+//        )
     }
 }
