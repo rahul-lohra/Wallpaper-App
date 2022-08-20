@@ -109,6 +109,7 @@ dependencies {
     androidTestImplementation jetpackCompose.composeUiTest
 
     implementation others.coil
+    implementation others.workmanager
 
     implementation accompanist.viewpager
 }

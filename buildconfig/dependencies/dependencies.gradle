@@ -117,6 +117,7 @@ ext {
     ]
 
     others = [
-            coil: "io.coil-kt:coil-compose:2.1.0",
+            coil       : "io.coil-kt:coil-compose:2.1.0",
+            workmanager: "androidx.work:work-runtime-ktx:2.7.1"
     ]
 }

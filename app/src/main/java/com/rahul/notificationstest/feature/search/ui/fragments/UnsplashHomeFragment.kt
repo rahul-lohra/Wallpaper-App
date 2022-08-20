@@ -21,6 +21,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -29,14 +30,14 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.*
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.paging.PagingData
@@ -47,7 +48,6 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.rahul.notificationstest.App
 import com.rahul.notificationstest.R
-import com.rahul.notificationstest.feature.search.data.datasource.DummyDataProvider
 import com.rahul.notificationstest.feature.search.di.components.DaggerSearchComponent
 import com.rahul.notificationstest.feature.search.ui.viewmodels.SearchViewModel
 import com.rahul.notificationstest.onNoRippleClick
@@ -93,33 +93,62 @@ fun UnsplashHomeComposeLayout(photosFlow: Flow<PagingData<String>>) {
 
     MaterialTheme(content = {
         Scaffold(
-            topBar = { HomeToolbar() },
+//            topBar = { HomeToolbar() },
             content = { padding -> HomeScreen(Modifier.padding(padding), photosFlow) })
     })
 }
 
-@Preview
 @Composable
-fun HomeToolbar() {
-    TopAppBar(
+fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
+    val scrollChange = remember {
+        mutableStateOf(1f)
+    }
+    val heightOfSearchBarComponent = remember {
+        mutableStateOf(0)
+    }
 
+    Box {
+        ScrollableContent(modifier = modifier, photosFlow = photosFlow) {
+            scrollChange.value = it
+        }
+
+        Column(modifier = Modifier
+            .alpha(1f - scrollChange.value)
+            .graphicsLayer {
+                translationY = - scrollChange.value * heightOfSearchBarComponent.value
+            }
+            .onGloballyPositioned {
+                val h = it.size.height
+                heightOfSearchBarComponent.value = h
+            }
+        ) {
+            SearchView()
+            ScrollableTabLayout()
+        }
+    }
+}
+
+@Composable
+fun HomeToolbar(modifier: Modifier) {
+    TopAppBar(elevation = 8.dp,
         title = {},
         navigationIcon = {
             Icon(
                 painter = painterResource(id = R.drawable.ic_unsplash),
                 tint = Color.Black,
                 contentDescription = null,
-                modifier = Modifier.padding(start = 17.dp)
+                modifier = modifier.padding(start = 17.dp)
             )
         },
         actions = {
             Image(
                 imageVector = Icons.Default.Search,
                 modifier = Modifier
-                    .padding(end = 36.dp)
+                    .padding(end = 36.dp, top = 6.dp)
                     .background(colorResource(id = R.color.grey), CircleShape)
                     .clip(CircleShape)
                     .size(36.dp)
+                    .align(Alignment.CenterVertically)
                     .padding(vertical = 9.dp),
                 colorFilter = ColorFilter.tint(colorResource(id = R.color.white)),
                 contentDescription = null,
@@ -129,7 +158,7 @@ fun HomeToolbar() {
     )
 }
 
-const val MIN_SCROLL = -180f
+const val MIN_SCROLL = -340f
 const val MAX_SCROLL = 0f
 val HEADER_SCROLL_RANGE = (MIN_SCROLL..MAX_SCROLL)
 var firstItemVisibleOffset = 0
@@ -144,8 +173,16 @@ fun getValidOffset(tempYOffset: Float): Float {
     }
 }
 
+fun getAlpha(tempYOffset: Float): Float {
+    return 1f - tempYOffset / MIN_SCROLL
+}
+
 @Composable
-fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
+fun ScrollableContent(
+    modifier: Modifier,
+    photosFlow: Flow<PagingData<String>>,
+    scrollIngPercentage: (Float) -> Unit
+) {
     LocalConfiguration.current.apply {
         val h = screenHeightDp
         val w = screenWidthDp
@@ -161,6 +198,7 @@ fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
                 val tempYOffset = yOffset + delta
                 if (firstItemVisibleOffset == 0) {
                     yOffset = getValidOffset(tempYOffset)
+                    scrollIngPercentage.invoke(getAlpha(yOffset))
                 }
                 Timber.d("onPreScroll delta = $delta, yOffset = $yOffset,tempYOffset = $tempYOffset, tempYOffset in range = ${tempYOffset in HEADER_SCROLL_RANGE}, firstItemVisibleOffset = $firstItemVisibleOffset")
 
@@ -175,25 +213,26 @@ fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
     Box(contentAlignment = Alignment.TopStart) {
         Column(
             modifier
-                .graphicsLayer { translationY = yOffset }
-                .padding(top = 100.dp)
-                .requiredHeight(800.dp)
-                .nestedScroll(nestedScrollConnection)
-                .background(Color.Cyan),
+                .graphicsLayer {
+                    translationY = yOffset
+                }
+                .padding(top = 60.dp)
+                .requiredHeight(810.dp)
+                .nestedScroll(nestedScrollConnection),
             verticalArrangement = Arrangement.aligned(Alignment.Top),
         ) {
-            Header()
+            val alphaModifier = Modifier.graphicsLayer { alpha = getAlpha(yOffset) }
+            HomeToolbar(alphaModifier)
+            Header(alphaModifier)
             UnsplashViewPager(photosFlow)
         }
     }
-
 }
 
-@Preview
 @Composable
-fun Header() {
+fun Header(modifier: Modifier) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .padding(top = 0.dp, start = 18.dp)
             .height(165.dp)
     ) {
@@ -262,22 +301,22 @@ fun TabViewSmallText(text: String, selected: Boolean, onClick: () -> Unit) {
 
 }
 
-@Preview
-@Composable
-fun WeekdaysList() {
-    val lazyDataItems = DummyDataProvider().getDataArrayList()
-    val maxColumnSpan = 2
-    val minColumnSpan = 1
-    LazyVerticalGrid(columns = GridCells.Fixed(maxColumnSpan), content = {
-        items(lazyDataItems.size, span = { index ->
-            if (index % 3 == 0) {
-                GridItemSpan(maxColumnSpan)
-            } else {
-                GridItemSpan(minColumnSpan)
-            }
-        }, itemContent = { index -> Text(text = lazyDataItems[index]) })
-    })
-}
+//@Preview
+//@Composable
+//fun WeekdaysList() {
+//    val lazyDataItems = DummyDataProvider().getDataArrayList()
+//    val maxColumnSpan = 2
+//    val minColumnSpan = 1
+//    LazyVerticalGrid(columns = GridCells.Fixed(maxColumnSpan), content = {
+//        items(lazyDataItems.size, span = { index ->
+//            if (index % 3 == 0) {
+//                GridItemSpan(maxColumnSpan)
+//            } else {
+//                GridItemSpan(minColumnSpan)
+//            }
+//        }, itemContent = { index -> Text(text = lazyDataItems[index]) })
+//    })
+//}
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
