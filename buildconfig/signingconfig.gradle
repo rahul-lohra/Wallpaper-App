@@ -1,0 +1,21 @@
+def propertiesFile = rootProject.file("$rootProject.projectDir/gradleProperties/keystore.properties")
+def properties = new Properties()
+properties.load(new FileInputStream(propertiesFile))
+
+android {
+    signingConfigs {
+        release {
+            keyAlias properties['RELEASE_KEY_ALIAS']
+            keyPassword properties['RELEASE_KEY_PASSWORD']
+            storeFile file(properties['RELEASE_STORE_FILE'])
+            storePassword properties['RELEASE_STORE_PASSWORD']
+        }
+
+        debug {
+            keyAlias properties['DEBUG_KEY_ALIAS']
+            keyPassword properties['DEBUG_KEY_PASSWORD']
+            storeFile file(properties['DEBUG_STORE_FILE'])
+            storePassword properties['DEBUG_STORE_PASSWORD']
+        }
+    }
+}

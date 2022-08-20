@@ -14,4 +14,9 @@
 .cxx
 local.properties
 /.idea/
-/apikeys.properties
+/gradleProperties/apikeys.properties
+/encryptedKey/
+/releaseKeys/
+/gradleProperties/keystore.properties
+/app/debug/app-debug.aab
+/app/release/app-release.aab

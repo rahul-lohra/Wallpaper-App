@@ -5,6 +5,7 @@ plugins {
 }
 apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
 apply from: "$rootProject.projectDir/buildconfig/apikeys.gradle"
+apply from: "$rootProject.projectDir/buildconfig/signingconfig.gradle"
 
 android {
     compileSdk 33
@@ -29,6 +30,11 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+
+        debug {
+            signingConfig signingConfigs.debug
         }
         maybeCreate("staging")
 
