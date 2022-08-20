@@ -6,7 +6,7 @@ kapt {
 }
 
 android {
-    compileSdkVersion projectCompileSdkVersion
+    compileSdk projectCompileSdkVersion
     buildToolsVersion projectBuildToolsVersion
 
     defaultConfig {

@@ -4,8 +4,5 @@ subprojects {
         projectBuildToolsVersion = '30.0.3'
         projectMinSdkVersion = 21
         projectTargetSdkVersion = 33
-
-        kotlin_version = '1.5.0'
-        coreKtxVersion = "1.5.0"
     }
 }
