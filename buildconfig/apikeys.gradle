@@ -11,7 +11,7 @@ android {
 
         buildConfigField "String", "PEXELS_API_KEY", "${apiKeysProperties['PEXELS_API_KEY']}"
         buildConfigField "String", "PIXABAY_API_KEY", "${apiKeysProperties['PIXABAY_API_KEY']}"
-        buildConfigField "String", "UNSPLASH_API_KEY", "${apiKeysProperties['UNSPLASH.API_KEY']}"
-        buildConfigField "String", "UNSPLASH_SECRET_KEY", "${apiKeysProperties['UNSPLASH.SECRET_KEY']}"
+        buildConfigField "String", "UNSPLASH_API_KEY", "${apiKeysProperties['UNSPLASH_API_KEY']}"
+        buildConfigField "String", "UNSPLASH_SECRET_KEY", "${apiKeysProperties['UNSPLASH_SECRET_KEY']}"
     }
 }
