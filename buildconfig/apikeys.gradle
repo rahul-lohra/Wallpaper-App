@@ -1,17 +1,18 @@
-def apiKeysPropertiesFile = rootProject.file("$rootProject.projectDir/gradleProperties/apikeys.properties")
+apply from: "$rootDir/buildconfig/utils.gradle"
 
-if (!apiKeysPropertiesFile.exists()) {
-    apiKeysPropertiesFile.createNewFile()
+def file = rootProject.file("$rootProject.projectDir/gradleProperties/apikeys.properties")
+def prop = new Properties()
+
+if (file.exists()) {
+    prop.load(new FileInputStream(file))
 }
-def apiKeysProperties = new Properties()
-apiKeysProperties.load(new FileInputStream(apiKeysPropertiesFile))
 
 android {
     defaultConfig {
 
-        buildConfigField "String", "PEXELS_API_KEY", "${apiKeysProperties['PEXELS_API_KEY']}"
-        buildConfigField "String", "PIXABAY_API_KEY", "${apiKeysProperties['PIXABAY_API_KEY']}"
-        buildConfigField "String", "UNSPLASH_API_KEY", "${apiKeysProperties['UNSPLASH_API_KEY']}"
-        buildConfigField "String", "UNSPLASH_SECRET_KEY", "${apiKeysProperties['UNSPLASH_SECRET_KEY']}"
+        buildConfigField "String", "PEXELS_API_KEY", getValueFromSystem(file, prop, 'PEXELS_API_KEY')
+        buildConfigField "String", "PIXABAY_API_KEY", getValueFromSystem(file, prop, 'PIXABAY_API_KEY')
+        buildConfigField "String", "UNSPLASH_API_KEY", getValueFromSystem(file, prop, 'UNSPLASH_API_KEY')
+        buildConfigField "String", "UNSPLASH_SECRET_KEY", getValueFromSystem(file, prop, 'UNSPLASH_SECRET_KEY')
     }
 }

@@ -1,38 +1,26 @@
+apply from: "$rootDir/buildconfig/utils.gradle"
+
 def propertiesFile = rootProject.file("$rootProject.projectDir/gradleProperties/keystore.properties")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if (!propertiesFile.exists()) {
-    propertiesFile.createNewFile()
-}
 def properties = new Properties()
-properties.load(new FileInputStream(propertiesFile))
+
+if (propertiesFile.exists()) {
+    properties.load(new FileInputStream(propertiesFile))
+}
 
 android {
     signingConfigs {
         release {
-            keyAlias properties['RELEASE_KEY_ALIAS']
-            keyPassword properties['RELEASE_KEY_PASSWORD']
-            storeFile file(properties['RELEASE_STORE_FILE'])
-            storePassword properties['RELEASE_STORE_PASSWORD']
+            keyAlias getValueFromSystem(propertiesFile, properties, 'RELEASE_KEY_ALIAS')
+            keyPassword getValueFromSystem(propertiesFile, properties, 'RELEASE_KEY_PASSWORD')
+            storeFile file(getValueFromSystem(propertiesFile, properties, 'RELEASE_STORE_FILE'))
+            storePassword getValueFromSystem(propertiesFile, properties, 'RELEASE_STORE_PASSWORD')
         }
 
         debug {
-            keyAlias properties['DEBUG_KEY_ALIAS']
-            keyPassword properties['DEBUG_KEY_PASSWORD']
-            storeFile file(properties['DEBUG_STORE_FILE'])
-            storePassword properties['DEBUG_STORE_PASSWORD']
+            keyAlias getValueFromSystem(propertiesFile, properties, 'DEBUG_KEY_ALIAS')
+            keyPassword getValueFromSystem(propertiesFile, properties, 'DEBUG_KEY_PASSWORD')
+            storeFile file(getValueFromSystem(propertiesFile, properties, 'DEBUG_STORE_FILE'))
+            storePassword getValueFromSystem(propertiesFile, properties, 'DEBUG_STORE_PASSWORD')
         }
     }
 }

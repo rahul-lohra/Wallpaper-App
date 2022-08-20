@@ -1,0 +1,7 @@
+ext.getValueFromSystem = { file, prop, key ->
+    if (file.exists()) {
+        return prop[key]
+    } else {
+        return System.getenv(key)
+    }
+}
