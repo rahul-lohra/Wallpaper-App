@@ -27,6 +27,10 @@ jobs:
         API_KEYS_BASE64: ${{secrets.API_KEY_PROPERTIES_FILE}}
         KEYSTORE_BASE64: ${{secrets.KEYSTORE_PROPERTIES_FILE}}
       run:  |
+        echo pwd
+        echo ls
+        mkdir releaseKeys
+        mkdir gradleProperties
         echo $DEBUG_KEY_BASE64 | base64 --decode > releaseKeys/debugkey.jks
         echo $RELEASE_KEY_BASE64 | base64 --decode > releaseKeys/releasekey.jks
         echo $API_KEYS_BASE64 | base64 --decode > gradleProperties/apikeys.properties
