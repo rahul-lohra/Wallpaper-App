@@ -28,10 +28,10 @@ jobs:
         API_KEYS_BASE64: ${{secrets.API_KEY_PROPERTIES_FILE}}
         KEYSTORE_BASE64: ${{secrets.KEYSTORE_PROPERTIES_FILE}}
       run:  |
-      echo $DEBUG_KEY_BASE64 | base64 --decode > debugkey.jks
-      echo $RELEASE_KEY_BASE64 | base64 --decode > releasekey.jks
-      echo $API_KEYS_BASE64 | base64 --decode > apikeys.properties
-      echo $KEYSTORE_BASE64 | base64 --decode > keystore.properties
+        echo $DEBUG_KEY_BASE64 | base64 --decode > debugkey.jks
+        echo $RELEASE_KEY_BASE64 | base64 --decode > releasekey.jks
+        echo $API_KEYS_BASE64 | base64 --decode > apikeys.properties
+        echo $KEYSTORE_BASE64 | base64 --decode > keystore.properties
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
