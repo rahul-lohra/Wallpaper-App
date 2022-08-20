@@ -13,6 +13,6 @@ dependencyResolutionManagement {
         maven { url "https://jitpack.io" }
     }
 }
-rootProject.name = "NotificationsTest"
+rootProject.name = "Jetpack compose wallpaper app"
 include ':app'
 include ':libraries:logger'
