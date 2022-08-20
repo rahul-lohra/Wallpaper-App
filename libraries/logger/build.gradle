@@ -1,8 +1,8 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "androidx.core:core-ktx:${coreKtxVersion}"
-    api "com.datadoghq:dd-sdk-android:$dataDogVersion"
+    implementation androidx.coreKtx
+    api "com.datadoghq:dd-sdk-android:1.12.0"
 }
