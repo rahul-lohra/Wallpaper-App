@@ -21,12 +21,15 @@ task clean(type: Delete) {
 
 task printpath  {
     println "current project path: $projectDir"
-//    def parentDirPath = parent.projectDir
-//    println "parent project path: $parentDirPath"
     def rootDirPath = rootProject.projectDir
     println "root project path: $rootDirPath"
     println "root project path: $rootDir" // this will be same as above.
     for (file in rootDir.listFiles()){
-        println "Files in root dir : ${file.path}"
+        if(file.path.contains("buildconfig")){
+            for (f in file.listFiles()){
+                println "Files in buildconfig dir : ${f.path}"
+            }
+
+        }
     }
 }
