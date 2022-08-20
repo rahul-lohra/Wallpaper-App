@@ -4,9 +4,9 @@ plugins {
     id 'kotlin-kapt'
 }
 apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
-apply from: "$rootProject.projectDir/buildconfig/apikeys.gradle"
 apply from: "$rootProject.projectDir/buildconfig/signingconfig.gradle"
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/apikeys.gradle"
 
 android {
 
