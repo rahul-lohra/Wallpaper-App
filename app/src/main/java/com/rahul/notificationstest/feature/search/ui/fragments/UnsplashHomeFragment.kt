@@ -91,50 +91,79 @@ fun UnsplashHomeComposeLayout(photosFlow: Flow<PagingData<String>>) {
 
     MaterialTheme(content = {
         Scaffold(
-//            topBar = { HomeToolbar() },
             content = { padding -> HomeScreen(Modifier.padding(padding), photosFlow) })
     })
 }
 
 @Composable
 fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
+
+    val heightOfSearchBarComponent = remember {
+        mutableStateOf(0)
+    }
     val scrollChange = remember {
         mutableStateOf(1f)
     }
+
+    Box {
+        if (heightOfSearchBarComponent.value > 0f) {
+            HeaderWithGrid(modifier, photosFlow, heightOfSearchBarComponent.value.toFloat()) {
+                scrollChange.value = it
+            }
+        }
+
+        SearchBarWithHorizontalTabs(scrollChange.value) {
+            heightOfSearchBarComponent.value = it
+        }
+    }
+}
+
+@Composable
+fun HeaderWithGrid(
+    modifier: Modifier,
+    photosFlow: Flow<PagingData<String>>,
+    heightOfSearchBarComponent: Float,
+    scrollChangeCallback: (Float) -> Unit
+) {
+
+    ScrollableContent(
+        modifier = modifier,
+        photosFlow = photosFlow,
+        heightOfSearchBarComponent = heightOfSearchBarComponent,
+    ) {
+        scrollChangeCallback(it)
+    }
+}
+
+@Composable
+fun SearchBarWithHorizontalTabs(scrollChange: Float, heightOfComponentCallback: (Int) -> Unit) {
+
     val heightOfSearchBarComponent = remember {
         mutableStateOf(0)
     }
 
-    Box {
-        ScrollableContent(
-            modifier = modifier,
-            photosFlow = photosFlow,
-            minScroll = -340f,
-            maxScroll = 0f
-        ) {
-            scrollChange.value = it
+    
+    Column(modifier = Modifier
+        .alpha(1f - scrollChange)
+        .graphicsLayer {
+            translationY = -scrollChange * heightOfSearchBarComponent.value
         }
-
-        Column(modifier = Modifier
-            .alpha(1f - scrollChange.value)
-            .graphicsLayer {
-                translationY = -scrollChange.value * heightOfSearchBarComponent.value
-            }
-            .onGloballyPositioned {
-                val h = it.size.height
-                heightOfSearchBarComponent.value = h
-            }
-        ) {
-            SearchView(Modifier.padding(start = 16.dp, end = 16.dp, top = 56.dp))
-            ScrollableTabLayout()
+        .onGloballyPositioned {
+            val h = it.size.height
+            heightOfSearchBarComponent.value = h
+            heightOfComponentCallback(heightOfSearchBarComponent.value)
         }
+    ) {
+        Spacer(modifier = Modifier.height(24.dp))
+        SearchView(Modifier.padding(start = 16.dp, end = 16.dp))
+        ScrollableTabLayout()
     }
 }
 
 @Composable
 fun HomeToolbar(modifier: Modifier) {
     TopAppBar(
-        elevation = 8.dp,
+        elevation = 0.dp,
         title = {},
         navigationIcon = {
             Icon(
@@ -158,7 +187,7 @@ fun HomeToolbar(modifier: Modifier) {
                 contentDescription = null,
             )
         },
-        backgroundColor = colorResource(id = R.color.white)
+        backgroundColor = colorResource(id = R.color.white),
     )
 }
 
@@ -182,20 +211,31 @@ fun getAlpha(tempYOffset: Float, minScroll: Float): Float {
 fun ScrollableContent(
     modifier: Modifier,
     photosFlow: Flow<PagingData<String>>,
-    minScroll: Float,
-    maxScroll: Float,
+    heightOfSearchBarComponent: Float,
     scrollIngPercentage: (Float) -> Unit,
-    ) {
-    val headerScrollRange = (minScroll..maxScroll)
+) {
+
     var screenHeight = 0
+    val combinedHeightToolbarAndHeader = remember {
+        mutableStateOf(0)
+    }
+
+    val maxScroll = 0f
+    val minScroll = -(Math.max(
+        combinedHeightToolbarAndHeader.value,
+        heightOfSearchBarComponent.toInt()
+    ) - Math.min(
+        combinedHeightToolbarAndHeader.value,
+        heightOfSearchBarComponent.toInt()
+    )).toFloat()
+    val headerScrollRange = (minScroll..maxScroll)
 
     LocalConfiguration.current.apply {
         screenHeight = screenHeightDp
-        val w = screenWidthDp
-        Timber.d("Screen w:$w, h:$screenHeight")
     }
+
     var yOffset by rememberSaveable { mutableStateOf(0f) }
-    val nestedScrollConnection = remember {
+    val nestedScrollConnection =
         object : NestedScrollConnection {
 
             override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
@@ -215,7 +255,6 @@ fun ScrollableContent(
                 }
             }
         }
-    }
     val scrollableContentHeight = minScroll.absoluteValue
     val requiredHeight = (screenHeight.toFloat().toPx() + scrollableContentHeight).toDp().dp
     val topPadding = (scrollableContentHeight.toDp()).dp
@@ -231,10 +270,23 @@ fun ScrollableContent(
             verticalArrangement = Arrangement.aligned(Alignment.Top),
         ) {
             val alphaModifier = Modifier.graphicsLayer { alpha = getAlpha(yOffset, minScroll) }
-            HomeToolbar(alphaModifier)
-            Header(alphaModifier)
+            FirstToolbarWithHeader(alphaModifier) {
+                if (combinedHeightToolbarAndHeader.value == 0) {
+                    combinedHeightToolbarAndHeader.value = it
+                }
+            }
             UnsplashViewPager(photosFlow)
         }
+    }
+}
+
+@Composable
+fun FirstToolbarWithHeader(modifier: Modifier, onHeightChangeCallback: (Int) -> Unit) {
+    Column(modifier.onGloballyPositioned {
+        onHeightChangeCallback(it.size.height)
+    }) {
+        HomeToolbar(modifier)
+        Header(modifier)
     }
 }
 
