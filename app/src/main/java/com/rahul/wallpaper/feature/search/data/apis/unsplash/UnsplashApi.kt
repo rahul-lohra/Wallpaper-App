@@ -1,13 +1,14 @@
 package com.rahul.wallpaper.feature.search.data.apis.unsplash
 
 import androidx.annotation.StringDef
+import com.rahul.wallpaper.BuildConfig
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface UnsplashApi {
     object Config {
-        internal const val ADDRESS_KEY = "TfdRLrVqwVkAs8I1hKPrWLlGA3nhMJUGgFQ1Mtrwlc8"
-        private const val SECRET_KEY = "D3AbifGGwi0cIDrUHW-SzhkAiA8k2lDy6rGq1VBmfLw"
+        internal const val ADDRESS_KEY = BuildConfig.UNSPLASH_API_KEY
+        private const val SECRET_KEY = BuildConfig.UNSPLASH_SECRET_KEY
         const val BASE_URL = "https://api.unsplash.com"
     }
 

@@ -1,13 +1,14 @@
 package com.rahul.wallpaper.feature.search.data.apis.pixabay
 
 import androidx.annotation.StringDef
+import com.rahul.wallpaper.BuildConfig
 import com.rahul.wallpaper.feature.search.data.apis.pixabay.PixabayApi.QueryParams.IMAGE_TYPE
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface PixabayApi {
     object Config {
-        private const val API_KEY = "29120282-1da40772ceadefa581cf310a0"
+        private const val API_KEY = BuildConfig.PIXABAY_API_KEY
         const val BASE_URL = "https://pixabay.com/api/?key=$API_KEY"
     }
 
