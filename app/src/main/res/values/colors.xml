@@ -14,4 +14,6 @@
     <color name="grey_3">#DEDEDE</color>
     <color name="grey_4">#CECDCD</color>
     <color name="grey_5">#999999</color>
+    <color name="transparent">#00ffffff</color>
+    <color name="status_bar_color">@color/white</color>
 </resources>
