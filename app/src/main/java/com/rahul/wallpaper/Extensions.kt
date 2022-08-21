@@ -11,8 +11,8 @@ fun Float.toDp(): Float = this / Resources.getSystem().displayMetrics.density
 
 fun Float.toPx(): Float = this * Resources.getSystem().displayMetrics.density
 
-inline fun Modifier.onNoRippleClick(crossinline onClick: () -> Unit) = composed {
+fun Modifier.onNoRippleClick(onClick: () -> Unit) = composed {
     clickable(indication = null, interactionSource = remember { MutableInteractionSource() }) {
-        onClick()
+        onClick.invoke()
     }
 }

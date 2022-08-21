@@ -2,6 +2,7 @@ package com.rahul.wallpaper.feature.search.ui.fragments
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,6 +25,7 @@ import com.rahul.wallpaper.feature.search.data.datasource.DummyDataProvider
 import com.rahul.wallpaper.onNoRippleClick
 import com.rahul.wallpaper.toDp
 import com.rahul.wallpaper.ui.theme.typography
+import timber.log.Timber
 
 @Preview
 @Composable
@@ -61,7 +63,7 @@ fun ScrollableTabLayout() {
 
 @Composable
 fun ScrollableTabView(text: String, selected: Boolean) {
-    TabViewText(text, selected, {})
+    TabViewText(text, selected) {}
 }
 
 @Composable
@@ -133,21 +135,5 @@ fun SearchView(modifier: Modifier) {
                 .padding(start = 15.dp, end = 9.dp)
 
         )
-
-//        TextField(value = "Hello", onValueChange = {}, textStyle = typography.body1,
-//            colors = TextFieldDefaults.textFieldColors(textColor = colorResource(id = R.color.purple_700)),
-//            leadingIcon = {
-//                Image(
-//                    imageVector = Icons.Default.Search,
-//                    colorFilter = ColorFilter.tint(colorResource(id = R.color.grey_2)),
-//                    contentDescription = "Search"
-//                )
-//            },
-//            modifier = Modifier
-//                .background(colorResource(id = R.color.grey_1))
-//                .fillMaxWidth()
-//                .height(36.dp)
-//                .clip(RoundedCornerShape(4.dp)), placeholder = { Text(text = "Search") }
-//        )
     }
 }

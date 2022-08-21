@@ -6,8 +6,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.ScrollableDefaults
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -38,6 +42,8 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.paging.PagingData
@@ -51,10 +57,15 @@ import com.rahul.wallpaper.R
 import com.rahul.wallpaper.feature.search.di.components.DaggerSearchComponent
 import com.rahul.wallpaper.feature.search.ui.viewmodels.SearchViewModel
 import com.rahul.wallpaper.ui.theme.typography
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.lang.Math.abs
 import javax.inject.Inject
 import kotlin.math.absoluteValue
+import kotlin.math.roundToInt
+import kotlin.math.sign
 
 class UnsplashHomeFragment : Fragment() {
 
@@ -142,7 +153,7 @@ fun SearchBarWithHorizontalTabs(scrollChange: Float, heightOfComponentCallback: 
         mutableStateOf(0)
     }
 
-    
+
     Column(modifier = Modifier
         .alpha(1f - scrollChange)
         .graphicsLayer {
@@ -362,6 +373,106 @@ fun TabViewSmallText(text: String, selected: Boolean, onClick: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
+val noOpOverscrollEffect = object : OverscrollEffect {
+
+    override fun consumePreScroll(
+        scrollDelta: Offset,
+        pointerPosition: Offset?,
+        source: NestedScrollSource
+    ): Offset = Offset.Infinite
+
+    override fun consumePostScroll(
+        initialDragDelta: Offset,
+        overscrollDelta: Offset,
+        pointerPosition: Offset?,
+        source: NestedScrollSource
+    ) {
+    }
+
+    override suspend fun consumePreFling(velocity: Velocity): Velocity = Velocity.Zero
+
+    override suspend fun consumePostFling(velocity: Velocity) {}
+
+    override var isEnabled: Boolean = true
+
+    override val isInProgress: Boolean
+        get() = true
+
+    override val effectModifier: Modifier
+        get() = Modifier
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+class OffsetOverscrollEffect(val scope: CoroutineScope) : OverscrollEffect {
+    private val overscrollOffset = Animatable(0f)
+    override fun consumePreScroll(
+        scrollDelta: Offset,
+        pointerPosition: Offset?,
+        source: NestedScrollSource
+    ): Offset {
+        // in pre scroll we relax the overscroll if needed
+        // relaxation: when we are in progress of the overscroll and user scrolls in the
+        // different direction = substract the overscroll first
+        val sameDirection = sign(scrollDelta.y) == sign(overscrollOffset.value)
+        return if (abs(overscrollOffset.value) > 0.5 && !sameDirection && isEnabled) {
+            val prevOverscrollValue = overscrollOffset.value
+            val newOverscrollValue = overscrollOffset.value + scrollDelta.y
+            if (sign(prevOverscrollValue) != sign(newOverscrollValue)) {
+                // sign changed, coerce to start scrolling and exit
+                scope.launch { overscrollOffset.snapTo(0f) }
+                Offset(x = 0f, y = scrollDelta.y + prevOverscrollValue)
+            } else {
+                scope.launch {
+                    overscrollOffset.snapTo(overscrollOffset.value + scrollDelta.y)
+                }
+                scrollDelta.copy(x = 0f)
+            }
+        } else {
+            Offset.Zero
+        }
+    }
+
+    override fun consumePostScroll(
+        initialDragDelta: Offset,
+        overscrollDelta: Offset,
+        pointerPosition: Offset?,
+        source: NestedScrollSource
+    ) {
+        // if it is a drag, not a fling, add the delta left to our over scroll value
+        if (abs(overscrollDelta.y) > 0.5 && isEnabled && source == NestedScrollSource.Drag) {
+            scope.launch {
+                // multiply by 0.1 for the sake of parallax effect
+                overscrollOffset.snapTo(overscrollOffset.value + overscrollDelta.y * 0.1f)
+            }
+        }
+    }
+
+    override suspend fun consumePreFling(velocity: Velocity): Velocity = Velocity.Zero
+
+    override suspend fun consumePostFling(velocity: Velocity) {
+        // when the fling happens - we just gradually animate our overscroll to 0
+        if (isEnabled) {
+            overscrollOffset.animateTo(
+                targetValue = 0f,
+                initialVelocity = velocity.y,
+                animationSpec = spring()
+            )
+        }
+    }
+
+    override var isEnabled: Boolean by mutableStateOf(true)
+
+    override val isInProgress: Boolean
+        get() = overscrollOffset.isRunning
+
+    // as we're building an offset modifiers, let's offset of our value we calculated
+    override val effectModifier: Modifier = Modifier.offset {
+        return@offset IntOffset(x = 0, y = overscrollOffset.value.roundToInt())
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun PhotosDisplayList(photosFlow: Flow<PagingData<String>>) {
@@ -381,23 +492,28 @@ fun PhotosDisplayList(photosFlow: Flow<PagingData<String>>) {
         }
     }
 
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(maxColumnSpan),
-        modifier = Modifier
-            .nestedScroll(nestedScrollConnection),
-        state = gridState,
-        content = {
-            items(
-                dataList.itemCount,
-                span = { index ->
-                    if (index % 3 == 0) {
-                        GridItemSpan(maxColumnSpan)
-                    } else {
-                        GridItemSpan(minColumnSpan)
-                    }
-                },
-                itemContent = { index -> PhotosListItem(url = dataList[index]!!) }) //TODO Rahul why force null?
-        })
+    val scope = rememberCoroutineScope()
+    val overscroll = remember(scope) { OffsetOverscrollEffect(scope) }
+    CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(maxColumnSpan),
+            modifier = Modifier
+                .nestedScroll(nestedScrollConnection),
+            state = gridState,
+            content = {
+                items(
+                    dataList.itemCount,
+                    span = { index ->
+                        if (index % 3 == 0) {
+                            GridItemSpan(maxColumnSpan)
+                        } else {
+                            GridItemSpan(minColumnSpan)
+                        }
+                    },
+                    itemContent = { index -> PhotosListItem(url = dataList[index]!!) }) //TODO Rahul why force null?
+            })
+    }
+
 }
 
 const val PHOTO_LIST_ITEM_HEIGHT = 300
