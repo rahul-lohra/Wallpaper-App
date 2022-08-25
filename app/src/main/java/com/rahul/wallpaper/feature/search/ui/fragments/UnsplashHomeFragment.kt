@@ -4,10 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.spring
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -21,6 +20,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
@@ -31,6 +31,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.ComposeView
@@ -39,8 +41,6 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -55,15 +55,10 @@ import com.rahul.wallpaper.R
 import com.rahul.wallpaper.feature.search.di.components.DaggerSearchComponent
 import com.rahul.wallpaper.feature.search.ui.viewmodels.SearchViewModel
 import com.rahul.wallpaper.ui.theme.typography
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.lang.Math.abs
 import javax.inject.Inject
 import kotlin.math.absoluteValue
-import kotlin.math.roundToInt
-import kotlin.math.sign
 
 class UnsplashHomeFragment : Fragment() {
 
@@ -120,7 +115,7 @@ fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
 
     Box {
         if (heightOfSearchBarComponent.value > 0f) {
-            HeaderWithGrid(modifier, photosFlow, heightOfSearchBarComponent.value.toFloat()) {
+            HeaderWithPhotosList(modifier, photosFlow, heightOfSearchBarComponent.value.toFloat()) {
                 scrollChange.value = it
             }
         }
@@ -132,7 +127,7 @@ fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
 }
 
 @Composable
-fun HeaderWithGrid(
+fun HeaderWithPhotosList(
     modifier: Modifier,
     photosFlow: Flow<PagingData<String>>,
     heightOfSearchBarComponent: Float,
@@ -220,6 +215,7 @@ fun getAlpha(tempYOffset: Float, minScroll: Float): Float {
     return 1f - tempYOffset / minScroll
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ScrollableContent(
     modifier: Modifier,
@@ -242,6 +238,7 @@ fun ScrollableContent(
         heightOfSearchBarComponent.toInt()
     )).toFloat()
     val headerScrollRange = (minScroll..maxScroll)
+    val midPointOfScroll = minScroll / 2
 
     LocalConfiguration.current.apply {
         screenHeight = screenHeightDp
@@ -274,6 +271,22 @@ fun ScrollableContent(
     Box(contentAlignment = Alignment.TopStart) {
         Column(
             modifier
+                .motionEventSpy {
+                    //snap behaviour
+                    when (it.action) {
+                        MotionEvent.ACTION_UP -> {
+                            Timber.d("action up = $yOffset")
+                            //midPointOfScroll will be negative like -300 and yOffset will range from 0 to -290
+                            if (yOffset != minScroll || yOffset != maxScroll) {
+                                if (yOffset > midPointOfScroll) {
+                                    yOffset = maxScroll
+                                } else {
+                                    yOffset = minScroll
+                                }
+                            }
+                        }
+                    }
+                }
                 .graphicsLayer {
                     translationY = yOffset
                 }
