@@ -9,9 +9,6 @@ import android.view.ViewGroup
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.ScrollableDefaults
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -46,6 +43,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
@@ -69,9 +67,11 @@ import kotlin.math.sign
 
 class UnsplashHomeFragment : Fragment() {
 
-    @Inject
+
     lateinit var searchViewModel: SearchViewModel
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,6 +93,8 @@ class UnsplashHomeFragment : Fragment() {
         DaggerSearchComponent.factory()
             .create((context.applicationContext as App).appComponent)
             .inject(this)
+
+        searchViewModel = ViewModelProvider(this, viewModelFactory).get(SearchViewModel::class.java)
     }
 
 }
