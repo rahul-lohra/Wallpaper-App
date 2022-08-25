@@ -376,36 +376,6 @@ fun TabViewSmallText(text: String, selected: Boolean, onClick: () -> Unit) {
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-val noOpOverscrollEffect = object : OverscrollEffect {
-
-    override fun consumePreScroll(
-        scrollDelta: Offset,
-        pointerPosition: Offset?,
-        source: NestedScrollSource
-    ): Offset = Offset.Infinite
-
-    override fun consumePostScroll(
-        initialDragDelta: Offset,
-        overscrollDelta: Offset,
-        pointerPosition: Offset?,
-        source: NestedScrollSource
-    ) {
-    }
-
-    override suspend fun consumePreFling(velocity: Velocity): Velocity = Velocity.Zero
-
-    override suspend fun consumePostFling(velocity: Velocity) {}
-
-    override var isEnabled: Boolean = true
-
-    override val isInProgress: Boolean
-        get() = true
-
-    override val effectModifier: Modifier
-        get() = Modifier
-}
-
-@OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun PhotosDisplayList(photosFlow: Flow<PagingData<String>>) {
