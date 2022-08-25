@@ -494,8 +494,6 @@ fun PhotosDisplayList(photosFlow: Flow<PagingData<String>>) {
         }
     }
 
-    val scope = rememberCoroutineScope()
-    val overscroll = remember(scope) { OffsetOverscrollEffect(scope) }
     CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(maxColumnSpan),
