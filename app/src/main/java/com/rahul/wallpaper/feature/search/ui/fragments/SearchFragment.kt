@@ -80,10 +80,12 @@ class SearchFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-
-        DaggerSearchComponent.factory()
-            .create((context.applicationContext as App).appComponent)
-            .inject(this)
+        DaggerSearchComponent.builder()
+            .appComponent((context.applicationContext as App).appComponent)
+            .build()
+//        DaggerSearchComponent.factory()
+//            .create((context.applicationContext as App).appComponent)
+//            .inject(this)
     }
 
     override fun onCreateView(

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.rahul.wallpaper">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name="com.rahul.wallpaper.App"
@@ -23,10 +23,26 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".feature.login.ui.activity.LoginWebViewActivity"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.rahul.wallpaper.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host"
+                    android:pathPattern="@string/login_unsplash"
+                    android:scheme="@string/internal" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

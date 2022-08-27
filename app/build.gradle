@@ -64,6 +64,7 @@ dependencies {
     implementation androidx.constraintlayout
     implementation androidx.lifecyclerViewmodelKtx
     implementation androidx.recyclerview
+    implementation androidx.datastore
 
     implementation design.androidMaterialDesign
 
@@ -104,6 +105,7 @@ dependencies {
     implementation jetpackCompose.composeLiveData
     implementation jetpackCompose.composeViewModel
     implementation jetpackCompose.paging
+    implementation jetpackCompose.activity
     androidTestImplementation jetpackCompose.composeUiTest
 
     implementation others.coil

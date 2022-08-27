@@ -7,7 +7,10 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -32,7 +35,6 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.motionEventSpy
-import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.ComposeView
@@ -43,7 +45,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
@@ -53,15 +56,20 @@ import com.google.accompanist.pager.rememberPagerState
 import com.rahul.wallpaper.*
 import com.rahul.wallpaper.R
 import com.rahul.wallpaper.feature.search.di.components.DaggerSearchComponent
+import com.rahul.wallpaper.feature.search.domain.usecase.FollowDomainData
+import com.rahul.wallpaper.feature.search.domain.usecase.FollowPaginatedDataInitial
+import com.rahul.wallpaper.feature.search.domain.usecase.NotLoggedInData
 import com.rahul.wallpaper.feature.search.ui.viewmodels.SearchViewModel
 import com.rahul.wallpaper.ui.theme.typography
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.absoluteValue
 
 class UnsplashHomeFragment : Fragment() {
-
 
     lateinit var searchViewModel: SearchViewModel
 
@@ -73,20 +81,30 @@ class UnsplashHomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED){
+//                searchViewModel.followersFlow.collect{
+//                    Timber.d("Collected in UI = $it")
+//                }
+//            }
+//        }
+
         return ComposeView(requireContext()).apply {
             // Dispose of the Composition when the view's LifecycleOwner
             // is destroyed
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                UnsplashHomeComposeLayout(photosFlow = searchViewModel.photosFlow)
+                UnsplashHomeComposeLayout(
+                )
             }
         }
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        DaggerSearchComponent.factory()
-            .create((context.applicationContext as App).appComponent)
+        DaggerSearchComponent.builder()
+            .appComponent((context.applicationContext as App).appComponent)
+            .build()
             .inject(this)
 
         searchViewModel = ViewModelProvider(this, viewModelFactory).get(SearchViewModel::class.java)
@@ -95,16 +113,23 @@ class UnsplashHomeFragment : Fragment() {
 }
 
 @Composable
-fun UnsplashHomeComposeLayout(photosFlow: Flow<PagingData<String>>) {
+fun UnsplashHomeComposeLayout(
+) {
 
     MaterialTheme(content = {
         Scaffold(
-            content = { padding -> HomeScreen(Modifier.padding(padding), photosFlow) })
+            content = { padding ->
+                HomeScreen(
+                    Modifier.padding(padding),
+                )
+            })
     })
 }
 
 @Composable
-fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
+fun HomeScreen(
+    modifier: Modifier,
+) {
 
     val heightOfSearchBarComponent = remember {
         mutableStateOf(0)
@@ -115,7 +140,10 @@ fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
 
     Box {
         if (heightOfSearchBarComponent.value > 0f) {
-            HeaderWithPhotosList(modifier, photosFlow, heightOfSearchBarComponent.value.toFloat()) {
+            HeaderWithPhotosList(
+                modifier,
+                heightOfSearchBarComponent.value.toFloat()
+            ) {
                 scrollChange.value = it
             }
         }
@@ -129,14 +157,12 @@ fun HomeScreen(modifier: Modifier, photosFlow: Flow<PagingData<String>>) {
 @Composable
 fun HeaderWithPhotosList(
     modifier: Modifier,
-    photosFlow: Flow<PagingData<String>>,
     heightOfSearchBarComponent: Float,
     scrollChangeCallback: (Float) -> Unit
 ) {
 
     ScrollableContent(
         modifier = modifier,
-        photosFlow = photosFlow,
         heightOfSearchBarComponent = heightOfSearchBarComponent,
     ) {
         scrollChangeCallback(it)
@@ -219,7 +245,6 @@ fun getAlpha(tempYOffset: Float, minScroll: Float): Float {
 @Composable
 fun ScrollableContent(
     modifier: Modifier,
-    photosFlow: Flow<PagingData<String>>,
     heightOfSearchBarComponent: Float,
     scrollIngPercentage: (Float) -> Unit,
 ) {
@@ -301,7 +326,7 @@ fun ScrollableContent(
                     combinedHeightToolbarAndHeader.value = it
                 }
             }
-            UnsplashViewPager(photosFlow)
+            UnsplashViewPager()
         }
     }
 }
@@ -444,9 +469,38 @@ fun PhotosListItem(url: String) {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun UnsplashViewPager(photosFlow: Flow<PagingData<String>>) {
+fun UnsplashViewPager() {
     val pagerState = rememberPagerState()
-    HorizontalPager(count = 2, state = pagerState) {
-        PhotosDisplayList(photosFlow = photosFlow)
+    HorizontalPager(count = 2, state = pagerState) { page ->
+        if (page == 0) {
+            PhotosDisplayList(
+                photosFlow = viewModel(
+                    modelClass = SearchViewModel::class.java
+                ).photosFlow
+            )
+        } else {
+            FollowersUi()
+        }
+    }
+}
+
+@Composable
+fun FollowersUi(
+    viewModel: SearchViewModel = viewModel(
+        modelClass = SearchViewModel::class.java
+    )
+) {
+    val state by viewModel.followersFlow.collectAsState(initial = FollowPaginatedDataInitial)
+    RenderFollowersUi(state) { viewModel.performLogin() }
+}
+
+@Composable
+fun RenderFollowersUi(state: FollowDomainData, onButtonClick: () -> Unit) {
+    when (state) {
+        FollowPaginatedDataInitial -> Text(text = "Initial")
+        NotLoggedInData -> Button(onClick = {
+            onButtonClick()
+        }, content = { Text(text = "Please Login") })
+        else -> Text(text = "Else")
     }
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="internal">internal</string>
+    <string name="internal_action">com.rahul.wallpaper.internal.VIEW</string>
+    <string name="login_unsplash">login-unsplash</string>
+    <string name="host">app</string>
+</resources>
