@@ -1,30 +1,35 @@
 package com.rahul.wallpaper.di.modules
 
+import androidx.annotation.StringDef
+import dagger.Module
+import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Named
 import javax.inject.Qualifier
 
+@Module
 class DispatcherModule {
 
-    @DispatcherQualifiers.Io
-    fun provideIO() = Dispatchers.IO
+    @Named(DispatcherQualifiers.IO)
+    @Provides
+    fun provideIO(): CoroutineDispatcher = Dispatchers.IO
 
-    @DispatcherQualifiers.Main
-    fun provideMAIN() = Dispatchers.Main
+    @Named(DispatcherQualifiers.MAIN)
+    @Provides
+    fun provideMAIN(): CoroutineDispatcher = Dispatchers.Main
 
-    @DispatcherQualifiers.Default
-    fun provideDefault() = Dispatchers.Default
+    @Named(DispatcherQualifiers.DEFAULT)
+    @Provides
+    fun provideDefault(): CoroutineDispatcher = Dispatchers.Default
+}
 
-    class DispatcherQualifiers {
-        @Qualifier
-        @Retention(AnnotationRetention.RUNTIME)
-        annotation class Io
-
-        @Qualifier
-        @Retention(AnnotationRetention.RUNTIME)
-        annotation class Main
-
-        @Qualifier
-        @Retention(AnnotationRetention.RUNTIME)
-        annotation class Default
+@StringDef(DispatcherQualifiers.IO, DispatcherQualifiers.MAIN, DispatcherQualifiers.DEFAULT)
+@Retention
+annotation class DispatcherQualifiers {
+    companion object {
+        const val IO = "IO"
+        const val MAIN = "MAIN"
+        const val DEFAULT = "DEFAULT"
     }
 }

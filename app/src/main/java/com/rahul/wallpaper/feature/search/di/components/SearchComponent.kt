@@ -7,6 +7,7 @@ import com.rahul.wallpaper.feature.search.di.modules.SearchViewModelModule
 import com.rahul.wallpaper.feature.search.di.scopes.SearchScope
 import com.rahul.wallpaper.feature.search.ui.fragments.SearchFragment
 import com.rahul.wallpaper.feature.search.ui.fragments.UnsplashHomeFragment
+import com.rahul.wallpaper.feature.unsplash.di.UnsplashComponent
 import dagger.Component
 
 @SearchScope
@@ -23,8 +24,8 @@ interface SearchComponent {
     fun inject(fragment: SearchFragment)
     fun inject(fragment: UnsplashHomeFragment)
 
-    @Component.Factory
-    interface Factory {
-        fun create(appComponent: AppComponent): SearchComponent
-    }
+//    @Component.Factory
+//    interface Factory {
+//        fun create(appComponent: AppComponent): SearchComponent
+//    }
 }

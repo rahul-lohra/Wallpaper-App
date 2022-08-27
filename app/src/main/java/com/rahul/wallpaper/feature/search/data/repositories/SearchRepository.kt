@@ -4,7 +4,11 @@ import androidx.paging.PagingData
 import com.rahul.wallpaper.feature.search.data.datasource.DummyDataProvider
 import com.rahul.wallpaper.feature.search.data.datasource.LocalDataSource
 import com.rahul.wallpaper.feature.search.data.datasource.RemoteDataSource
+import com.rahul.wallpaper.feature.search.domain.usecase.FollowDomainData
+import com.rahul.wallpaper.feature.search.domain.usecase.FollowPaginatedData
+import com.rahul.wallpaper.feature.search.domain.usecase.NotLoggedInData
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class SearchRepository @Inject constructor(
@@ -18,4 +22,16 @@ class SearchRepository @Inject constructor(
     }
 
     fun getPagingPhotos(): Flow<PagingData<String>> = remoteDataSource.getPagingPhotos()
+
+    fun getFollowersData() =
+        flow<FollowDomainData> {
+            localDataSource.credentialsStorage.getUserId()
+                .collect { userId ->
+                    if (userId.isNotEmpty()) {
+                        emit(FollowPaginatedData(getPagingPhotos()))
+                    } else {
+                        emit(NotLoggedInData)
+                    }
+                }
+        }
 }
