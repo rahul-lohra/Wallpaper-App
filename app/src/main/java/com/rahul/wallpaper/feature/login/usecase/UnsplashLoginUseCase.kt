@@ -2,22 +2,25 @@ package com.rahul.wallpaper.feature.login.usecase
 
 import android.net.Uri
 import com.rahul.wallpaper.BuildConfig
-import com.rahul.wallpaper.feature.credentials.CredentialsStorage
+import okhttp3.HttpUrl
 import javax.inject.Inject
 
 class UnsplashLoginUseCase @Inject constructor() : UnsplashLoginContract {
-    fun getLoginUri(): Uri {
+    fun getLoginUri(): String {
         val loginPath = "https://unsplash.com/oauth/authorize"
-        return Uri.Builder()
-            .appendPath(loginPath)
-            .appendQueryParameter("client_id", BuildConfig.UNSPLASH_API_KEY)
-            .appendQueryParameter(
+        val redirectUrl = "https://mywordpressinstall.com/unsplash_callback"
+        return HttpUrl.Builder()
+            .scheme("https")
+            .host("unsplash.com")
+            .encodedPath("/oauth/authorize")
+            .addQueryParameter("client_id", BuildConfig.UNSPLASH_API_KEY)
+            .addEncodedQueryParameter(
                 "redirect_uri",
-                "https://mywordpressinstall.com/unsplash_callback"
+                redirectUrl
             )
-            .appendQueryParameter("response_type", "code")
-            .appendQueryParameter("scope", "public")
-            .build()
+            .addQueryParameter("response_type", "code")
+            .addQueryParameter("scope", "public")
+            .build().toString()
     }
 
     override suspend fun performLogin() {

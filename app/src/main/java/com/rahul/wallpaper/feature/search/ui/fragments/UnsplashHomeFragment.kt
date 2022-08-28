@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalOverscrollConfiguration
@@ -39,6 +40,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -81,14 +83,6 @@ class UnsplashHomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED){
-//                searchViewModel.followersFlow.collect{
-//                    Timber.d("Collected in UI = $it")
-//                }
-//            }
-//        }
-
         return ComposeView(requireContext()).apply {
             // Dispose of the Composition when the view's LifecycleOwner
             // is destroyed
@@ -490,8 +484,11 @@ fun FollowersUi(
         modelClass = SearchViewModel::class.java
     )
 ) {
+    val context = LocalContext.current
     val state by viewModel.followersFlow.collectAsState(initial = FollowPaginatedDataInitial)
-    RenderFollowersUi(state) { viewModel.performLogin() }
+    RenderFollowersUi(state) {
+        RouteManager.getInstance().route(context, "login-unsplash")
+    }
 }
 
 @Composable

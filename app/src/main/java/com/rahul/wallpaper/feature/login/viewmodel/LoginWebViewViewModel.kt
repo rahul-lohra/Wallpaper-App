@@ -7,5 +7,8 @@ import javax.inject.Inject
 class LoginWebViewViewModel @Inject constructor(val unsplashLoginUseCase: UnsplashLoginUseCase) :
     ViewModel() {
 
-    fun getLoginUrl() = unsplashLoginUseCase.getLoginUri().toString()
+    fun getLoginUrl(): String {
+        return unsplashLoginUseCase.getLoginUri()
+    }
+
 }

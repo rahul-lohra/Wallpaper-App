@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.NotificationsTest"
-        android:usesCleartextTraffic="true"
+        android:usesCleartextTraffic="false"
+        android:networkSecurityConfig="@xml/network_config"
         tools:targetApi="31">
 
         <activity
@@ -29,16 +30,16 @@
 
         <activity
             android:name=".feature.login.ui.activity.LoginWebViewActivity"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
-                <action android:name="com.rahul.wallpaper.internal.VIEW" />
+                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
                     android:host="@string/host"
-                    android:pathPattern="@string/login_unsplash"
+                    android:path="@string/login_unsplash"
                     android:scheme="@string/internal" />
             </intent-filter>
         </activity>
