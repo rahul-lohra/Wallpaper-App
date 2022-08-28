@@ -1,8 +1,8 @@
 package com.rahul.wallpaper.feature.login.di
 
 import com.rahul.wallpaper.di.component.AppComponent
-import com.rahul.wallpaper.feature.login.ui.activity.LoginWebViewActivity
-import com.rahul.wallpaper.feature.login.ui.fragments.LoginWebViewFragment
+import com.rahul.wallpaper.feature.login.presentation.ui.activity.LoginWebViewActivity
+import com.rahul.wallpaper.feature.login.presentation.ui.fragments.LoginWebViewFragment
 import dagger.Component
 
 @LoginScope

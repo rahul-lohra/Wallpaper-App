@@ -29,7 +29,7 @@
         </activity>
 
         <activity
-            android:name=".feature.login.ui.activity.LoginWebViewActivity"
+            android:name=".feature.login.presentation.ui.activity.LoginWebViewActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
