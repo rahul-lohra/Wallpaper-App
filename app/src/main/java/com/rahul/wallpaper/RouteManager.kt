@@ -4,15 +4,24 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
+import androidx.appcompat.app.AppCompatActivity
 
-object RouteManager {
-    private val internal_action = Resources.getSystem().getString(R.string.internal_action)
-    fun route(context: Context, applink: String): Boolean {
+class RouteManager private constructor() : AppRouter {
+
+    companion object {
+        fun getInstance() = RouteManager()
+    }
+
+    fun route(context: Context, pathPattern: String): Boolean {
+        if (context !is AppCompatActivity) return false
+
         val intent = Intent(
-            internal_action, Uri.Builder().appendPath(applink).build()
+            Intent.ACTION_VIEW,
+            Uri.Builder().scheme(context.getString(R.string.internal))
+                .authority(context.getString(R.string.host)).appendPath(pathPattern).build()
         )
-        intent.categories.add(Intent.CATEGORY_DEFAULT)
-        intent.categories.add(Intent.CATEGORY_BROWSABLE)
+        intent.addCategory(Intent.CATEGORY_DEFAULT)
+        intent.addCategory(Intent.CATEGORY_BROWSABLE)
         intent.resolveActivity(context.packageManager)?.run {
             context.startActivity(intent)
             return true

@@ -17,7 +17,12 @@ class App : Application() {
 
     private fun initLogger() {
         if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
+            Timber.plant(object :Timber.DebugTree(){
+                override fun isLoggable(tag: String?, priority: Int): Boolean {
+                    if(tag?.contains("UnsplashHomeFragment") == true) return false
+                    return super.isLoggable(tag, priority)
+                }
+            })
         }
     }
 
