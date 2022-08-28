@@ -2,14 +2,21 @@ package com.rahul.wallpaper.feature.search.data.apis.unsplash
 
 import androidx.annotation.StringDef
 import com.rahul.wallpaper.BuildConfig
-import retrofit2.http.GET
-import retrofit2.http.Query
+import com.rahul.wallpaper.feature.search.data.apis.unsplash.UnsplashApi.Config.ADDRESS_KEY
+import com.rahul.wallpaper.feature.search.data.apis.unsplash.UnsplashApi.Config.AUTH_TOKEN_URL
+import com.rahul.wallpaper.feature.search.data.apis.unsplash.UnsplashApi.Config.REDIRECT_URI
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+import retrofit2.http.*
 
 interface UnsplashApi {
     object Config {
         internal const val ADDRESS_KEY = BuildConfig.UNSPLASH_API_KEY
-        private const val SECRET_KEY = BuildConfig.UNSPLASH_SECRET_KEY
+        internal const val SECRET_KEY = BuildConfig.UNSPLASH_SECRET_KEY
         const val BASE_URL = "https://api.unsplash.com"
+        const val AUTH_TOKEN_URL = "https://unsplash.com/oauth/token"
+        const val REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
+        const val LOGIN_URL = "https://unsplash.com/oauth/authorize"
     }
 
     object QueryParams {
@@ -47,4 +54,27 @@ interface UnsplashApi {
     suspend fun getPhotos(
         @Query(QueryParams.PAGE) pageNumber: Int
     ): List<UnsplashResponse>
+
+    @POST
+    suspend fun getAuthToken(
+        @Body body: AuthTokenRequestBody,
+        @Url url: String = AUTH_TOKEN_URL,
+    ): AuthTokenResponse
 }
+
+@JsonClass(generateAdapter = true)
+data class AuthTokenRequestBody(
+    @Json(name = "code") val code: String,
+    @Json(name = "client_id") var clientId: String = ADDRESS_KEY,
+    @Json(name = "client_secret") var clientSecret: String = UnsplashApi.Config.SECRET_KEY,
+    @Json(name = "redirect_uri") var redirectUri: String = REDIRECT_URI,
+    @Json(name = "grant_type") var grantType: String = "authorization_code"
+)
+
+@JsonClass(generateAdapter = true)
+data class AuthTokenResponse(
+    @Json(name = "access_token") val accessToken: String,
+    @Json(name = "token_type") var tokenType: String = ADDRESS_KEY,
+    @Json(name = "scope") var scope: String = UnsplashApi.Config.SECRET_KEY,
+    @Json(name = "created_at") var createdAt: String = REDIRECT_URI,
+)

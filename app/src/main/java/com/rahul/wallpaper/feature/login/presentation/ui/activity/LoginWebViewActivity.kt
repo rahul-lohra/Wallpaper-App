@@ -1,4 +1,4 @@
-package com.rahul.wallpaper.feature.login.ui.activity
+package com.rahul.wallpaper.feature.login.presentation.ui.activity
 
 import android.os.Bundle
 import android.view.ViewGroup
@@ -15,9 +15,9 @@ import com.rahul.wallpaper.App
 import com.rahul.wallpaper.BaseActivity
 import com.rahul.wallpaper.R
 import com.rahul.wallpaper.feature.login.di.DaggerLoginComponent
-import com.rahul.wallpaper.feature.login.ui.LoginPage
-import com.rahul.wallpaper.feature.login.ui.fragments.LoginWebViewFragment
-import com.rahul.wallpaper.feature.login.viewmodel.LoginWebViewViewModel
+import com.rahul.wallpaper.feature.login.presentation.ui.LoginPage
+import com.rahul.wallpaper.feature.login.presentation.ui.fragments.LoginWebViewFragment
+import com.rahul.wallpaper.feature.login.presentation.ui.viewmodel.LoginWebViewViewModel
 import com.rahul.wallpaper.feature.search.ui.fragments.UnsplashHomeFragment
 import javax.inject.Inject
 

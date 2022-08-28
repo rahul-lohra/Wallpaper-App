@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.rahul.wallpaper.di.modules.DispatcherQualifiers
-import com.rahul.wallpaper.feature.login.usecase.UnsplashFakeLoginUseCase
+import com.rahul.wallpaper.feature.login.domain.usecase.UnsplashFakeLoginUseCase
 import com.rahul.wallpaper.feature.search.domain.usecase.FollowDomainData
 import com.rahul.wallpaper.feature.search.domain.usecase.SearchUseCase
 import kotlinx.coroutines.CoroutineDispatcher
@@ -36,7 +36,7 @@ class SearchViewModel @Inject constructor(
 
     fun performLogin() {
         viewModelScope.launch(default) {
-            loginUseCase.performLogin()
+            loginUseCase.performLogin("")
         }
     }
 
