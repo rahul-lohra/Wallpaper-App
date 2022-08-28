@@ -18,5 +18,8 @@
 - Dynamic colors and Light/Dark theme support
 - Foldable support
 - Adaptive UI for phones, tablet and desktops
+- ANR Watchdog
+- Firebase Crashlytics/Bugsnag
+- LeakCanary
 
 
