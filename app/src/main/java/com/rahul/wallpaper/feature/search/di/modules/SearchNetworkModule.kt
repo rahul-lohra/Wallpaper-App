@@ -17,7 +17,6 @@ import retrofit2.Retrofit
 @Module
 class SearchNetworkModule {
 
-    @SearchScope
     @Provides
     fun providePixaBayApi(
         okHttpClient: OkHttpClient,
@@ -33,7 +32,6 @@ class SearchNetworkModule {
         return retrofit.create(PixabayApi::class.java)
     }
 
-    @SearchScope
     @Provides
     fun providePexelsApi(
         okHttpClient: OkHttpClient,
@@ -49,7 +47,7 @@ class SearchNetworkModule {
         return retrofit.create(PexelsApi::class.java)
     }
 
-    @SearchScope
+    //TODO This method should be removed from here and should be part of unsplash module
     @Provides
     fun providesUnsplashApi(
         okHttpClient: OkHttpClient,

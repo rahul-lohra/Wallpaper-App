@@ -122,4 +122,9 @@ ext {
             coil       : "io.coil-kt:coil-compose:2.1.0",
             workmanager: "androidx.work:work-runtime-ktx:2.7.1"
     ]
+
+    codegen = [
+            poet             : "com.squareup:kotlinpoet:1.12.0",
+            googleAutoService: "com.google.auto.service:auto-service:1.0.1"
+    ]
 }

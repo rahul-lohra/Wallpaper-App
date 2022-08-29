@@ -1,0 +1,15 @@
+apply plugin: 'java-library'
+apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'kotlin-kapt'
+apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+dependencies {
+    implementation codegen.poet
+    implementation codegen.googleAutoService
+    kapt codegen.googleAutoService
+}

@@ -1,0 +1,6 @@
+ext {
+    libraries = [
+            logger            : ":libraries:logger",
+            apiresultProcessor: ":libraries:apiresult-processor"
+    ]
+}

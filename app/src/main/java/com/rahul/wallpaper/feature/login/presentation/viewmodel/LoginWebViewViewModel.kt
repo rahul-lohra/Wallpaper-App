@@ -28,6 +28,10 @@ class LoginWebViewViewModel @Inject constructor(
     var uiState by mutableStateOf<UiState>(UiStateInitial())
     private set
 
+    fun getLoginUrl(): String {
+        return loginUseCase.getLoginUri()
+    }
+
     fun processPageFinishedUrl(url:String?){
         viewModelScope.launch(io) {
             loginUseCase.performLogin(url)

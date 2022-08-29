@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import com.rahul.wallpaper.di.modules.DispatcherQualifiers
-import com.rahul.wallpaper.feature.login.domain.usecase.UnsplashFakeLoginUseCase
 import com.rahul.wallpaper.feature.search.domain.usecase.FollowDomainData
 import com.rahul.wallpaper.feature.search.domain.usecase.SearchUseCase
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,7 +16,6 @@ class SearchViewModel @Inject constructor(
     @Named(DispatcherQualifiers.IO) private val io: CoroutineDispatcher,
     @Named(DispatcherQualifiers.DEFAULT) private val default: CoroutineDispatcher,
     private val searchUseCase: SearchUseCase,
-    private val loginUseCase: UnsplashFakeLoginUseCase
 ) : ViewModel() {
 
     val followersFlow: Flow<FollowDomainData> = searchUseCase.getFollowersData()
@@ -31,12 +29,6 @@ class SearchViewModel @Inject constructor(
 
     fun getPagingData() {
         viewModelScope.launch(io) {
-        }
-    }
-
-    fun performLogin() {
-        viewModelScope.launch(default) {
-            loginUseCase.performLogin("")
         }
     }
 

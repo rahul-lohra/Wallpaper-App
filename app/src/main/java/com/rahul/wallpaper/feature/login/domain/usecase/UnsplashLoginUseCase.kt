@@ -4,6 +4,9 @@ import android.net.Uri
 import androidx.annotation.VisibleForTesting
 import androidx.core.net.toUri
 import com.rahul.wallpaper.BuildConfig
+import com.rahul.wallpaper.data.ApiResult
+import com.rahul.wallpaper.data.ApiResultFail
+import com.rahul.wallpaper.data.ApiResultSuccess
 import com.rahul.wallpaper.feature.login.data.repository.LoginRepository
 import com.rahul.wallpaper.feature.login.presentation.ui.LoginState
 import com.rahul.wallpaper.feature.login.presentation.ui.LoginStateFail
@@ -29,9 +32,16 @@ class UnsplashLoginUseCase @Inject constructor(private val repository: LoginRepo
         val code = getAuthorizationCode(url)
         return if (!code.isNullOrEmpty()) {
             repository.run {
-                saveAuthTokenResponse(getAuthToken(AuthTokenRequestBody(code)))
+                val result = getAuthToken(AuthTokenRequestBody(code))
+                when (result) {
+                    is ApiResultSuccess -> {
+                        saveAuthTokenResponse(result.data)
+                        LoginStateSuccess
+                    }
+                    is ApiResultFail -> LoginStateFail(result.ex)
+                }
+
             }
-            LoginStateSuccess
         } else {
             LoginStateFail(Exception("Unable to extract code"))
         }

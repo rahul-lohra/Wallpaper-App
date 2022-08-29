@@ -26,7 +26,6 @@ class AppNetworkModule {
     ): Retrofit.Builder {
         return Retrofit.Builder()
             .client(client.get())
-            .addCallAdapterFactory()
             .addConverterFactory(moshiConverterFactory)
     }
 
