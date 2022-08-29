@@ -16,8 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.rahul.wallpaper.App
 import com.rahul.wallpaper.feature.login.di.DaggerLoginComponent
 import com.rahul.wallpaper.feature.login.presentation.ui.*
-import com.rahul.wallpaper.feature.login.ui.*
-import com.rahul.wallpaper.feature.login.presentation.ui.viewmodel.LoginWebViewViewModel
+import com.rahul.wallpaper.feature.login.presentation.viewmodel.LoginWebViewViewModel
 import javax.inject.Inject
 
 class LoginWebViewFragment : Fragment() {

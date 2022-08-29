@@ -8,8 +8,6 @@ import android.webkit.WebViewClient
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.rahul.wallpaper.feature.login.presentation.ui.viewmodel.LoginWebViewViewModel
 import timber.log.Timber
 
 @Composable

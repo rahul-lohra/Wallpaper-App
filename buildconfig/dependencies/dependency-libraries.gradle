@@ -1,5 +1,0 @@
-ext {
-    libraries = [
-            logger: ":libraries:logger"
-    ]
-}

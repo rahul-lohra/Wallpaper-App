@@ -9,10 +9,11 @@ plugins {
     id 'com.android.application' version '7.4.0-alpha09' apply false
     id 'com.android.library' version '7.4.0-alpha09' apply false
     id 'org.jetbrains.kotlin.android' version '1.7.10' apply false
+    id 'org.jetbrains.kotlin.jvm' version '1.7.10' apply false
 //    id "dd-sdk-android-gradle-plugin"
 //    id "com.datadoghq.dd-sdk-android-gradle-plugin" version "1.4.0"
 }
-apply from: 'buildconfig/dependencies/dependency-libraries.gradle'
+apply from: 'buildconfig/dependencies/dependencies-libraries.gradle'
 apply from: 'configuration.gradle'
 
 task clean(type: Delete) {

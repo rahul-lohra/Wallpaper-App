@@ -39,11 +39,11 @@ class ApiResultResponseBodyConvertor<T>(val adapter: JsonAdapter<T>) :
         }
     }
 
-    fun ResponseBody.toApiResult(): ApiResult<T> {
-        return try {
-            ApiResultSuccess(ex)
-        } catch (ex: Exception) {
-            ApiResultFail(ex)
-        }
-    }
+//    fun ResponseBody.toApiResult(): ApiResult<T> {
+//        return try {
+//            ApiResultSuccess()
+//        } catch (ex: Exception) {
+//            ApiResultFail(ex)
+//        }
+//    }
 }
