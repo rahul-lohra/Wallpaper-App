@@ -30,6 +30,7 @@
 
         <activity
             android:name=".feature.login.presentation.ui.activity.LoginWebViewActivity"
+            android:taskAffinity="com.rahul.notificationstest.hello"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

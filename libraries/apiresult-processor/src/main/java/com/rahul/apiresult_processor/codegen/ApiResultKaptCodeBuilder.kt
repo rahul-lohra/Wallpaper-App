@@ -6,23 +6,23 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.TypeSpec
 import javax.lang.model.element.ExecutableElement
 
-class ApiResultCodeBuilder(private val adapterName: String, private val modelData: ModelData) {
+class ApiResultKaptCodeBuilder(private val adapterName: String, private val modelData: ModelData) {
 
     fun build(): TypeSpec {
         val typeSpec = TypeSpec.classBuilder(adapterName)
             .primaryConstructor(
                 FunSpec
                     .builder("")
-                    .addParameter("api", modelData.interfaceName)
+//                    .addParameter("api", modelData.interfaceName)
                     .build()
             )
-            .addSuperinterface(modelData.interfaceName)
+//            .addSuperinterface(modelData.interfaceName)
 
 
-        modelData.listOfMethods
-            .forEach {
-                addFunctions(typeSpec, it)
-            }
+//        modelData.listOfMethods
+//            .forEach {
+//                addFunctions(typeSpec, it)
+//            }
 
         return typeSpec.build()
     }
