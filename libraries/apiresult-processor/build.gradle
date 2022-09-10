@@ -2,7 +2,6 @@ plugins {
     id 'com.google.devtools.ksp' version '1.7.10-1.0.6'
     id 'java-library'
     id 'org.jetbrains.kotlin.jvm'
-    id 'kotlin-kapt'
 }
 
 apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
@@ -14,9 +13,7 @@ java {
 
 dependencies {
     implementation codegen.poet
-//    implementation codegen.googleAutoService
     implementation codegen.ksp
-//    kapt codegen.googleAutoService
     implementation codegen.googleAutoServiceAnnotation
-//    ksp codegen.zacAutoService
+    ksp codegen.zacAutoService
 }
