@@ -118,8 +118,8 @@ dependencies {
 
     implementation accompanist.viewpager
 
-    implementation project(rootProject.libraries.apiresultProcessor)
-    ksp project(rootProject.libraries.apiresultProcessor)
+//    implementation project(rootProject.libraries.apiresultProcessor)
+//    ksp project(rootProject.libraries.apiresultProcessor)
 }
 apply plugin: 'com.google.gms.google-services'
 

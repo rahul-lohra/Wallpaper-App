@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.rahul.wallpaper.BaseActivity
 import com.rahul.wallpaper.R
 import com.rahul.wallpaper.feature.login.presentation.ui.activity.LoginWebViewActivity
+import com.rahul.wallpaper.feature.search.ui.fragments.SearchFragment
 import com.rahul.wallpaper.feature.search.ui.fragments.UnsplashHomeFragment
 
 class SearchActivity : BaseActivity() {
@@ -19,7 +20,7 @@ class SearchActivity : BaseActivity() {
 
 
         if (savedInstanceState == null) {
-            launchActivityB()
+            launchFragment()
         }
 
     }
@@ -31,8 +32,17 @@ class SearchActivity : BaseActivity() {
     }
     private fun launchFragment(){
         supportFragmentManager.beginTransaction()
-//                .add(R.id.container, SearchFragment())
-            .replace(R.id.container, UnsplashHomeFragment())
+//            .replace(R.id.container, SearchFragment())
+//            .addToBackStack("search")
+            .add(R.id.container, UnsplashHomeFragment())
+            .addToBackStack("unsplash")
             .commit()
+
+//        supportFragmentManager.beginTransaction()
+////            .replace(R.id.container, SearchFragment())
+////            .addToBackStack("search")
+//            .replace(R.id.container, SearchFragment())
+//            .addToBackStack("unsplash")
+//            .commit()
     }
 }
