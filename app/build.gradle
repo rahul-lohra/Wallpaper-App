@@ -66,9 +66,7 @@ dependencies {
 
     implementation androidx.coreKtx
     implementation androidx.appcompat
-    implementation androidx.constraintlayout
     implementation androidx.lifecyclerViewmodelKtx
-    implementation androidx.recyclerview
     implementation androidx.datastore
 
     implementation design.androidMaterialDesign
@@ -76,15 +74,7 @@ dependencies {
     implementation di.dagger
     kapt di.daggerCompiler
 
-    implementation network.okhttp
-    implementation network.retrofit
     implementation network.okHttploggingInterceptor
-    implementation network.converterGson
-    implementation network.converterGson
-    implementation network.converterMoshi
-
-    implementation parsers.moshiKotlin
-    kapt parsers.moshiKotlinCodegen
 
     implementation jetbrains.coroutinesCore
 
@@ -105,21 +95,16 @@ dependencies {
     implementation jetpackCompose.preview
     implementation jetpackCompose.foundation
     implementation jetpackCompose.materialDesign
-    implementation jetpackCompose.materialDesignIcons
-    implementation jetpackCompose.materialDesignIconsExtended
-    implementation jetpackCompose.composeLiveData
-    implementation jetpackCompose.composeViewModel
     implementation jetpackCompose.paging
     implementation jetpackCompose.activity
     androidTestImplementation jetpackCompose.composeUiTest
 
-    implementation others.coil
-    implementation others.workmanager
-
-    implementation accompanist.viewpager
-
 //    implementation project(rootProject.libraries.apiresultProcessor)
 //    ksp project(rootProject.libraries.apiresultProcessor)
+    implementation project(rootProject.libraries.data)
+    implementation project(rootProject.search.searchMain)
+    implementation project(rootProject.login.loginMain)
+
 }
 apply plugin: 'com.google.gms.google-services'
 

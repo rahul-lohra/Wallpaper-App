@@ -1,0 +1,22 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
+
+dependencies {
+    implementation androidx.coreKtx
+    implementation jetbrains.coroutinesAndroid
+    implementation androidx.datastore
+
+    implementation network.okhttp
+    implementation network.retrofit
+    implementation network.converterMoshi
+    implementation network.okHttploggingInterceptor
+
+    implementation di.dagger
+    kapt di.daggerCompiler
+
+//    localImplementation devTools.chucker //TODO Rahul fix local implementation later if required
+    debugImplementation devTools.chucker
+    releaseImplementation devTools.chuckerNoOp
+    implementation devTools.timber
+}

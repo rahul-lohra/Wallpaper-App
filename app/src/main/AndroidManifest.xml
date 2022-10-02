@@ -19,31 +19,6 @@
         android:networkSecurityConfig="@xml/network_config"
         tools:targetApi="31">
 
-        <activity
-            android:name="com.rahul.wallpaper.feature.search.ui.activities.SearchActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".feature.login.presentation.ui.activity.LoginWebViewActivity"
-            android:taskAffinity="com.rahul.notificationstest.hello"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host"
-                    android:path="@string/login_unsplash"
-                    android:scheme="@string/internal" />
-            </intent-filter>
-        </activity>
 
     </application>
 

@@ -1,0 +1,16 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
+
+dependencies {
+    implementation androidx.coreKtx
+    implementation androidx.appcompat
+    implementation androidx.recyclerview
+    implementation jetbrains.coroutinesCore
+    implementation androidx.fragmentKtx
+    implementation project(rootProject.libraries.coreCompose)
+
+    implementation di.javaxInject
+    implementation di.dagger
+    kapt di.daggerCompiler
+}

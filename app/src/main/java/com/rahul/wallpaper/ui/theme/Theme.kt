@@ -39,7 +39,7 @@ fun MySootheTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composab
 
     MaterialTheme(
         colors = colors,
-        typography = typography,
+//        typography = typography, //TODO Rahul make separate module for theming
         shapes = shapes,
         content = content
     )

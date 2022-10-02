@@ -1,0 +1,49 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
+
+android {
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion composeCompilerVersion
+    }
+}
+
+dependencies {
+    implementation androidx.coreKtx
+    implementation androidx.appcompat
+    implementation androidx.recyclerview
+    implementation androidx.constraintlayout
+    implementation androidx.fragmentKtx
+
+    implementation jetpackCompose.composeUi
+    implementation jetpackCompose.preview
+    implementation jetpackCompose.foundation
+    implementation jetpackCompose.materialDesign
+    implementation jetpackCompose.materialDesignIcons
+    implementation jetpackCompose.materialDesignIconsExtended
+    implementation jetpackCompose.composeLiveData
+    implementation jetpackCompose.composeViewModel
+    implementation jetpackCompose.paging
+    implementation jetpackCompose.activity
+
+    implementation accompanist.viewpager
+    implementation others.coil
+
+    implementation project(rootProject.libraries.core)
+    implementation project(rootProject.libraries.utils)
+    implementation project(rootProject.libraries.dispatchers)
+    implementation project(rootProject.libraries.coreCompose)
+
+    implementation project(rootProject.search.domain)
+    implementation project(rootProject.search.data)
+    implementation project(rootProject.libraries.data)
+
+    implementation devTools.timber
+
+    implementation di.javaxInject
+    implementation di.dagger
+    kapt di.daggerCompiler
+}

@@ -1,0 +1,24 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
+
+android {
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion composeCompilerVersion
+    }
+}
+
+dependencies {
+    implementation androidx.coreKtx
+    implementation project(rootProject.libraries.data)
+
+    implementation jetpackCompose.composeUi
+    implementation jetpackCompose.preview
+    implementation jetpackCompose.foundation
+    implementation jetpackCompose.materialDesign
+    implementation jetpackCompose.materialDesignIcons
+    implementation jetpackCompose.materialDesignIconsExtended
+}

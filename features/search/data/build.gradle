@@ -1,0 +1,22 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
+
+dependencies {
+    implementation androidx.coreKtx
+
+    implementation network.okhttp
+    implementation network.retrofit
+
+    implementation parsers.moshiKotlin
+    kapt parsers.moshiKotlinCodegen
+
+    implementation di.javaxInject
+    implementation di.dagger
+    kapt di.daggerCompiler
+
+    implementation jetbrains.coroutinesAndroid
+    implementation jetpackCompose.paging
+
+    implementation project(rootProject.libraries.data)
+}

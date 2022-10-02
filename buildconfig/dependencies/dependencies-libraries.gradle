@@ -1,6 +1,25 @@
 ext {
     libraries = [
             logger            : ":libraries:logger",
-            apiresultProcessor: ":libraries:apiresult-processor"
+            apiresultProcessor: ":libraries:apiresult-processor",
+            core              : ":libraries:core",
+            coreCompose       : ":libraries:core:compose",
+            data              : ":libraries:data",
+            domain            : ":libraries:domain",
+            utils             : ":libraries:utils",
+            dispatchers       : ":libraries:dispatchers",
+            router            : ":libraries:router",
+    ]
+
+    search = [
+            searchMain: ":features:search",
+            domain    : ":features:search:domain",
+            data      : ":features:search:data",
+    ]
+
+    login = [
+            loginMain: ":features:login",
+            domain   : ":features:login:domain",
+            data     : ":features:login:data",
     ]
 }
