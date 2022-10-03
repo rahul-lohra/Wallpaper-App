@@ -1,6 +1,6 @@
 apply from: "$rootDir/buildconfig/utils.gradle"
 
-def file = rootProject.file("$rootProject.projectDir/gradleProperties/apikeys.properties")
+def file = rootProject.file("$rootProject.projectDir/features/search/data/apikeys.properties")
 def prop = new Properties()
 
 if (file.exists()) {

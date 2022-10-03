@@ -1,14 +1,14 @@
 package com.search.data.apis.pixabay
 
 import androidx.annotation.StringDef
+import com.search.data.BuildConfig
 import com.search.data.apis.pixabay.PixabayApi.QueryParams.IMAGE_TYPE
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface PixabayApi {
     object Config {
-        //TODO Rahul API Keys
-        private const val API_KEY = "BuildConfig.PIXABAY_API_KEY"
+        private const val API_KEY = BuildConfig.PIXABAY_API_KEY
         const val BASE_URL = "https://pixabay.com/api/?key=$API_KEY"
     }
 

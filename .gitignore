@@ -21,3 +21,4 @@ local.properties
 /gradleProperties/keystore.properties
 /app/debug/app-debug.aab
 /app/release/app-release.aab
+/features/search/data/apikeys.properties

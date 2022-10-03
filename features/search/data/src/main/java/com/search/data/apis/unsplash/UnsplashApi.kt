@@ -1,6 +1,7 @@
 package com.search.data.apis.unsplash
 
 import androidx.annotation.StringDef
+import com.search.data.BuildConfig
 import com.search.data.apis.unsplash.UnsplashApi.Config.ADDRESS_KEY
 import com.search.data.apis.unsplash.UnsplashApi.Config.AUTH_TOKEN_URL
 import com.search.data.apis.unsplash.UnsplashApi.Config.REDIRECT_URI
@@ -10,9 +11,9 @@ import retrofit2.http.*
 
 interface UnsplashApi {
     object Config {
-        //TODO Rahul API Keys
-        internal const val ADDRESS_KEY = "BuildConfig.UNSPLASH_API_KEY"
-        internal const val SECRET_KEY = "BuildConfig.UNSPLASH_SECRET_KEY"
+
+        internal const val ADDRESS_KEY = BuildConfig.UNSPLASH_API_KEY
+        internal const val SECRET_KEY = BuildConfig.UNSPLASH_SECRET_KEY
         const val BASE_URL = "https://api.unsplash.com"
         const val AUTH_TOKEN_URL = "https://unsplash.com/oauth/token"
         const val REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"

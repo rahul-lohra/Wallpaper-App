@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
+apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
+apply from: "$rootProject.projectDir/features/search/data/apikeys.gradle"
 
 dependencies {
     implementation androidx.coreKtx

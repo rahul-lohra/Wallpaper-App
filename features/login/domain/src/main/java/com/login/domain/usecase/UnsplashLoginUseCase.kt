@@ -7,6 +7,7 @@ import com.login.data.repository.LoginRepository
 import com.login.domain.models.LoginDomainState
 import com.login.domain.models.LoginDomainStateFail
 import com.login.domain.models.LoginDomainStateSuccess
+import com.search.data.BuildConfig
 import com.search.data.apis.unsplash.AuthTokenRequestBody
 import com.search.data.apis.unsplash.UnsplashApi.Config.REDIRECT_URI
 import okhttp3.HttpUrl
@@ -17,8 +18,7 @@ class UnsplashLoginUseCase @Inject constructor(private val repository: LoginRepo
     fun getLoginUri(): String {
         return HttpUrl.Builder().scheme("https").host("unsplash.com")
             .encodedPath("/oauth/authorize")
-                //TODO Rahul fix BuildConfig.UNSPLASH_API_KEY
-            .addQueryParameter("client_id", "BuildConfig.UNSPLASH_API_KEY").addEncodedQueryParameter(
+            .addQueryParameter("client_id", BuildConfig.UNSPLASH_API_KEY).addEncodedQueryParameter(
                 "redirect_uri", REDIRECT_URI
             ).addQueryParameter("response_type", "code").addQueryParameter("scope", "public")
             .build().toString()

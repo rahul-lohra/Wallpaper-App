@@ -8,7 +8,6 @@ apply from: "$rootDir/buildconfig/dependencies/dependencies.gradle"
 apply from: "$rootDir/buildconfig/dependencies/dependencies-libraries.gradle"
 apply from: "$rootDir/buildconfig/signingconfig.gradle"
 apply from: "$rootDir/buildconfig/kotlin/module.gradle"
-apply from: "$rootDir/buildconfig/apikeys.gradle"
 
 android {
 
