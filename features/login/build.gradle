@@ -41,6 +41,4 @@ dependencies {
     implementation devTools.timber
 
     implementation di.javaxInject
-    implementation di.dagger
-    kapt di.daggerCompiler
 }

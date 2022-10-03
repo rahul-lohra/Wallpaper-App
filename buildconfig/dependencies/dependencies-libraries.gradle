@@ -4,6 +4,8 @@ ext {
             apiresultProcessor: ":libraries:apiresult-processor",
             core              : ":libraries:core",
             coreCompose       : ":libraries:core:compose",
+            diApp             : ":libraries:core:di-app",
+            variants             : ":libraries:core:variants",
             data              : ":libraries:data",
             domain            : ":libraries:domain",
             utils             : ":libraries:utils",

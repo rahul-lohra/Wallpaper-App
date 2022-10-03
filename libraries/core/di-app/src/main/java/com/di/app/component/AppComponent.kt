@@ -1,13 +1,14 @@
-package com.rahul.wallpaper.di.component
+package com.di.app.component
 
 import android.content.Context
 import com.data.di.modules.NetworkModule
-import com.data.keyvaluedatasource.KeyValueStorage
-import com.rahul.wallpaper.App
-import com.rahul.wallpaper.di.modules.AppContextModule
-import com.rahul.wallpaper.di.scope.AppScope
+import com.di.app.AppContract
+import com.di.app.modules.AppContextModule
+import com.di.app.scope.AppScope
 import dagger.Component
 import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 @AppScope
 @Component(
@@ -17,11 +18,11 @@ import okhttp3.OkHttpClient
     ],
 )
 interface AppComponent {
-    fun inject(app: App)
+//    fun inject(app: AppContract)
 
     fun context(): Context
-//    fun retrofitBuilder(): Retrofit.Builder
-//    fun okHttpClient(): OkHttpClient
+//    fun retrofitClient(): Retrofit
+    fun okHttpClient(): OkHttpClient
 
 //    fun moshiConvertorFactory(): MoshiConverterFactory
 //    fun keyValueStorage(): KeyValueStorage

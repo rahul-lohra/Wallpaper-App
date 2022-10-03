@@ -11,6 +11,4 @@ dependencies {
     implementation project(rootProject.libraries.coreCompose)
 
     implementation di.javaxInject
-    implementation di.dagger
-    kapt di.daggerCompiler
 }

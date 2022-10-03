@@ -1,7 +1,7 @@
 package com.search.di.components
 
-import android.content.Context
 import com.data.di.modules.StorageModule
+import com.di.app.component.AppComponent
 import com.search.data.di.modules.SearchNetworkModule
 import com.search.di.modules.SearchViewModelModule
 import com.search.di.scopes.SearchScope
@@ -16,15 +16,17 @@ import dagger.Component
         SearchViewModelModule::class,
         StorageModule::class
     ],
-//    dependencies = [AppComponent::class]
+    dependencies = [AppComponent::class]
 )
 interface SearchComponent {
 
     fun inject(fragment: SearchFragment)
     fun inject(fragment: UnsplashHomeFragment)
 
-//    @Component.Factory
-//    interface Factory {
-//        fun create(context: Context): SearchComponent
+//    @Component.Builder
+//    interface Builder {
+//        fun context(context: Context): Builder
+//        fun dependencies(appComponent: AppComponent): Builder
+//        fun build(): SearchComponent
 //    }
 }

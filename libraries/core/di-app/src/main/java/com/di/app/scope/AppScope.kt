@@ -1,4 +1,4 @@
-package com.rahul.wallpaper.di.scope
+package com.di.app.scope
 
 import javax.inject.Scope
 

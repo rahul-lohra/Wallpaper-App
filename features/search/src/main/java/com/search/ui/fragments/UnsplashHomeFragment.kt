@@ -51,10 +51,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
+import com.data.di.modules.StorageModule
+import com.di.app.AppContract
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.search.R
+import com.search.di.components.DaggerSearchComponent
 import com.search.domain.FollowDomainData
 import com.search.domain.FollowPaginatedDataInitial
 import com.search.domain.NotLoggedInData
@@ -92,10 +95,12 @@ class UnsplashHomeFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-//        DaggerSearchComponent.builder()
-//            .appComponent((context.applicationContext as App).appComponent)
-//            .build()
-//            .inject(this)
+        val appComponent = (context.applicationContext as AppContract).provideAppComponent()
+        DaggerSearchComponent.builder()
+            .appComponent(appComponent)
+            .storageModule(StorageModule(requireContext()))
+            .build()
+            .inject(this)
 
         searchViewModel = ViewModelProvider(this, viewModelFactory).get(SearchViewModel::class.java)
     }

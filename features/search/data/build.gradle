@@ -12,8 +12,6 @@ dependencies {
     kapt parsers.moshiKotlinCodegen
 
     implementation di.javaxInject
-    implementation di.dagger
-    kapt di.daggerCompiler
 
     implementation jetbrains.coroutinesAndroid
     implementation jetpackCompose.paging

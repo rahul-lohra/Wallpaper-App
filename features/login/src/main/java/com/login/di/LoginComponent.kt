@@ -7,12 +7,12 @@ import com.search.data.di.modules.SearchNetworkModule
 import dagger.Component
 
 @LoginScope
-@Component(
-    modules = [LoginViewModelModule::class, StorageModule::class, SearchNetworkModule::class], //TODO Rahul use assisted inject to include objects from search network module and remote unsplash api from Search network module.
+//@Component(
+//    modules = [LoginViewModelModule::class, StorageModule::class, SearchNetworkModule::class], //TODO Rahul use assisted inject to include objects from search network module and remote unsplash api from Search network module.
 //    dependencies = [AppComponent::class]
-)
+//)
 interface LoginComponent {
-    fun inject(activity: LoginWebViewActivity)
+//    fun inject(activity: LoginWebViewActivity)
     fun inject(fragment: LoginWebViewFragment)
 
 //    @Component.Factory

@@ -20,8 +20,8 @@ import javax.inject.Inject
 class LoginWebViewFragment : Fragment() {
     lateinit var viewModel: LoginWebViewViewModel
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+//    @Inject
+//    lateinit var viewModelFactory: ViewModelProvider.Factory
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -58,6 +58,6 @@ class LoginWebViewFragment : Fragment() {
 //            .inject(this)
 
 
-        viewModel = ViewModelProvider(this, viewModelFactory).get(LoginWebViewViewModel::class.java)
+//        viewModel = ViewModelProvider(this, viewModelFactory).get(LoginWebViewViewModel::class.java)
     }
 }

@@ -36,14 +36,13 @@ dependencies {
     implementation project(rootProject.libraries.utils)
     implementation project(rootProject.libraries.dispatchers)
     implementation project(rootProject.libraries.coreCompose)
+    implementation project(rootProject.libraries.data)
+    implementation project(rootProject.libraries.diApp)
 
     implementation project(rootProject.search.domain)
     implementation project(rootProject.search.data)
-    implementation project(rootProject.libraries.data)
 
     implementation devTools.timber
 
     implementation di.javaxInject
-    implementation di.dagger
-    kapt di.daggerCompiler
 }

@@ -1,5 +1,8 @@
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+//apply plugin: 'dagger.hilt.android.plugin'
+
+apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
 
 kapt {
     correctErrorTypes true
@@ -36,4 +39,9 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
+}
+
+dependencies {
+    implementation di.dagger
+    kapt di.daggerCompiler
 }

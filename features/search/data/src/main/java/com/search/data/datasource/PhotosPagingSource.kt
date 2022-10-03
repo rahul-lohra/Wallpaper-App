@@ -3,9 +3,11 @@ package com.search.data.datasource
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.search.data.apis.unsplash.UnsplashApi
+import java.io.IOException
 import javax.inject.Inject
 
-class PhotosPagingSource @Inject constructor(private val api: UnsplashApi) : PagingSource<Int, String>() {
+class PhotosPagingSource @Inject constructor(private val api: UnsplashApi) :
+    PagingSource<Int, String>() {
 
     override fun getRefreshKey(state: PagingState<Int, String>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -28,7 +30,7 @@ class PhotosPagingSource @Inject constructor(private val api: UnsplashApi) : Pag
                 prevKey = if (currentKey == 0) null else currentKey - 1,
                 nextKey = currentKey + 1
             )
-        } catch (ex: Exception) {
+        } catch (ex: Throwable) {
             return LoadResult.Error(ex)
         }
     }

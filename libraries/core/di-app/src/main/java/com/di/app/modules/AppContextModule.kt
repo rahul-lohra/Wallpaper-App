@@ -1,7 +1,7 @@
-package com.rahul.wallpaper.di.modules
+package com.di.app.modules
 
 import android.content.Context
-import com.rahul.wallpaper.di.scope.AppScope
+import com.di.app.scope.AppScope
 import dagger.Module
 import dagger.Provides
 

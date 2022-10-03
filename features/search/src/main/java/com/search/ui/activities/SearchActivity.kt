@@ -31,7 +31,7 @@ class SearchActivity : BaseActivity() {
 //            .replace(R.id.container, SearchFragment())
 //            .addToBackStack("search")
             .add(R.id.container, UnsplashHomeFragment())
-            .addToBackStack("unsplash")
+//            .addToBackStack("unsplash")
             .commit()
 
 //        supportFragmentManager.beginTransaction()

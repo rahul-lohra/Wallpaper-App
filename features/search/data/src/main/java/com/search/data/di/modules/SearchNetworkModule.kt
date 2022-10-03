@@ -1,8 +1,11 @@
 package com.search.data.di.modules
 
 import com.search.data.apis.unsplash.UnsplashApi
+import com.search.data.apis.unsplash.UnsplashInterceptor
 import dagger.Module
 import dagger.Provides
+import okhttp3.Interceptor
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 
 @Module
@@ -40,23 +43,42 @@ class SearchNetworkModule {
 
     //TODO Rahul this is not required
 //    @Provides
-//    fun provideOkHttpClient():OkHttpClient{
+//    fun provideOkHttpClient(): OkHttpClient {
 //        return OkHttpClient.Builder().build()
 //    }
 
     //TODO This method should be removed from here and should be part of unsplash module. Its source code is altered check original from master branch
     @Provides
-    fun providesUnsplashApi(): UnsplashApi {
-        return Retrofit.Builder().build().create(UnsplashApi::class.java)
+    fun providesUnsplashApi(lazyOkHttpClient: dagger.Lazy<OkHttpClient>): UnsplashApi {
+        val okHttpClient =
+            addInterceptorToOkHttp(lazyOkHttpClient.get(), UnsplashInterceptor())
+        val retrofit = Retrofit.Builder()
+            .baseUrl(UnsplashApi.Config.BASE_URL)
+            .client(okHttpClient)
+            .build()
+
+        return retrofit.create(UnsplashApi::class.java)
     }
 
 //    @Provides
-//    fun provideOkHttpClient(
-//        okHttpClient: OkHttpClient,
-//        interceptor: Interceptor
-//    ): OkHttpClient {
-//        return okHttpClient.newBuilder()
-//            .addInterceptor(interceptor)
+//    fun providesUnsplashApi2(lazyRetrofit: dagger.Lazy<Retrofit>,lazyOkHttpClient: dagger.Lazy<OkHttpClient>): UnsplashApi {
+//        val okHttpClient =
+//            addInterceptorToOkHttp(lazyOkHttpClient.get(), UnsplashInterceptor())
+//        val retrofit = lazyRetrofit.get().newBuilder()
+//            .baseUrl(UnsplashApi.Config.BASE_URL)
+//            .client(okHttpClient)
 //            .build()
+//
+//        return retrofit.create(UnsplashApi::class.java)
 //    }
+
+    //    @Provides
+    fun addInterceptorToOkHttp(
+        okHttpClient: OkHttpClient,
+        interceptor: Interceptor
+    ): OkHttpClient {
+        return okHttpClient.newBuilder()
+            .addInterceptor(interceptor)
+            .build()
+    }
 }

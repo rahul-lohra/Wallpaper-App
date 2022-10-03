@@ -1,4 +1,4 @@
-package com.rahul.wallpaper.di.modules
+package com.di.app.modules
 
 import okhttp3.Interceptor
 import javax.inject.Inject

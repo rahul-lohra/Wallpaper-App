@@ -71,9 +71,6 @@ dependencies {
 
     implementation design.androidMaterialDesign
 
-    implementation di.dagger
-    kapt di.daggerCompiler
-
     implementation network.okHttploggingInterceptor
 
     implementation jetbrains.coroutinesCore
@@ -104,6 +101,14 @@ dependencies {
     implementation project(rootProject.libraries.data)
     implementation project(rootProject.search.searchMain)
     implementation project(rootProject.login.loginMain)
+    implementation project(rootProject.libraries.diApp)
+    implementation project(rootProject.libraries.variants)
+
+    //For DI NetworkModule.kt
+    implementation network.okhttp
+    implementation network.retrofit
+    implementation network.converterMoshi
+    implementation network.okHttploggingInterceptor
 
 }
 apply plugin: 'com.google.gms.google-services'

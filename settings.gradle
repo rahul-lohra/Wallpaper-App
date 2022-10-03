@@ -21,6 +21,8 @@ include ':libraries:apiresult-processor'
 
 include ':libraries:core'
 include ':libraries:core:compose'
+include ':libraries:core:di-app'
+include ':libraries:core:variants'
 
 include ':libraries:domain'
 include ':libraries:data'

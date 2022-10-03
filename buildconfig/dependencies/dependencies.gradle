@@ -31,11 +31,13 @@ ext {
             compose      : "androidx.navigation:navigation-compose:$navVersion",
     ]
 
-
+    def hilt = '2.44'
     di = [
             dagger        : "com.google.dagger:dagger:$dagger",
             daggerCompiler: "com.google.dagger:dagger-compiler:$dagger",
             javaxInject : "javax.inject:javax.inject:1",
+            hilt        : "com.google.dagger:hilt-android:$hilt",
+            hiltCompiler: "com.google.dagger:hilt-android-compiler:$hilt",
     ]
 
 
