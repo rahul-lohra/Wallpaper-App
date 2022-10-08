@@ -13,15 +13,19 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.data.di.modules.StorageModule
+import com.di.app.AppContract
+import com.login.di.DaggerLoginComponent
 import com.login.presentation.ui.*
 import com.login.presentation.viewmodel.LoginWebViewViewModel
+import com.unsplash.UnsplashContract
 import javax.inject.Inject
 
 class LoginWebViewFragment : Fragment() {
     lateinit var viewModel: LoginWebViewViewModel
 
-//    @Inject
-//    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -52,12 +56,17 @@ class LoginWebViewFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        //TODO Rahul fix
-//        DaggerLoginComponent.factory()
-//            .create((context.applicationContext as App).appComponent)
-//            .inject(this)
+
+        val appComponent = (context.applicationContext as AppContract).provideAppComponent()
+        val unsplashComponent = (context.applicationContext as UnsplashContract).provideUnsplashComponent()
+        DaggerLoginComponent.builder()
+            .appComponent(appComponent)
+            .unsplashComponent(unsplashComponent)
+            .storageModule(StorageModule(requireContext()))
+            .build()
+            .inject(this)
 
 
-//        viewModel = ViewModelProvider(this, viewModelFactory).get(LoginWebViewViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[LoginWebViewViewModel::class.java]
     }
 }

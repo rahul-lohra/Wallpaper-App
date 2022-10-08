@@ -2,8 +2,8 @@ package com.login.data.repository
 
 import com.search.data.credentials.CredentialsStorage
 import com.login.data.datasource.RemoteDataSource
-import com.search.data.apis.unsplash.AuthTokenRequestBody
-import com.search.data.apis.unsplash.AuthTokenResponse
+import com.unsplash.AuthTokenRequestBody
+import com.unsplash.AuthTokenResponse
 import javax.inject.Inject
 
 class LoginRepository @Inject constructor(

@@ -8,8 +8,8 @@ import com.login.domain.models.LoginDomainState
 import com.login.domain.models.LoginDomainStateFail
 import com.login.domain.models.LoginDomainStateSuccess
 import com.search.data.BuildConfig
-import com.search.data.apis.unsplash.AuthTokenRequestBody
-import com.search.data.apis.unsplash.UnsplashApi.Config.REDIRECT_URI
+import com.unsplash.AuthTokenRequestBody
+import com.unsplash.UnsplashApi.Config.REDIRECT_URI
 import okhttp3.HttpUrl
 import javax.inject.Inject
 

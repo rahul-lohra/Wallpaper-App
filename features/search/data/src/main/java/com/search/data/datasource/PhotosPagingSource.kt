@@ -2,8 +2,7 @@ package com.search.data.datasource
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.search.data.apis.unsplash.UnsplashApi
-import java.io.IOException
+import com.unsplash.UnsplashApi
 import javax.inject.Inject
 
 class PhotosPagingSource @Inject constructor(private val api: UnsplashApi) :

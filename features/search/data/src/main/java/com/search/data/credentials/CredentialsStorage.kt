@@ -1,7 +1,8 @@
 package com.search.data.credentials
 
-import com.search.data.apis.unsplash.AuthTokenResponse
+
 import com.data.keyvaluedatasource.KeyValueStorage
+import com.unsplash.AuthTokenResponse
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

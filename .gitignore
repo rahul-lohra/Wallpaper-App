@@ -22,3 +22,4 @@ local.properties
 /app/debug/app-debug.aab
 /app/release/app-release.aab
 /features/search/data/apikeys.properties
+/libraries/unsplash/apikeys.properties

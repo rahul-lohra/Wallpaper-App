@@ -6,15 +6,17 @@ import com.di.app.AppContract
 import com.di.app.component.AppComponent
 import com.di.app.component.DaggerAppComponent
 import com.di.app.modules.AppContextModule
-import com.logger.ServerLogger
+import com.unsplash.UnsplashContract
+import com.unsplash.di.component.DaggerUnsplashComponent
+import com.unsplash.di.component.UnsplashComponent
 import com.variant.BuildVariant
 import com.variant.Variant
-
 import timber.log.Timber
 
-class App : Application(), AppContract {
+class App : Application(), AppContract, UnsplashContract {
 
     lateinit var appComponent: AppComponent
+    lateinit var unsplashComponent: UnsplashComponent
 
     override fun onCreate() {
         super.onCreate()
@@ -59,5 +61,12 @@ class App : Application(), AppContract {
 
     override fun provideAppComponent(): AppComponent {
         return appComponent
+    }
+
+    override fun provideUnsplashComponent(): UnsplashComponent {
+        if (!this::unsplashComponent.isInitialized) {
+            unsplashComponent = DaggerUnsplashComponent.builder().appComponent(appComponent).build()
+        }
+        return unsplashComponent
     }
 }

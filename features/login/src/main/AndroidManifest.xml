@@ -5,7 +5,7 @@
     <application>
         <activity
             android:name=".presentation.ui.activity.LoginWebViewActivity"
-            android:taskAffinity="com.rahul.notificationstest.hello"
+            android:taskAffinity="com.rahul.wallpaper.login"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

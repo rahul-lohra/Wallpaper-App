@@ -97,12 +97,15 @@ dependencies {
 
 //    implementation project(rootProject.libraries.apiresultProcessor)
 //    ksp project(rootProject.libraries.apiresultProcessor)
-    implementation project(rootProject.libraries.data)
+
     implementation project(rootProject.search.searchMain)
     implementation project(rootProject.login.loginMain)
+
+    implementation project(rootProject.libraries.data)
     implementation project(rootProject.libraries.diApp)
     implementation project(rootProject.libraries.variants)
     implementation project(rootProject.libraries.logger)
+    implementation project(rootProject.libraries.unsplash)
 
     //For DI NetworkModule.kt
     implementation network.okhttp

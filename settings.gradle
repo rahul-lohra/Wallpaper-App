@@ -29,6 +29,7 @@ include ':libraries:data'
 include ':libraries:utils'
 include ':libraries:dispatchers'
 include ':libraries:router'
+include ':libraries:unsplash'
 
 include ':features:login'
 include ':features:login:domain'

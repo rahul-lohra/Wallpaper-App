@@ -17,10 +17,11 @@ class RouteManager private constructor() : AppRouter {
     fun route(context: Context, pathPattern: String): Boolean {
         if (context !is AppCompatActivity) return false
 
+        val uri = Uri.Builder().scheme(context.getString(R.string.route_internal))
+            .authority(context.getString(R.string.route_host)).appendEncodedPath(pathPattern).build()
         val intent = Intent(
             Intent.ACTION_VIEW,
-            Uri.Builder().scheme(context.getString(R.string.route_internal))
-                .authority(context.getString(R.string.route_host)).appendPath(pathPattern).build()
+            uri
         )
         intent.addCategory(Intent.CATEGORY_DEFAULT)
         intent.addCategory(Intent.CATEGORY_BROWSABLE)
@@ -28,7 +29,7 @@ class RouteManager private constructor() : AppRouter {
             context.startActivity(intent)
             return true
         }
-        ServerLogger.d(Priority.P2, LogData("RouteManager", "$pathPattern not found"))
+        ServerLogger.d(Priority.P2, LogData("RouteManager", "$uri not found"))
         return false
     }
 }

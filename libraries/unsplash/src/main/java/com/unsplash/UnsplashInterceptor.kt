@@ -1,6 +1,8 @@
-package com.search.data.apis.unsplash
+package com.unsplash
 
 import com.data.ResponseCodes
+import com.unsplash.RateLimitReachedException
+import com.unsplash.UnsplashApi
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response

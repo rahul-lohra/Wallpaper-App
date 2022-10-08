@@ -1,4 +1,4 @@
-package com.search.data.apis.unsplash
+package com.unsplash
 
 import java.io.IOException
 

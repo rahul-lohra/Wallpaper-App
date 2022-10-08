@@ -12,4 +12,5 @@ dependencies {
     implementation di.javaxInject
 
     implementation devTools.timber
+    implementation project(path: ':libraries:unsplash')
 }

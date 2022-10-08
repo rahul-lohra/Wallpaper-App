@@ -5,12 +5,13 @@ ext {
             core              : ":libraries:core",
             coreCompose       : ":libraries:core:compose",
             diApp             : ":libraries:core:di-app",
-            variants             : ":libraries:core:variants",
+            variants          : ":libraries:core:variants",
             data              : ":libraries:data",
             domain            : ":libraries:domain",
             utils             : ":libraries:utils",
             dispatchers       : ":libraries:dispatchers",
             router            : ":libraries:router",
+            unsplash          : ":libraries:unsplash",
     ]
 
     search = [

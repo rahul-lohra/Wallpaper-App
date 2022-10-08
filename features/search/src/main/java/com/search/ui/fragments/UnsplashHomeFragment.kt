@@ -63,6 +63,8 @@ import com.search.domain.FollowDomainData
 import com.search.domain.FollowPaginatedDataInitial
 import com.search.domain.NotLoggedInData
 import com.search.ui.viewmodels.SearchViewModel
+import com.unsplash.UnsplashContract
+import com.unsplash.di.component.UnsplashComponent
 import com.utils.onNoRippleClick
 import com.utils.toDp
 import com.utils.toPx
@@ -97,8 +99,10 @@ class UnsplashHomeFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         val appComponent = (context.applicationContext as AppContract).provideAppComponent()
+        val unsplashComponent = (context.applicationContext as UnsplashContract).provideUnsplashComponent()
         DaggerSearchComponent.builder()
             .appComponent(appComponent)
+            .unsplashComponent(unsplashComponent)
             .storageModule(StorageModule(requireContext()))
             .build()
             .inject(this)
@@ -531,7 +535,7 @@ fun PleaseLogin() {
         Button(
             contentPadding = PaddingValues(horizontal = 46.dp),
             onClick = {
-                RouteManager.getInstance().route(context, "/login")
+                RouteManager.getInstance().route(context, "login-unsplash")
             },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color.Black,

@@ -10,6 +10,7 @@ dependencies {
     implementation project(rootProject.search.data)
     implementation project(rootProject.login.data)
     implementation project(rootProject.libraries.data)
+    implementation project(rootProject.libraries.unsplash)
 
     implementation jetbrains.coroutinesCore
     implementation di.javaxInject

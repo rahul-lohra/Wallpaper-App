@@ -1,0 +1,17 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
+apply from: "$rootProject.projectDir/libraries/unsplash/apikeys.gradle"
+
+dependencies {
+    implementation androidx.coreKtx
+    implementation project(rootProject.libraries.data)
+    implementation project(rootProject.libraries.diApp)
+
+    implementation parsers.moshiKotlin
+    kapt parsers.moshiKotlinCodegen
+
+    implementation network.okhttp
+    implementation network.retrofit
+    implementation network.converterMoshi
+}

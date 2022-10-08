@@ -1,10 +1,9 @@
-package com.search.data.apis.unsplash
+package com.unsplash
 
 import androidx.annotation.StringDef
-import com.search.data.BuildConfig
-import com.search.data.apis.unsplash.UnsplashApi.Config.ADDRESS_KEY
-import com.search.data.apis.unsplash.UnsplashApi.Config.AUTH_TOKEN_URL
-import com.search.data.apis.unsplash.UnsplashApi.Config.REDIRECT_URI
+import com.unsplash.UnsplashApi.Config.ADDRESS_KEY
+import com.unsplash.UnsplashApi.Config.AUTH_TOKEN_URL
+import com.unsplash.UnsplashApi.Config.REDIRECT_URI
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import retrofit2.http.*
