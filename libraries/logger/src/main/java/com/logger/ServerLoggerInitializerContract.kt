@@ -1,4 +1,4 @@
-package com.dehaat.logger
+package com.logger
 
 interface ServerLoggerInitializerContract {
     fun initialize()

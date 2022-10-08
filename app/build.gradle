@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
-    id 'com.google.devtools.ksp' version '1.7.10-1.0.6'
+//    id 'com.google.devtools.ksp' version '1.7.10-1.0.6'
 }
 apply from: "$rootDir/buildconfig/dependencies/dependencies.gradle"
 apply from: "$rootDir/buildconfig/dependencies/dependencies-libraries.gradle"
@@ -102,6 +102,7 @@ dependencies {
     implementation project(rootProject.login.loginMain)
     implementation project(rootProject.libraries.diApp)
     implementation project(rootProject.libraries.variants)
+    implementation project(rootProject.libraries.logger)
 
     //For DI NetworkModule.kt
     implementation network.okhttp
@@ -112,6 +113,6 @@ dependencies {
 }
 apply plugin: 'com.google.gms.google-services'
 
-ksp {
-    arg("enabled", "true")
-}
+//ksp {
+//    arg("enabled", "true")
+//}

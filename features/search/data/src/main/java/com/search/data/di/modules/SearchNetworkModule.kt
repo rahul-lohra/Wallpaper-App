@@ -7,6 +7,7 @@ import dagger.Provides
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 @Module
 class SearchNetworkModule {
@@ -47,13 +48,16 @@ class SearchNetworkModule {
 //        return OkHttpClient.Builder().build()
 //    }
 
+
+
     //TODO This method should be removed from here and should be part of unsplash module. Its source code is altered check original from master branch
     @Provides
-    fun providesUnsplashApi(lazyOkHttpClient: dagger.Lazy<OkHttpClient>): UnsplashApi {
+    fun providesUnsplashApi(lazyOkHttpClient: dagger.Lazy<OkHttpClient>, moshiConverterFactory: MoshiConverterFactory): UnsplashApi {
         val okHttpClient =
             addInterceptorToOkHttp(lazyOkHttpClient.get(), UnsplashInterceptor())
         val retrofit = Retrofit.Builder()
             .baseUrl(UnsplashApi.Config.BASE_URL)
+            .addConverterFactory(moshiConverterFactory)
             .client(okHttpClient)
             .build()
 

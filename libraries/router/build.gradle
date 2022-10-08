@@ -6,4 +6,5 @@ dependencies {
     implementation androidx.coreKtx
     implementation androidx.appcompat
 
+    implementation project(rootProject.libraries.logger)
 }

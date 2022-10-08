@@ -4,5 +4,4 @@ apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradl
 
 dependencies {
     implementation androidx.coreKtx
-    api "com.datadoghq:dd-sdk-android:1.12.0"
 }

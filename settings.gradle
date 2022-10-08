@@ -17,7 +17,7 @@ rootProject.name = "Jetpack compose wallpaper app"
 include ':app'
 
 include ':libraries:logger'
-include ':libraries:apiresult-processor'
+//include ':libraries:apiresult-processor'
 
 include ':libraries:core'
 include ':libraries:core:compose'

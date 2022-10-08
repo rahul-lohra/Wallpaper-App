@@ -21,11 +21,9 @@ interface AppComponent {
 //    fun inject(app: AppContract)
 
     fun context(): Context
-//    fun retrofitClient(): Retrofit
     fun okHttpClient(): OkHttpClient
 
-//    fun moshiConvertorFactory(): MoshiConverterFactory
-//    fun keyValueStorage(): KeyValueStorage
+    fun moshiConvertorFactory(): MoshiConverterFactory
 
     @Component.Factory
     interface Factory {

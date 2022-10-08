@@ -6,6 +6,7 @@ import com.di.app.AppContract
 import com.di.app.component.AppComponent
 import com.di.app.component.DaggerAppComponent
 import com.di.app.modules.AppContextModule
+import com.logger.ServerLogger
 import com.variant.BuildVariant
 import com.variant.Variant
 
@@ -31,8 +32,13 @@ class App : Application(), AppContract {
     }
 
     private fun initLogger() {
+
         if (BuildVariant.isDebug()) {
             Timber.plant(object : Timber.DebugTree() {
+                override fun log(priority: Int, message: String?, vararg args: Any?) {
+                    super.log(priority, message, *args)
+                }
+
                 override fun isLoggable(tag: String?, priority: Int): Boolean {
                     if (tag?.contains("UnsplashHomeFragment") == true) return false
                     return super.isLoggable(tag, priority)

@@ -1,9 +1,12 @@
 package com.router
 
+import LogData
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
+import com.logger.ServerLogger
+import com.logger.data.Priority
 
 class RouteManager private constructor() : AppRouter {
 
@@ -25,6 +28,7 @@ class RouteManager private constructor() : AppRouter {
             context.startActivity(intent)
             return true
         }
+        ServerLogger.d(Priority.P2, LogData("RouteManager", "$pathPattern not found"))
         return false
     }
 }

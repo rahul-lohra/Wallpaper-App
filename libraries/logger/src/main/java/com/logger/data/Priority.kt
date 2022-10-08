@@ -1,4 +1,4 @@
-package com.dehaat.logger.data
+package com.logger.data
 
 import androidx.annotation.StringDef
 

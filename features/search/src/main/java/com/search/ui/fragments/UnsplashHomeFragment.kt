@@ -46,7 +46,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.*
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -56,6 +56,7 @@ import com.di.app.AppContract
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.router.RouteManager
 import com.search.R
 import com.search.di.components.DaggerSearchComponent
 import com.search.domain.FollowDomainData
@@ -402,7 +403,11 @@ fun TabViewSmallText(text: String, selected: Boolean, onClick: () -> Unit) {
                     dividerWidth = it.size.width
                 })
         } else {
-            Text(text = text, style = com.core.compose.theme.typography.body2, color = colorResource(id = R.color.search_grey_5))
+            Text(
+                text = text,
+                style = com.core.compose.theme.typography.body2,
+                color = colorResource(id = R.color.search_grey_5)
+            )
         }
 
     }
@@ -466,7 +471,7 @@ fun PhotosListItem(url: String) {
 @Composable
 fun UnsplashViewPager() {
     val pagerState = rememberPagerState()
-    HorizontalPager(count = 2, state = pagerState) { page ->
+    HorizontalPager(count = 2, state = pagerState, verticalAlignment = Alignment.Top) { page ->
         if (page == 0) {
             PhotosDisplayList(
                 photosFlow = viewModel(
@@ -496,10 +501,45 @@ fun FollowersUi(
 @Composable
 fun RenderFollowersUi(state: FollowDomainData, onButtonClick: () -> Unit) {
     when (state) {
-        FollowPaginatedDataInitial -> Text(text = "Initial")
+
+        FollowPaginatedDataInitial -> {
+            var screenHeight = 0f
+            LocalConfiguration.current.apply {
+                screenHeight = screenHeightDp.toFloat()
+            }
+            Box(
+                modifier = Modifier
+                    .height(screenHeight.dp)
+//                    .background(color = Color.Cyan)
+            ) {
+                PleaseLogin()
+            }
+        }
         NotLoggedInData -> Button(onClick = {
             onButtonClick()
         }, content = { Text(text = "Please Login") })
         else -> Text(text = "Else")
+    }
+}
+
+@Composable
+fun PleaseLogin() {
+    val context = LocalContext.current
+    Column(Modifier.padding(vertical = 60.dp)) {
+        Text(text = "Please Login to see your following contents")
+        Spacer(modifier = Modifier.height(40.dp))
+        Button(
+            contentPadding = PaddingValues(horizontal = 46.dp),
+            onClick = {
+                RouteManager.getInstance().route(context, "/login")
+            },
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color.Black,
+                contentColor = Color.White
+            ),
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(text = "Login")
+        }
     }
 }

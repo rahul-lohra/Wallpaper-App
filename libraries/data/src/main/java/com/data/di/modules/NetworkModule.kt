@@ -27,16 +27,14 @@ class NetworkModule {
 //    }
 
     //    @AppScope
-    @Provides
-    fun setupRetroFit(
-        client: dagger.Lazy<OkHttpClient>,
-        moshiConverterFactory: MoshiConverterFactory
-    ): Retrofit {
-        return Retrofit.Builder()
-            .client(client.get())
-            .addConverterFactory(moshiConverterFactory)
-            .build()
-    }
+//    @Provides
+//    fun setupRetroFit(client: dagger.Lazy<OkHttpClient>, moshiConverterFactory:MoshiConverterFactory): Retrofit {
+//        return Retrofit.Builder()
+//            .client(client.get())
+//            .baseUrl("")
+//            .addConverterFactory(moshiConverterFactory)
+//            .build()
+//    }
     @Provides
     fun setupOkHttp( context: Context): OkHttpClient {
         val cacheSize = 10 * 1024 * 1024L // 10MB
