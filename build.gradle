@@ -13,7 +13,10 @@ plugins {
 //    id "dd-sdk-android-gradle-plugin"
 }
 apply from: 'buildconfig/dependencies/dependencies-libraries.gradle'
+apply from: '/buildconfig/dependencies/dependencies.gradle'
 apply from: 'configuration.gradle'
+apply from: 'buildconfig/buildproj.gradle'
+apply from: 'buildconfig/set-debug-tools.gradle'
 
 task clean(type: Delete) {
     delete rootProject.buildDir

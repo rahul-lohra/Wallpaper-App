@@ -1,9 +1,7 @@
-plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
-//    id 'com.google.devtools.ksp' version '1.7.10-1.0.6'
-}
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'kotlin-kapt'
+
 apply from: "$rootDir/buildconfig/dependencies/dependencies.gradle"
 apply from: "$rootDir/buildconfig/dependencies/dependencies-libraries.gradle"
 apply from: "$rootDir/buildconfig/signingconfig.gradle"
@@ -86,7 +84,6 @@ dependencies {
 //    debugImplementation devTools.chucker
 //    releaseImplementation devTools.chuckerNoOp
     implementation devTools.timber
-
     implementation jetpackCompose.composeUi
     implementation jetpackCompose.preview
     implementation jetpackCompose.foundation

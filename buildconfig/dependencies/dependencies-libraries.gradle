@@ -25,4 +25,6 @@ ext {
             domain   : ":features:login:domain",
             data     : ":features:login:data",
     ]
+
+    debugToolsEnabled = true
 }
