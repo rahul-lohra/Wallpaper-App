@@ -10,7 +10,7 @@ apply from: "$rootDir/buildconfig/kotlin/module.gradle"
 android {
 
     defaultConfig {
-        applicationId "com.rahul.notificationstest"
+        applicationId "com.rahullohra.wallpaper"
         versionCode 1
         versionName "1.0"
 

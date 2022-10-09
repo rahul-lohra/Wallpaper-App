@@ -1,4 +1,4 @@
-package com.rahul.wallpaper.ui.theme
+package com.rahullohra.wallpaper.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

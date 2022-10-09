@@ -1,4 +1,4 @@
-package com.rahul.wallpaper
+package com.rahullohra.wallpaper
 
 import android.app.Application
 import android.content.Context
@@ -10,6 +10,7 @@ import com.di.app.AppContract
 import com.di.app.component.AppComponent
 import com.di.app.component.DaggerAppComponent
 import com.di.app.modules.AppContextModule
+import com.rahullohra.wallpaper.BuildConfig
 import com.unsplash.UnsplashContract
 import com.unsplash.di.component.DaggerUnsplashComponent
 import com.unsplash.di.component.UnsplashComponent
