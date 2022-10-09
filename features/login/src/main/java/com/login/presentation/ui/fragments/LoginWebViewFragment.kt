@@ -13,7 +13,7 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.data.di.modules.StorageModule
+import com.data.di.component.AppDataContract
 import com.di.app.AppContract
 import com.login.di.DaggerLoginComponent
 import com.login.presentation.ui.*
@@ -43,9 +43,11 @@ class LoginWebViewFragment : Fragment() {
                             CircularProgressIndicator()
                         }
                         is UiStateSuccess -> {
-                            LoginPage(Modifier.padding(padding), viewModel.getLoginUrl()) {
+                            LoginPage(Modifier.padding(padding), viewModel.getLoginUrl(), {
                                 viewModel.processPageFinishedUrl(it)
-                            }
+                            }, {
+
+                            })
                         }
                         is UiStateFail -> {}
                     }
@@ -58,11 +60,13 @@ class LoginWebViewFragment : Fragment() {
         super.onAttach(context)
 
         val appComponent = (context.applicationContext as AppContract).provideAppComponent()
-        val unsplashComponent = (context.applicationContext as UnsplashContract).provideUnsplashComponent()
+        val unsplashComponent =
+            (context.applicationContext as UnsplashContract).provideUnsplashComponent()
+        val appDataComponent = (context.applicationContext as AppDataContract).provideAppDataComponent()
         DaggerLoginComponent.builder()
             .appComponent(appComponent)
             .unsplashComponent(unsplashComponent)
-            .storageModule(StorageModule(requireContext()))
+            .appDataComponent(appDataComponent)
             .build()
             .inject(this)
 

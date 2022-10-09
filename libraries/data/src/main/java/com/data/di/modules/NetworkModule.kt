@@ -1,23 +1,23 @@
 package com.data.di.modules
 
-import android.content.Context
-import com.data.BuildConfig
-import com.variant.BuildVariant
-import dagger.Module
-import dagger.Provides
 //import dagger.hilt.InstallIn
 //import dagger.hilt.android.qualifiers.ApplicationContext
 //import dagger.hilt.components.SingletonComponent
+import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.variant.BuildVariant
+import dagger.Module
+import dagger.Provides
 import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Inject
 
 @Module
 //@InstallIn(SingletonComponent::class)
-class NetworkModule {
+class NetworkModule @Inject constructor() {
 
 //    @Provides
 //    fun setupOkHttp(context: Context, appInterceptorsModule: InterceptorsModule): OkHttpClient {
@@ -36,16 +36,18 @@ class NetworkModule {
 //            .build()
 //    }
     @Provides
-    fun setupOkHttp( context: Context): OkHttpClient {
+    fun setupOkHttp(context: Context, chuckerInterceptor: ChuckerInterceptor): OkHttpClient {
         val cacheSize = 10 * 1024 * 1024L // 10MB
         val builder = OkHttpClient.Builder()
-        if(BuildVariant.isDebug()) {
+        builder.addInterceptor(chuckerInterceptor)
+        if (BuildVariant.isDebug()) {
             builder.addInterceptor(getLogginInterceptor())
         }
         builder.cache(Cache(context.cacheDir, cacheSize))
         return builder.build()
     }
-//    @AppScope
+
+    //    @AppScope
     @Provides
     fun provideMoshiConvertorFactory() = MoshiConverterFactory.create()
 

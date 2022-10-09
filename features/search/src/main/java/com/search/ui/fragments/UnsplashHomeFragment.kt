@@ -51,7 +51,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
-import com.data.di.modules.StorageModule
+import com.data.di.component.AppDataContract
 import com.di.app.AppContract
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -100,14 +100,15 @@ class UnsplashHomeFragment : Fragment() {
         super.onAttach(context)
         val appComponent = (context.applicationContext as AppContract).provideAppComponent()
         val unsplashComponent = (context.applicationContext as UnsplashContract).provideUnsplashComponent()
+        val appDataComponent = (context.applicationContext as AppDataContract).provideAppDataComponent()
         DaggerSearchComponent.builder()
             .appComponent(appComponent)
+            .appDataComponent(appDataComponent)
             .unsplashComponent(unsplashComponent)
-            .storageModule(StorageModule(requireContext()))
             .build()
             .inject(this)
 
-        searchViewModel = ViewModelProvider(this, viewModelFactory).get(SearchViewModel::class.java)
+        searchViewModel = ViewModelProvider(this, viewModelFactory)[SearchViewModel::class.java]
     }
 
 }

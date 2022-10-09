@@ -34,6 +34,7 @@ dependencies {
     implementation project(rootProject.libraries.data)
     implementation project(rootProject.libraries.diApp)
     implementation project(rootProject.libraries.unsplash)
+    implementation project(rootProject.libraries.logger)
 
     implementation project(rootProject.login.domain)
     implementation project(rootProject.login.data)

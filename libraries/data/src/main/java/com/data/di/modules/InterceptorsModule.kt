@@ -2,13 +2,17 @@ package com.data.di.modules
 
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import dagger.Module
+import dagger.Provides
 import okhttp3.Interceptor
 import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Inject
 
+@Module
 class InterceptorsModule @Inject constructor() {
 
-    private fun getChuckerInterceptor(context: Context): Interceptor =
+    @Provides
+    fun getChuckerInterceptor(context: Context): ChuckerInterceptor =
         ChuckerInterceptor.Builder(context).build()
 
 

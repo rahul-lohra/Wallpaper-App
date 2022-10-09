@@ -1,0 +1,16 @@
+apply from: "$rootDir/buildconfig/utils.gradle"
+
+def file = rootProject.file("$rootProject.projectDir/libraries/unsplash/unsplash_apikeys.properties")
+def prop = new Properties()
+
+if (file.exists()) {
+    prop.load(new FileInputStream(file))
+}
+
+android {
+    defaultConfig {
+
+        buildConfigField "String", "UNSPLASH_API_KEY", getValueFromSystem(file, prop, 'UNSPLASH_API_KEY')
+        buildConfigField "String", "UNSPLASH_SECRET_KEY", getValueFromSystem(file, prop, 'UNSPLASH_SECRET_KEY')
+    }
+}

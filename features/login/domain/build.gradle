@@ -11,6 +11,7 @@ dependencies {
     implementation project(rootProject.login.data)
     implementation project(rootProject.libraries.data)
     implementation project(rootProject.libraries.unsplash)
+    implementation project(rootProject.libraries.logger)
 
     implementation jetbrains.coroutinesCore
     implementation di.javaxInject

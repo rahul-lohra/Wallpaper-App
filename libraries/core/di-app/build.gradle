@@ -11,6 +11,8 @@ dependencies {
     implementation network.converterMoshi
     implementation network.okHttploggingInterceptor
 
+    implementation devTools.chucker
+
     implementation project(rootProject.libraries.data)
     implementation project(rootProject.libraries.variants)
 }

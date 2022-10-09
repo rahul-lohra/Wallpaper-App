@@ -3,6 +3,7 @@ package com.logger
 import ApiRequestData
 import LogData
 import com.logger.data.Priority
+import com.logger.data.Tag
 
 object ServerLogger : ServerLoggerContract {
 

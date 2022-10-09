@@ -11,7 +11,7 @@ import retrofit2.http.*
 interface UnsplashApi {
     object Config {
 
-        internal const val ADDRESS_KEY = BuildConfig.UNSPLASH_API_KEY
+        const val ADDRESS_KEY = BuildConfig.UNSPLASH_API_KEY
         internal const val SECRET_KEY = BuildConfig.UNSPLASH_SECRET_KEY
         const val BASE_URL = "https://api.unsplash.com"
         const val AUTH_TOKEN_URL = "https://unsplash.com/oauth/token"

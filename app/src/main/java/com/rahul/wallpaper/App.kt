@@ -2,6 +2,10 @@ package com.rahul.wallpaper
 
 import android.app.Application
 import android.content.Context
+import com.data.di.component.AppDataComponent
+import com.data.di.component.AppDataContract
+import com.data.di.component.DaggerAppDataComponent
+import com.data.di.modules.StorageModule
 import com.di.app.AppContract
 import com.di.app.component.AppComponent
 import com.di.app.component.DaggerAppComponent
@@ -13,10 +17,11 @@ import com.variant.BuildVariant
 import com.variant.Variant
 import timber.log.Timber
 
-class App : Application(), AppContract, UnsplashContract {
+class App : Application(), AppContract, UnsplashContract, AppDataContract {
 
     lateinit var appComponent: AppComponent
     lateinit var unsplashComponent: UnsplashComponent
+    lateinit var appDataComponent: AppDataComponent
 
     override fun onCreate() {
         super.onCreate()
@@ -65,8 +70,19 @@ class App : Application(), AppContract, UnsplashContract {
 
     override fun provideUnsplashComponent(): UnsplashComponent {
         if (!this::unsplashComponent.isInitialized) {
-            unsplashComponent = DaggerUnsplashComponent.builder().appComponent(appComponent).build()
+            unsplashComponent = DaggerUnsplashComponent.builder()
+                .appDataComponent(provideAppDataComponent())
+                .appComponent(provideAppComponent()).build()
         }
         return unsplashComponent
+    }
+
+    override fun provideAppDataComponent(): AppDataComponent {
+        if (!this::appDataComponent.isInitialized) {
+            appDataComponent = DaggerAppDataComponent.builder()
+                .storageModule(StorageModule(this))
+                .build()
+        }
+        return appDataComponent
     }
 }

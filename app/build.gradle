@@ -82,9 +82,9 @@ dependencies {
     androidTestImplementation uiTesting.espressoCore
     androidTestImplementation uiTesting.espressoIntents
 
-    localImplementation devTools.chucker
-    debugImplementation devTools.chucker
-    releaseImplementation devTools.chuckerNoOp
+//    localImplementation devTools.chucker
+//    debugImplementation devTools.chucker
+//    releaseImplementation devTools.chuckerNoOp
     implementation devTools.timber
 
     implementation jetpackCompose.composeUi

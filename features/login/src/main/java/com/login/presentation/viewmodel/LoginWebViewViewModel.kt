@@ -1,5 +1,6 @@
 package com.login.presentation.viewmodel
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -35,6 +36,12 @@ class LoginWebViewViewModel @Inject constructor(
         viewModelScope.launch(io) {
             loginUseCase.performLogin(url)
         }
+    }
+
+    fun processLoginCompleted(uri:Uri){
+//        viewModelScope.launch(io) {
+//            loginUseCase.processLoginCompleted(uri)
+//        }
     }
 
     fun clearCookies() {

@@ -11,9 +11,7 @@ dependencies {
     implementation network.retrofit
     implementation network.converterMoshi
     implementation network.okHttploggingInterceptor
-
-
-//    localImplementation devTools.chucker //TODO Rahul fix local implementation later if required
+    
     implementation devTools.chucker
 //    releaseImplementation devTools.chuckerNoOp
     implementation devTools.timber
