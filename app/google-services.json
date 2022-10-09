@@ -7,12 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:825839032375:android:7336c63a254d8906f047b2",
+        "mobilesdk_app_id": "1:825839032375:android:ed17f3efbdc0baa2f047b2",
         "android_client_info": {
-          "package_name": "com.rahul.notificationstest"
+          "package_name": "com.rahullohra.wallpaper"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "825839032375-pvsuf6o1kb71tvrdo90875t75h6tt52p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rahullohra.wallpaper",
+            "certificate_hash": "112373d8ce286d09c9ece73559de661d75a94490"
+          }
+        },
         {
           "client_id": "825839032375-gqpgren4kilu2ctunrav8kvcm53ne3ae.apps.googleusercontent.com",
           "client_type": 3
