@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.firebase.firebase-perf'
 
 apply from: "$rootDir/buildconfig/dependencies/dependencies.gradle"
 apply from: "$rootDir/buildconfig/dependencies/dependencies-libraries.gradle"
@@ -110,6 +111,8 @@ dependencies {
     implementation network.converterMoshi
     implementation network.okHttploggingInterceptor
 
+    implementation firebase.bom
+    implementation firebase.perfKtx
 }
 apply plugin: 'com.google.gms.google-services'
 
