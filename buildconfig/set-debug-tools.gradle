@@ -1,0 +1,25 @@
+apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
+
+if (!rootProject.ext.debugToolsEnabled) {
+    // it has already set false, because default is true
+    return
+}
+
+def taskNames = project.gradle.startParameter.taskNames
+if (taskNames==null || taskNames.size() == 0) {
+    rootProject.ext.debugToolsEnabled = true
+    println("Debug tools set true. No task is defined")
+} else {
+    rootProject.ext.debugToolsEnabled = true
+    for ( taskName in taskNames ) {
+        if ( !taskName.toLowerCase().contains("debug") &&
+                taskName.toLowerCase().contains("release")) {
+            rootProject.ext.debugToolsEnabled = false
+            println("Debug tools set false. Task type is Release.")
+            break
+        }
+    }
+    if (rootProject.ext.debugToolsEnabled) {
+        println("Debug tools set to true. Task is not releaseProd")
+    }
+}

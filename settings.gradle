@@ -15,4 +15,27 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Jetpack compose wallpaper app"
 include ':app'
+
 include ':libraries:logger'
+//include ':libraries:apiresult-processor'
+
+include ':libraries:core'
+include ':libraries:core:compose'
+include ':libraries:core:di-app'
+include ':libraries:core:variants'
+
+include ':libraries:domain'
+include ':libraries:data'
+include ':libraries:utils'
+include ':libraries:dispatchers'
+include ':libraries:router'
+include ':libraries:unsplash'
+
+include ':features:login'
+include ':features:login:domain'
+include ':features:login:data'
+
+include ':features:search'
+include ':features:search:domain'
+include ':features:search:data'
+

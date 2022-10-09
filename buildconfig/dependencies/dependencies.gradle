@@ -21,6 +21,7 @@ ext {
     def moshi = "1.13.0"
     def coroutines = "1.6.4"
     def compose = "1.3.0-alpha03"
+    def kspVersion = "1.7.10-1.0.6"
 
     navigation = [
             fragment     : "androidx.navigation:navigation-fragment-ktx:$navVersion",
@@ -30,10 +31,13 @@ ext {
             compose      : "androidx.navigation:navigation-compose:$navVersion",
     ]
 
-
+    def hilt = '2.44'
     di = [
             dagger        : "com.google.dagger:dagger:$dagger",
-            daggerCompiler: "com.google.dagger:dagger-compiler:$dagger"
+            daggerCompiler: "com.google.dagger:dagger-compiler:$dagger",
+            javaxInject : "javax.inject:javax.inject:1",
+            hilt        : "com.google.dagger:hilt-android:$hilt",
+            hiltCompiler: "com.google.dagger:hilt-android-compiler:$hilt",
     ]
 
 
@@ -53,6 +57,8 @@ ext {
             constraintlayout      : "androidx.constraintlayout:constraintlayout:$constraintlayout",
             lifecyclerViewmodelKtx: "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecyclerViewmodelKtx",
             recyclerview          : "androidx.recyclerview:recyclerview:$recyclerview",
+            datastore             : "androidx.datastore:datastore-preferences:1.0.0",
+            fragmentKtx           : "androidx.fragment:fragment-ktx:1.5.2",
     ]
 
 
@@ -85,10 +91,11 @@ ext {
 
     jetbrains = [
             coroutinesCore: "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines",
+            coroutinesAndroid: "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines",
     ]
 
 
-    composeCompilerVersion = "1.3.0"
+    composeCompilerVersion = "1.3.1"
     jetpackCompose = [
             composeUi                  : "androidx.compose.ui:ui:$compose",
 
@@ -106,6 +113,7 @@ ext {
 
             composeViewModel           : "androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1",
             paging                     : "androidx.paging:paging-compose:1.0.0-alpha16",
+            activity                   : "androidx.activity:activity-compose:1.5.1",
     ]
 
     design = [
@@ -119,5 +127,13 @@ ext {
     others = [
             coil       : "io.coil-kt:coil-compose:2.1.0",
             workmanager: "androidx.work:work-runtime-ktx:2.7.1"
+    ]
+
+    codegen = [
+            poet                       : "com.squareup:kotlinpoet:1.12.0",
+            googleAutoService          : "com.google.auto.service:auto-service:1.0.1",
+            googleAutoServiceAnnotation: "com.google.auto.service:auto-service-annotations:1.0.1",
+            ksp                        : "com.google.devtools.ksp:symbol-processing-api:$kspVersion",
+            zacAutoService             : "dev.zacsweers.autoservice:auto-service-ksp:1.0.0"
     ]
 }

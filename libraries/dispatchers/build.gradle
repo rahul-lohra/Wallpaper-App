@@ -1,0 +1,8 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
+
+dependencies {
+    implementation androidx.coreKtx
+    implementation jetbrains.coroutinesCore
+}

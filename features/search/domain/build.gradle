@@ -1,0 +1,15 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
+
+dependencies {
+    implementation androidx.coreKtx
+
+//    implementation project(rootProject.libraries.domain)
+    implementation project(rootProject.search.data)
+
+    implementation jetbrains.coroutinesCore
+    implementation di.javaxInject
+
+    implementation jetpackCompose.paging
+}

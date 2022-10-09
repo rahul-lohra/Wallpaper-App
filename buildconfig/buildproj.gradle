@@ -1,0 +1,11 @@
+subprojects {
+    project.configurations.all {
+        resolutionStrategy {
+            dependencySubstitution {
+                if (!rootProject.ext.debugToolsEnabled) {
+                    substitute module(rootProject.ext.devTools.chucker) with module(rootProject.ext.devTools.chuckerNoOp)
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest  xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.login">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application>
+        <activity
+            android:name=".presentation.ui.activity.LoginWebViewActivity"
+            android:taskAffinity="com.rahullohra.wallpaper.login"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/route_host"
+                    android:path="@string/login_unsplash"
+                    android:scheme="@string/route_internal" />
+            </intent-filter>
+        </activity>
+
+    </application>
+</manifest>

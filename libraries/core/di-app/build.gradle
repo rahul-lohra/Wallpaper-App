@@ -1,0 +1,18 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
+
+dependencies {
+    implementation androidx.coreKtx
+
+    //For DI NetworkModule.kt
+    implementation network.okhttp
+    implementation network.retrofit
+    implementation network.converterMoshi
+    implementation network.okHttploggingInterceptor
+
+    implementation devTools.chucker
+
+    implementation project(rootProject.libraries.data)
+    implementation project(rootProject.libraries.variants)
+}

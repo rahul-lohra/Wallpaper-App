@@ -1,0 +1,20 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradle"
+
+dependencies {
+    implementation androidx.coreKtx
+
+    implementation network.okhttp
+    
+    implementation project(rootProject.search.data)
+    implementation project(rootProject.login.data)
+    implementation project(rootProject.libraries.data)
+    implementation project(rootProject.libraries.unsplash)
+    implementation project(rootProject.libraries.logger)
+
+    implementation jetbrains.coroutinesCore
+    implementation di.javaxInject
+
+    implementation devTools.timber
+}

@@ -1,0 +1,30 @@
+ext {
+    libraries = [
+            logger            : ":libraries:logger",
+            apiresultProcessor: ":libraries:apiresult-processor",
+            core              : ":libraries:core",
+            coreCompose       : ":libraries:core:compose",
+            diApp             : ":libraries:core:di-app",
+            variants          : ":libraries:core:variants",
+            data              : ":libraries:data",
+            domain            : ":libraries:domain",
+            utils             : ":libraries:utils",
+            dispatchers       : ":libraries:dispatchers",
+            router            : ":libraries:router",
+            unsplash          : ":libraries:unsplash",
+    ]
+
+    search = [
+            searchMain: ":features:search",
+            domain    : ":features:search:domain",
+            data      : ":features:search:data",
+    ]
+
+    login = [
+            loginMain: ":features:login",
+            domain   : ":features:login:domain",
+            data     : ":features:login:data",
+    ]
+
+    debugToolsEnabled = true
+}

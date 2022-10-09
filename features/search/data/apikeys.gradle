@@ -1,0 +1,16 @@
+apply from: "$rootDir/buildconfig/utils.gradle"
+
+def file = rootProject.file("$rootProject.projectDir/features/search/data/apikeys.properties")
+def prop = new Properties()
+
+if (file.exists()) {
+    prop.load(new FileInputStream(file))
+}
+
+android {
+    defaultConfig {
+
+        buildConfigField "String", "PEXELS_API_KEY", getValueFromSystem(file, prop, 'PEXELS_API_KEY')
+        buildConfigField "String", "PIXABAY_API_KEY", getValueFromSystem(file, prop, 'PIXABAY_API_KEY')
+    }
+}

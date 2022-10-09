@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="route_internal">internal</string>
+    <string name="route_internal_action">com.rahullohra.wallpaper.internal.VIEW</string>
+    <string name="route_host">app</string>
+</resources>

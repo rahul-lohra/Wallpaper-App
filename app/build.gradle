@@ -1,17 +1,16 @@
-plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
-    id 'kotlin-kapt'
-}
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'kotlin-kapt'
+
 apply from: "$rootDir/buildconfig/dependencies/dependencies.gradle"
+apply from: "$rootDir/buildconfig/dependencies/dependencies-libraries.gradle"
 apply from: "$rootDir/buildconfig/signingconfig.gradle"
 apply from: "$rootDir/buildconfig/kotlin/module.gradle"
-apply from: "$rootDir/buildconfig/apikeys.gradle"
 
 android {
 
     defaultConfig {
-        applicationId "com.rahul.notificationstest"
+        applicationId "com.rahullohra.wallpaper"
         versionCode 1
         versionName "1.0"
 
@@ -21,6 +20,9 @@ android {
     sourceSets {
         local {
             java.srcDirs = ["src/debug/java", "src/main/java"]
+        }
+        main {
+            java.srcDirs = ["src/main/java"]
         }
     }
 
@@ -61,24 +63,12 @@ dependencies {
 
     implementation androidx.coreKtx
     implementation androidx.appcompat
-    implementation androidx.constraintlayout
     implementation androidx.lifecyclerViewmodelKtx
-    implementation androidx.recyclerview
+    implementation androidx.datastore
 
     implementation design.androidMaterialDesign
 
-    implementation di.dagger
-    kapt di.daggerCompiler
-
-    implementation network.okhttp
-    implementation network.retrofit
     implementation network.okHttploggingInterceptor
-    implementation network.converterGson
-    implementation network.converterGson
-    implementation network.converterMoshi
-
-    implementation parsers.moshiKotlin
-    kapt parsers.moshiKotlinCodegen
 
     implementation jetbrains.coroutinesCore
 
@@ -90,25 +80,39 @@ dependencies {
     androidTestImplementation uiTesting.espressoCore
     androidTestImplementation uiTesting.espressoIntents
 
-    localImplementation devTools.chucker
-    debugImplementation devTools.chucker
-    releaseImplementation devTools.chuckerNoOp
+//    localImplementation devTools.chucker
+//    debugImplementation devTools.chucker
+//    releaseImplementation devTools.chuckerNoOp
     implementation devTools.timber
-
     implementation jetpackCompose.composeUi
     implementation jetpackCompose.preview
     implementation jetpackCompose.foundation
     implementation jetpackCompose.materialDesign
-    implementation jetpackCompose.materialDesignIcons
-    implementation jetpackCompose.materialDesignIconsExtended
-    implementation jetpackCompose.composeLiveData
-    implementation jetpackCompose.composeViewModel
     implementation jetpackCompose.paging
+    implementation jetpackCompose.activity
     androidTestImplementation jetpackCompose.composeUiTest
 
-    implementation others.coil
-    implementation others.workmanager
+//    implementation project(rootProject.libraries.apiresultProcessor)
+//    ksp project(rootProject.libraries.apiresultProcessor)
 
-    implementation accompanist.viewpager
+    implementation project(rootProject.search.searchMain)
+    implementation project(rootProject.login.loginMain)
+
+    implementation project(rootProject.libraries.data)
+    implementation project(rootProject.libraries.diApp)
+    implementation project(rootProject.libraries.variants)
+    implementation project(rootProject.libraries.logger)
+    implementation project(rootProject.libraries.unsplash)
+
+    //For DI NetworkModule.kt
+    implementation network.okhttp
+    implementation network.retrofit
+    implementation network.converterMoshi
+    implementation network.okHttploggingInterceptor
+
 }
 apply plugin: 'com.google.gms.google-services'
+
+//ksp {
+//    arg("enabled", "true")
+//}
