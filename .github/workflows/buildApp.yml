@@ -37,6 +37,7 @@ jobs:
         echo $RELEASE_KEY_BASE64 | base64 --decode > releaseKeys/releasekey.jks
         echo $API_KEYS_BASE64 | base64 --decode > gradleProperties/apikeys.properties
         echo $KEYSTORE_BASE64 | base64 --decode > gradleProperties/keystore.properties
+        echo $API_KEYS_BASE64 | base64 --decode > libraries/unsplash/unsplash_apikeys.properties
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
