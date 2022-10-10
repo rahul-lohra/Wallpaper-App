@@ -21,6 +21,7 @@ interface UnsplashApi {
 
     object QueryParams {
         const val PAGE = "page"
+        const val PER_PAGE = "per_page"
     }
 
     object RequestHeaders {
@@ -52,7 +53,8 @@ interface UnsplashApi {
 
     @GET("/photos")
     suspend fun getPhotos(
-        @Query(QueryParams.PAGE) pageNumber: Int
+        @Query(QueryParams.PAGE) pageNumber: Int,
+        @Query(QueryParams.PER_PAGE) perPage: Int
     ): List<UnsplashResponse>
 
     @POST

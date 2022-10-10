@@ -7,10 +7,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.LocalOverscrollConfiguration
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -48,9 +45,11 @@ import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.LoadState
 import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import com.data.di.component.AppDataContract
 import com.di.app.AppContract
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -64,7 +63,6 @@ import com.search.domain.FollowPaginatedDataInitial
 import com.search.domain.NotLoggedInData
 import com.search.ui.viewmodels.SearchViewModel
 import com.unsplash.UnsplashContract
-import com.unsplash.di.component.UnsplashComponent
 import com.utils.onNoRippleClick
 import com.utils.toDp
 import com.utils.toPx
@@ -99,8 +97,10 @@ class UnsplashHomeFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         val appComponent = (context.applicationContext as AppContract).provideAppComponent()
-        val unsplashComponent = (context.applicationContext as UnsplashContract).provideUnsplashComponent()
-        val appDataComponent = (context.applicationContext as AppDataContract).provideAppDataComponent()
+        val unsplashComponent =
+            (context.applicationContext as UnsplashContract).provideUnsplashComponent()
+        val appDataComponent =
+            (context.applicationContext as AppDataContract).provideAppDataComponent()
         DaggerSearchComponent.builder()
             .appComponent(appComponent)
             .appDataComponent(appDataComponent)
@@ -440,7 +440,7 @@ fun PhotosDisplayList(photosFlow: Flow<PagingData<String>>) {
 
     CompositionLocalProvider(LocalOverscrollConfiguration provides null) {
         LazyVerticalGrid(
-            columns = GridCells.Fixed(maxColumnSpan),
+            columns = GridCells.Fixed(1),
             modifier = Modifier
                 .nestedScroll(nestedScrollConnection),
             state = gridState,
@@ -454,22 +454,82 @@ fun PhotosDisplayList(photosFlow: Flow<PagingData<String>>) {
                             GridItemSpan(minColumnSpan)
                         }
                     },
-                    itemContent = { index -> PhotosListItem(url = dataList[index]!!) }) //TODO Rahul why force null?
+                    itemContent = { index ->
+                        PhotosListItem(url = dataList[index]!!)
+                    }) //TODO Rahul why force null?
+                item {
+                    CreateListItemStates(dataList = dataList) {
+                        dataList.retry()
+                    }
+                }
             })
     }
+}
 
+@Composable
+fun CreateListItemStates(dataList: LazyPagingItems<String>, retry: () -> Unit) {
+    dataList.apply {
+        when {
+            loadState.refresh is LoadState.Loading -> Box(
+                modifier = Modifier
+                    .height(300.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(text = "Loading your data ...", modifier = Modifier.align(Alignment.Center))
+            }
+            loadState.refresh is LoadState.Error -> Box(
+                modifier = Modifier
+                    .height(300.dp)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                ErrorListItem(retry)
+            }
+            loadState.prepend is LoadState.Loading -> Text(text = "Prepend Loading your data...")
+            loadState.prepend is LoadState.Error -> ErrorListItem(retry)
+
+            loadState.append is LoadState.Loading -> Text(text = "Appending Loading your data")
+            loadState.append is LoadState.Error -> ErrorListItem(retry)
+        }
+    }
+}
+
+@Composable
+fun ErrorListItem(onClick: () -> Unit) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "Unable to load data. Please retry after some time")
+        Spacer(modifier = Modifier.height(24.dp))
+        UnifyButton("Retry", onClick)
+    }
 }
 
 const val PHOTO_LIST_ITEM_HEIGHT = 300
 
+fun getRandomColors(): Color {
+    val colorsArray =
+        arrayOf(Color.Cyan, Color.Red, Color.Yellow, Color.Gray, Color.Green, Color.Magenta)
+    return colorsArray[(colorsArray.indices).random()]
+}
+
 @Composable
 fun PhotosListItem(url: String) {
-    AsyncImage(
-        model = url,
-        contentDescription = null,
-        modifier = Modifier.height(PHOTO_LIST_ITEM_HEIGHT.dp),
-        contentScale = ContentScale.Crop
-    )
+    Box(modifier = Modifier.border(width = 2.dp, color = getRandomColors())) {
+        SubcomposeAsyncImage(
+            model = url,
+            contentDescription = null,
+            modifier = Modifier.height(PHOTO_LIST_ITEM_HEIGHT.dp),
+            contentScale = ContentScale.Crop,
+            loading = {
+                Text(text = "Loading Image")
+            },
+            error = {
+                Text(text = "Unable to load Image")
+            }
+        )
+    }
+
 }
 
 @OptIn(ExperimentalPagerApi::class)
@@ -530,21 +590,34 @@ fun RenderFollowersUi(state: FollowDomainData, onButtonClick: () -> Unit) {
 @Composable
 fun PleaseLogin() {
     val context = LocalContext.current
-    Column(Modifier.padding(vertical = 60.dp)) {
+    Column(
+        Modifier
+            .height(300.dp)
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
         Text(text = "Please Login to see your following contents")
-        Spacer(modifier = Modifier.height(40.dp))
-        Button(
-            contentPadding = PaddingValues(horizontal = 46.dp),
-            onClick = {
-                RouteManager.getInstance().route(context, "login-unsplash")
-            },
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.Black,
-                contentColor = Color.White
-            ),
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        ) {
-            Text(text = "Login")
+        Spacer(modifier = Modifier.height(24.dp))
+        UnifyButton("Login") {
+            RouteManager.getInstance().route(context, "login-unsplash")
         }
+    }
+}
+
+@Composable
+fun UnifyButton(text: String, onClick: () -> Unit) {
+    Button(
+        contentPadding = PaddingValues(horizontal = 46.dp),
+        onClick = onClick,
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = Color.Black,
+            contentColor = Color.White
+        ),
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Text(text = text)
+        }
+
     }
 }

@@ -8,12 +8,12 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class RemoteDataSource @Inject constructor(
-    val unsplashApi: UnsplashApi
+    private val unsplashApi: UnsplashApi
 ) {
 
     fun getPagingPhotos(): Flow<PagingData<String>> {
         return Pager(
-            config = PagingConfig(10),
+            config = PagingConfig(PAGE_SIZE),
             pagingSourceFactory = {
                 PhotosPagingSource(unsplashApi)
             }).flow
