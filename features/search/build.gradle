@@ -40,6 +40,7 @@ dependencies {
     implementation project(rootProject.libraries.diApp)
     implementation project(rootProject.libraries.router)
     implementation project(rootProject.libraries.unsplash)
+    implementation project(rootProject.libraries.logger)
 
     implementation project(rootProject.search.domain)
     implementation project(rootProject.search.data)

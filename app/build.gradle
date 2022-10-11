@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.firebase.firebase-perf'
+apply plugin: 'com.google.firebase.crashlytics'
 
 apply from: "$rootDir/buildconfig/dependencies/dependencies.gradle"
 apply from: "$rootDir/buildconfig/dependencies/dependencies-libraries.gradle"
@@ -114,6 +115,8 @@ dependencies {
 
     implementation firebase.bom
     implementation firebase.perfKtx
+    implementation firebase.crashlytics
+    implementation firebase.analytics //For crashylytics
 }
 apply plugin: 'com.google.gms.google-services'
 

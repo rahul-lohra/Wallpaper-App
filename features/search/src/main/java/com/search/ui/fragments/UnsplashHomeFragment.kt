@@ -55,12 +55,14 @@ import com.di.app.AppContract
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import com.logger.ServerLogger
 import com.router.RouteManager
 import com.search.R
 import com.search.di.components.DaggerSearchComponent
 import com.search.domain.FollowDomainData
 import com.search.domain.FollowPaginatedDataInitial
 import com.search.domain.NotLoggedInData
+import com.search.ui.viewmodels.RecomposeRequiredException
 import com.search.ui.viewmodels.SearchViewModel
 import com.unsplash.UnsplashContract
 import com.utils.onNoRippleClick
@@ -421,8 +423,8 @@ fun TabViewSmallText(text: String, selected: Boolean, onClick: () -> Unit) {
 @OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun PhotosDisplayList(photosFlow: Flow<PagingData<String>>) {
-    val dataList = photosFlow.collectAsLazyPagingItems()
+fun PhotosDisplayList(photosFlow: Flow<PagingData<String>>, data: Int, recompose: () -> Unit) {
+    val dataList: LazyPagingItems<String> = photosFlow.collectAsLazyPagingItems()
     val maxColumnSpan = 2
     val minColumnSpan = 1
     val gridState = rememberLazyGridState()
@@ -445,6 +447,17 @@ fun PhotosDisplayList(photosFlow: Flow<PagingData<String>>) {
                 .nestedScroll(nestedScrollConnection),
             state = gridState,
             content = {
+                item {
+                    CreateListItemStatesHeader(dataList.loadState.prepend) {
+                        dataList.retry()
+                        if (dataList.loadState.refresh is LoadState.Error) {
+                            val error = (dataList.loadState.refresh as LoadState.Error).error
+                            if (error is RecomposeRequiredException) {
+                                recompose.invoke()
+                            }
+                        }
+                    }
+                }
                 items(
                     dataList.itemCount,
                     span = { index ->
@@ -455,11 +468,33 @@ fun PhotosDisplayList(photosFlow: Flow<PagingData<String>>) {
                         }
                     },
                     itemContent = { index ->
-                        PhotosListItem(url = dataList[index]!!)
+                        ServerLogger.d(
+                            "PhotosListItem",
+                            "index=$index, data=${dataList[index]}, count=${dataList.itemCount}"
+                        )
+                        val listItemData = dataList[index]
+                        if (listItemData != null) {
+                            PhotosListItem(listItemData)
+                        } else {
+                            //Do nothing
+//                            val message = "index=$index, data=${dataList[index]}, count=${dataList.itemCount}"
+//                            Text(text = "Item is dropped, $message")
+//                            dataList.loadState.source
+                        }
+
                     }) //TODO Rahul why force null?
                 item {
-                    CreateListItemStates(dataList = dataList) {
+                    CreateListItemStatesCenter(
+                        dataList.loadState.refresh,
+                        dataList.loadState.append
+                    ) {
                         dataList.retry()
+                        if (dataList.loadState.refresh is LoadState.Error) {
+                            val error = (dataList.loadState.refresh as LoadState.Error).error
+                            if (error is RecomposeRequiredException) {
+                                recompose.invoke()
+                            }
+                        }
                     }
                 }
             })
@@ -467,29 +502,40 @@ fun PhotosDisplayList(photosFlow: Flow<PagingData<String>>) {
 }
 
 @Composable
-fun CreateListItemStates(dataList: LazyPagingItems<String>, retry: () -> Unit) {
-    dataList.apply {
-        when {
-            loadState.refresh is LoadState.Loading -> Box(
-                modifier = Modifier
-                    .height(300.dp)
-                    .fillMaxWidth()
-            ) {
-                Text(text = "Loading your data ...", modifier = Modifier.align(Alignment.Center))
-            }
-            loadState.refresh is LoadState.Error -> Box(
-                modifier = Modifier
-                    .height(300.dp)
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                ErrorListItem(retry)
-            }
-            loadState.prepend is LoadState.Loading -> Text(text = "Prepend Loading your data...")
-            loadState.prepend is LoadState.Error -> ErrorListItem(retry)
+fun CreateListItemStatesHeader(loadState: LoadState, retry: () -> Unit) {
+    when (loadState) {
+        is LoadState.Loading -> Box(
+            modifier = Modifier
+                .height(60.dp)
+                .fillMaxWidth(), contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = Color.Black, modifier = Modifier.height(36.dp))
+        }
+        is LoadState.Error -> ErrorListItem(retry)
+        else -> {}
+    }
+}
 
-            loadState.append is LoadState.Loading -> Text(text = "Appending Loading your data")
-            loadState.append is LoadState.Error -> ErrorListItem(retry)
+@Composable
+fun CreateListItemStatesCenter(refreshState: LoadState, appendState: LoadState, retry: () -> Unit) {
+    when (refreshState) {
+        is LoadState.Loading -> Box(
+            modifier = Modifier
+                .height(300.dp)
+                .fillMaxWidth()
+        ) {
+            Text(text = "Loading your data ...", modifier = Modifier.align(Alignment.Center))
+        }
+        is LoadState.Error -> Box(
+            modifier = Modifier
+                .height(300.dp)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            ErrorListItem(retry)
+        }
+        else -> {
+            CreateListItemStatesHeader(appendState, retry = retry)
         }
     }
 }
@@ -499,9 +545,14 @@ fun ErrorListItem(onClick: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Unable to load data. Please retry after some time")
+        Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            text = "Unable to load data. Please retry after some time",
+            modifier = Modifier.padding(8.dp)
+        )
         Spacer(modifier = Modifier.height(24.dp))
         UnifyButton("Retry", onClick)
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 
@@ -538,11 +589,21 @@ fun UnsplashViewPager() {
     val pagerState = rememberPagerState()
     HorizontalPager(count = 2, state = pagerState, verticalAlignment = Alignment.Top) { page ->
         if (page == 0) {
+            var forceRecompose by remember {
+                ServerLogger.d("Unsplash", "forceRecompose PhotosDisplayList")
+                mutableStateOf(0)
+            }
+            ServerLogger.d("Unsplash", "Render PhotosDisplayList")
             PhotosDisplayList(
                 photosFlow = viewModel(
                     modelClass = SearchViewModel::class.java
-                ).photosFlow
-            )
+                ).photosFlow, forceRecompose
+            ) {
+
+                ServerLogger.d("Unsplash", "Hello PhotosDisplayList")
+                forceRecompose += 1
+                ServerLogger.d("Unsplash", "World PhotosDisplayList")
+            }
         } else {
             FollowersUi()
         }

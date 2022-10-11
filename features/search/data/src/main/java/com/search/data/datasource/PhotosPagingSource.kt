@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.unsplash.UnsplashApi
 
-const val PAGE_SIZE = 9
+const val PAGE_SIZE = 12
 class PhotosPagingSource constructor(private val api: UnsplashApi) :
     PagingSource<Int, String>() {
 
