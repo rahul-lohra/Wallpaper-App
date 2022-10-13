@@ -50,6 +50,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.SubcomposeAsyncImage
+import com.core.compose.theme.AppTheme
 import com.data.di.component.AppDataContract
 import com.di.app.AppContract
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -119,7 +120,7 @@ class UnsplashHomeFragment : Fragment() {
 fun UnsplashHomeComposeLayout(
 ) {
 
-    MaterialTheme(content = {
+    AppTheme(content = {
         Scaffold(
             content = { padding ->
                 HomeScreen(
@@ -179,7 +180,6 @@ fun SearchBarWithHorizontalTabs(scrollChange: Float, heightOfComponentCallback: 
         mutableStateOf(0)
     }
 
-
     Column(modifier = Modifier
         .alpha(1f - scrollChange)
         .graphicsLayer {
@@ -205,7 +205,7 @@ fun HomeToolbar(modifier: Modifier) {
         navigationIcon = {
             Icon(
                 painter = painterResource(id = R.drawable.search_ic_unsplash),
-                tint = Color.Black,
+                tint = MaterialTheme.colors.onBackground,
                 contentDescription = null,
                 modifier = modifier.padding(start = 17.dp)
             )
@@ -215,16 +215,16 @@ fun HomeToolbar(modifier: Modifier) {
                 imageVector = Icons.Default.Search,
                 modifier = Modifier
                     .padding(end = 36.dp, top = 6.dp)
-                    .background(colorResource(id = R.color.search_grey), CircleShape)
+                    .background(MaterialTheme.colors.surface, CircleShape)
                     .clip(CircleShape)
                     .size(36.dp)
                     .align(Alignment.CenterVertically)
                     .padding(vertical = 9.dp),
-                colorFilter = ColorFilter.tint(colorResource(id = android.R.color.white)),
+                colorFilter = ColorFilter.tint(Color.White),
                 contentDescription = null,
             )
         },
-        backgroundColor = colorResource(id = android.R.color.white),
+        backgroundColor = MaterialTheme.colors.background,
     )
 }
 
@@ -353,7 +353,8 @@ fun Header(modifier: Modifier) {
     ) {
         Text(
             "UnSplash",
-            style = com.core.compose.theme.typography.h1
+            style = com.core.compose.theme.typography.h1,
+            color = MaterialTheme.colors.onBackground
         )
         Text(
             modifier = Modifier.padding(end = 73.dp),
@@ -361,6 +362,7 @@ fun Header(modifier: Modifier) {
             "Beautiful, free photos.\n" +
                     "Gifted by the world’s most generous community of photographers.",
             style = com.core.compose.theme.typography.caption,
+            color = MaterialTheme.colors.onSurface
         )
         TabViewSmallTextContainer()
     }
@@ -392,11 +394,13 @@ fun TabViewSmallTextContainer() {
 fun TabViewSmallText(text: String, selected: Boolean, onClick: () -> Unit) {
     var dividerWidth by remember { mutableStateOf(0) }
 
+    val selectedColor  = MaterialTheme.colors.onBackground
+    val unSelectedColor  = MaterialTheme.colors.onSurface
     Column(modifier = Modifier.onNoRippleClick { onClick() }) {
         if (selected) {
             if (dividerWidth > 0) {
                 Divider(
-                    color = colorResource(id = android.R.color.black),
+                    color = selectedColor,
                     modifier = Modifier.width(dividerWidth.toFloat().toDp().dp)
                 )
             }
@@ -404,7 +408,7 @@ fun TabViewSmallText(text: String, selected: Boolean, onClick: () -> Unit) {
                 text = text,
                 style = com.core.compose.theme.typography.body2,
                 fontWeight = FontWeight.Bold,
-                color = colorResource(id = android.R.color.black),
+                color = selectedColor,
                 modifier = Modifier.padding(top = 11.dp),
                 onTextLayout = {
                     dividerWidth = it.size.width
@@ -413,7 +417,7 @@ fun TabViewSmallText(text: String, selected: Boolean, onClick: () -> Unit) {
             Text(
                 text = text,
                 style = com.core.compose.theme.typography.body2,
-                color = colorResource(id = R.color.search_grey_5)
+                color = unSelectedColor
             )
         }
 
@@ -590,7 +594,6 @@ fun UnsplashViewPager() {
     HorizontalPager(count = 2, state = pagerState, verticalAlignment = Alignment.Top) { page ->
         if (page == 0) {
             var forceRecompose by remember {
-                ServerLogger.d("Unsplash", "forceRecompose PhotosDisplayList")
                 mutableStateOf(0)
             }
             ServerLogger.d("Unsplash", "Render PhotosDisplayList")
@@ -599,10 +602,7 @@ fun UnsplashViewPager() {
                     modelClass = SearchViewModel::class.java
                 ).photosFlow, forceRecompose
             ) {
-
-                ServerLogger.d("Unsplash", "Hello PhotosDisplayList")
                 forceRecompose += 1
-                ServerLogger.d("Unsplash", "World PhotosDisplayList")
             }
         } else {
             FollowersUi()
@@ -658,7 +658,7 @@ fun PleaseLogin() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Please Login to see your following contents")
+        Text(text = "Please Login to see your following contents", color = MaterialTheme.colors.onBackground)
         Spacer(modifier = Modifier.height(24.dp))
         UnifyButton("Login") {
             RouteManager.getInstance().route(context, "login-unsplash")
@@ -672,8 +672,8 @@ fun UnifyButton(text: String, onClick: () -> Unit) {
         contentPadding = PaddingValues(horizontal = 46.dp),
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color.Black,
-            contentColor = Color.White
+            backgroundColor = MaterialTheme.colors.primary,
+            contentColor = MaterialTheme.colors.onPrimary
         ),
     ) {
         Box(contentAlignment = Alignment.Center) {
