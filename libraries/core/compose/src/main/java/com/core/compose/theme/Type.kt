@@ -52,7 +52,7 @@ val typography = Typography(
         fontWeight = FontWeight.Bold,
         fontSize = 36.sp,
         lineHeight = 44.sp,
-        letterSpacing = (1.15).sp
+        letterSpacing = (1.15).sp,
     ),
     h2 = TextStyle(
         fontFamily = fontFamilyCircularStd,
