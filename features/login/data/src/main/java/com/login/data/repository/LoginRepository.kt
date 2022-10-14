@@ -14,5 +14,5 @@ class LoginRepository @Inject constructor(
     suspend fun getAuthToken(body: AuthTokenRequestBody) = remoteDataSource.getAuthToken(body)
 
     suspend fun saveAuthTokenResponse(authTokenResponse: AuthTokenResponse) =
-        credentialsStorage.saveAccessToken(authTokenResponse.accessToken)
+        credentialsStorage.saveAuthTokens(authTokenResponse.accessToken,authTokenResponse.refreshToken)
 }

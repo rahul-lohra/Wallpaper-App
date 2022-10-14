@@ -76,6 +76,7 @@ data class AuthTokenRequestBody(
 @JsonClass(generateAdapter = true)
 data class AuthTokenResponse(
     @Json(name = "access_token") val accessToken: String,
+    @Json(name = "refresh_token") val refreshToken: String,
     @Json(name = "token_type") var tokenType: String = ADDRESS_KEY,
     @Json(name = "scope") var scope: String = UnsplashApi.Config.SECRET_KEY,
     @Json(name = "created_at") var createdAt: String = REDIRECT_URI,

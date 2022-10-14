@@ -1,12 +1,12 @@
 package com.login.presentation.ui
 
 sealed class UiState
-class UiStateInitial : UiState()
-class UiStateLoading : UiState()
-class UiStateSuccess : UiState()
-class UiStateFail(ex: Exception) : UiState()
+object UiStateInitial : UiState()
+object UiStateLoading : UiState()
+class UiStateSuccess(val isLoggedIn: Boolean) : UiState()
+class UiStateFail(val th: Throwable) : UiState()
 
 sealed class LoginState
 object LoginStateLoading : LoginState()
 object LoginStateSuccess : LoginState()
-class LoginStateFail(ex: Exception) : LoginState()
+class LoginStateFail(th: Throwable) : LoginState()

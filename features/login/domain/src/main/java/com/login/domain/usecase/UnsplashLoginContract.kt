@@ -5,6 +5,5 @@ import com.login.domain.models.LoginDomainState
 
 
 interface UnsplashLoginContract {
-    suspend fun performLogin(url: String?): LoginDomainState
-    suspend fun processLoginCompleted(uri: Uri)
+    suspend fun performLogin(url: String): LoginDomainState
 }
