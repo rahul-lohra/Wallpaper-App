@@ -26,11 +26,11 @@ class UnsplashLoginUseCase @Inject constructor(private val repository: LoginRepo
             .addQueryParameter("client_id", UnsplashApi.Config.ADDRESS_KEY).addEncodedQueryParameter(
                 "redirect_uri", REDIRECT_URI
             ).addQueryParameter("response_type", "code")
-            .addQueryParameter("scope", "public+read_user")
+            .addQueryParameter("scope", "public read_photos read_collections")
             .build().toString()
     }
 
-    override suspend fun performLogin(url: String?): LoginDomainState {
+    override suspend fun performLogin(url: String): LoginDomainState {
         val code = getAuthorizationCode(url)
         return if (!code.isNullOrEmpty()) {
             repository.run {
@@ -42,23 +42,17 @@ class UnsplashLoginUseCase @Inject constructor(private val repository: LoginRepo
                     }
                     is ApiResultFail -> LoginDomainStateFail(result.ex)
                 }
-
             }
         } else {
             LoginDomainStateFail(Exception("Unable to extract code"))
         }
     }
 
-    override suspend fun processLoginCompleted(uri: Uri) {
-        ServerLogger.d(Priority.P3, LogData("processLoginCompleted", uri.toString()))
-//        repository.getAuthToken()
-    }
-
     @VisibleForTesting
     fun getAuthorizationCode(url: String?): String? {
         if (!url.isNullOrEmpty()) {
-            return url.split("code=").getOrNull(0)
+            return url.split("code=").getOrNull(1)
         }
         return null
     }
-}//Byn35RsIr3agKljkGfQobr1fb_s1ZzDdyTifD5qQyNc
+}

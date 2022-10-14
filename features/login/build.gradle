@@ -29,6 +29,7 @@ dependencies {
     implementation jetpackCompose.activity
 
     implementation project(rootProject.libraries.core)
+    implementation project(rootProject.libraries.coreCompose)
     implementation project(rootProject.libraries.dispatchers)
     implementation project(rootProject.libraries.router)
     implementation project(rootProject.libraries.data)
@@ -40,8 +41,6 @@ dependencies {
     implementation project(rootProject.login.data)
     
     implementation project(rootProject.search.data)
-
-    implementation devTools.timber
 
     //For DI NetworkModule.kt
     implementation network.okhttp
