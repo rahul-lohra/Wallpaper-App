@@ -2,22 +2,55 @@ package com.unsplash.data
 
 import com.data.keyvaluedatasource.CredentialStorage
 import com.data.keyvaluedatasource.KeyValueStorage
+import com.squareup.moshi.JsonAdapter
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class UnsplashCredentialStorage @Inject constructor(private val keyValueStorage: KeyValueStorage) :
+class UnsplashCredentialStorage @Inject constructor(
+    private val moshiAdapter: JsonAdapter<UnsplashUserData>,
+    private val keyValueStorage: KeyValueStorage
+) :
     CredentialStorage {
-    companion object {
+
+    internal object Keys {
         const val ACCESS_TOKEN = "access_token"
         const val REFRESH_TOKEN = "refresh_token"
+        const val USER_ID = "user_id"
+        const val USER_DATA = "user_data"
+    }
+
+    companion object {
+        var userData: UnsplashUserData? = null
+    }
+
+    init {
+        prepareStorage()
+    }
+
+    private fun prepareStorage() {
+        GlobalScope.launch {
+            val userDataString = keyValueStorage.getString(Keys.USER_DATA).firstOrNull()
+            if (userDataString != null) {
+                userData = moshiAdapter.fromJson(userDataString)
+            }
+        }
     }
 
     override suspend fun saveAuthTokens(accessToken: String, refreshToken: String) {
-        keyValueStorage.saveString(ACCESS_TOKEN, accessToken)
-        keyValueStorage.saveString(REFRESH_TOKEN, refreshToken)
+        keyValueStorage.saveString(Keys.ACCESS_TOKEN, accessToken)
+        keyValueStorage.saveString(Keys.REFRESH_TOKEN, refreshToken)
+    }
+
+    suspend fun saveUserData(unsplashUserData: UnsplashUserData) {
+        keyValueStorage.saveString(Keys.USER_DATA, moshiAdapter.toJson(unsplashUserData))
+        keyValueStorage.saveString(Keys.USER_ID, unsplashUserData.id)
+        userData = unsplashUserData
     }
 
     override suspend fun getUserId(): Flow<String> {
-        return keyValueStorage.getString("TOKEN")
+        return keyValueStorage.getString(Keys.USER_ID)
     }
 }

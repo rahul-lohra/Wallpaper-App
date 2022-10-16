@@ -1,29 +1,28 @@
 package com.login.domain.usecase
 
-import LogData
-import android.net.Uri
 import androidx.annotation.VisibleForTesting
-import com.data.ApiResultFail
-import com.data.ApiResultSuccess
-import com.logger.ServerLogger
-import com.logger.data.Priority
+import com.data.*
 import com.login.data.repository.LoginRepository
 import com.login.domain.models.LoginDomainState
 import com.login.domain.models.LoginDomainStateFail
 import com.login.domain.models.LoginDomainStateSuccess
-import com.search.data.BuildConfig
 import com.unsplash.AuthTokenRequestBody
 import com.unsplash.UnsplashApi
 import com.unsplash.UnsplashApi.Config.REDIRECT_URI
+import com.unsplash.domain.UnsplashUserUseCase
 import okhttp3.HttpUrl
 import javax.inject.Inject
 
-class UnsplashLoginUseCase @Inject constructor(private val repository: LoginRepository) :
+class UnsplashLoginUseCase @Inject constructor(
+    private val repository: LoginRepository,
+    private val unsplashUserUseCase: UnsplashUserUseCase
+) :
     UnsplashLoginContract {
     fun getLoginUri(): String {
         return HttpUrl.Builder().scheme("https").host("unsplash.com")
             .encodedPath("/oauth/authorize")
-            .addQueryParameter("client_id", UnsplashApi.Config.ADDRESS_KEY).addEncodedQueryParameter(
+            .addQueryParameter("client_id", UnsplashApi.Config.ADDRESS_KEY)
+            .addEncodedQueryParameter(
                 "redirect_uri", REDIRECT_URI
             ).addQueryParameter("response_type", "code")
             .addQueryParameter("scope", "public read_photos read_collections")
@@ -38,7 +37,15 @@ class UnsplashLoginUseCase @Inject constructor(private val repository: LoginRepo
                 when (result) {
                     is ApiResultSuccess -> {
                         saveAuthTokenResponse(result.data)
-                        LoginDomainStateSuccess
+                        when (val selfUserData = unsplashUserUseCase.getUserData(null)) {
+                            is ApiResultSuccess -> {
+                                saveUserData(selfUserData.data)
+                                LoginDomainStateSuccess
+                            }
+                            is ApiResultFail -> {
+                                LoginDomainStateFail(selfUserData.ex)
+                            }
+                        }
                     }
                     is ApiResultFail -> LoginDomainStateFail(result.ex)
                 }
