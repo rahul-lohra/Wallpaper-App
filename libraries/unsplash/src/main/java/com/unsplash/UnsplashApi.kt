@@ -1,11 +1,12 @@
 package com.unsplash
 
 import androidx.annotation.StringDef
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import com.unsplash.UnsplashApi.Config.ADDRESS_KEY
 import com.unsplash.UnsplashApi.Config.AUTH_TOKEN_URL
 import com.unsplash.UnsplashApi.Config.REDIRECT_URI
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import com.unsplash.data.UnsplashUserData
 import retrofit2.http.*
 
 interface UnsplashApi {
@@ -62,6 +63,12 @@ interface UnsplashApi {
         @Body body: AuthTokenRequestBody,
         @Url url: String = AUTH_TOKEN_URL,
     ): AuthTokenResponse
+
+    @GET("/me")
+    suspend fun getUserData(): UnsplashUserData
+
+    @GET("/users/{username}")
+    suspend fun getUserData(@Path("username") userName: String): UnsplashUserData
 }
 
 @JsonClass(generateAdapter = true)
