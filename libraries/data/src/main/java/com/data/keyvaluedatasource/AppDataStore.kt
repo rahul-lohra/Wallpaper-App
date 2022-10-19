@@ -7,10 +7,10 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-open class AppDataStore constructor(private val context: Context, fileName: String) : KeyValueStorage {
+open class AppDataStore constructor(private val context: Context, fileName: String) :
+    KeyValueStorage {
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = fileName)
-
 
     override suspend fun saveString(key: String, data: String) {
         context.dataStore.edit {

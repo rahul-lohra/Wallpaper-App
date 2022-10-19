@@ -1,6 +1,7 @@
 package com.data.di.modules
 
 import android.content.Context
+import com.data.di.scope.AppDataScope
 import com.data.keyvaluedatasource.AppDataStore
 import com.data.keyvaluedatasource.KeyValueStorage
 import dagger.Module

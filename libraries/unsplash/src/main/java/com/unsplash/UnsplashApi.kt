@@ -69,6 +69,9 @@ interface UnsplashApi {
 
     @GET("/users/{username}")
     suspend fun getUserData(@Path("username") userName: String): UnsplashUserData
+
+    @GET("/users/{username}/following")
+    suspend fun getFollowing(@Path("username") userName: String): List<FollowingEntity>
 }
 
 @JsonClass(generateAdapter = true)

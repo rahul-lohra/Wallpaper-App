@@ -7,6 +7,7 @@ import com.data.keyvaluedatasource.KeyValueStorage
 import com.di.app.AppContract
 import com.di.app.modules.AppContextModule
 import com.di.app.scope.AppScope
+import com.squareup.moshi.Moshi
 import dagger.Component
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -21,12 +22,12 @@ import retrofit2.converter.moshi.MoshiConverterFactory
     ],
 )
 interface AppComponent {
-//    fun inject(app: AppContract)
 
     fun context(): Context
     fun okHttpClient(): OkHttpClient
 
     fun moshiConvertorFactory(): MoshiConverterFactory
+    fun moshi(): Moshi
 
     @Component.Factory
     interface Factory {

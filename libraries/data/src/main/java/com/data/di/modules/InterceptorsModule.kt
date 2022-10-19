@@ -2,6 +2,7 @@ package com.data.di.modules
 
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.data.di.scope.AppDataScope
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor

@@ -1,6 +1,5 @@
 package com.login.presentation.viewmodel
 
-import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -22,6 +21,7 @@ import javax.inject.Named
 
 class LoginWebViewViewModel @Inject constructor(
     @Named(DispatcherQualifiers.IO) private val io: CoroutineDispatcher,
+    @Named(DispatcherQualifiers.DEFAULT) private val default: CoroutineDispatcher,
     private val loginUseCase: UnsplashLoginUseCase,
     private val cookiesUseCase: CookiesUseCase,
     private val uiMapper: UiMapper
