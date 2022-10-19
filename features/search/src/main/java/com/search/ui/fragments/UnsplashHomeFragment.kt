@@ -38,7 +38,6 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -60,10 +59,7 @@ import com.logger.ServerLogger
 import com.router.RouteManager
 import com.search.R
 import com.search.di.components.DaggerSearchComponent
-import com.search.domain.FollowDomainData
-import com.search.domain.FollowPaginatedDataInitial
-import com.search.domain.NotLoggedInData
-import com.search.ui.viewmodels.RecomposeRequiredException
+import com.search.ui.models.*
 import com.search.ui.viewmodels.SearchViewModel
 import com.unsplash.UnsplashContract
 import com.utils.onNoRippleClick
@@ -394,8 +390,8 @@ fun TabViewSmallTextContainer() {
 fun TabViewSmallText(text: String, selected: Boolean, onClick: () -> Unit) {
     var dividerWidth by remember { mutableStateOf(0) }
 
-    val selectedColor  = MaterialTheme.colors.onBackground
-    val unSelectedColor  = MaterialTheme.colors.onSurface
+    val selectedColor = MaterialTheme.colors.onBackground
+    val unSelectedColor = MaterialTheme.colors.onSurface
     Column(modifier = Modifier.onNoRippleClick { onClick() }) {
         if (selected) {
             if (dividerWidth > 0) {
@@ -616,35 +612,63 @@ fun FollowersUi(
         modelClass = SearchViewModel::class.java
     )
 ) {
-    val context = LocalContext.current
-    val state by viewModel.followersFlow.collectAsState(initial = FollowPaginatedDataInitial)
-    RenderFollowersUi(state) {
-        //TODO Rahul uncomment and fix
-//        RouteManager.getInstance().route(context, "login-unsplash")
+    val state by viewModel.followersFlow.collectAsState(initial = FollowUiEntityInitial)
+    RenderFollowersUi(state)
+}
+
+@Composable
+fun RenderFollowersUi(state: FollowUiEntity) {
+    when (state) {
+        is FollowUiEntityInitial -> FollowInitialUi("Hang on we are getting your followings")
+        is FollowUiEntityNotLoggedIn -> FollowUiEntityNotLoggedInUi()
+        is FollowUiEntitySuccess -> FollowUiEntitySuccessUi(state.data)
+        is FollowUiEntityError -> FollowUiEntityErrorUi()
     }
 }
 
 @Composable
-fun RenderFollowersUi(state: FollowDomainData, onButtonClick: () -> Unit) {
-    when (state) {
+fun FollowUiEntitySuccessUi(dataList: List<String>) {
+    LazyVerticalGrid(columns = GridCells.Fixed(3), content = {
+        items(dataList.size, key = {
+            dataList[it]
+        }, itemContent = {
+            Text(text = dataList[it])
+        })
+    })
+}
 
-        FollowPaginatedDataInitial -> {
-            var screenHeight = 0f
-            LocalConfiguration.current.apply {
-                screenHeight = screenHeightDp.toFloat()
-            }
-            Box(
-                modifier = Modifier
-                    .height(screenHeight.dp)
-//                    .background(color = Color.Cyan)
-            ) {
-                PleaseLogin()
-            }
-        }
-        NotLoggedInData -> Button(onClick = {
-            onButtonClick()
-        }, content = { Text(text = "Please Login") })
-        else -> Text(text = "Else")
+@Composable
+fun FollowUiEntityErrorUi() {
+    FollowInitialUi("We are facing some issues to get your followings. Please try after some time")
+}
+
+@Composable
+fun FollowUiEntityNotLoggedInUi() {
+    var screenHeight = 0f
+    LocalConfiguration.current.apply {
+        screenHeight = screenHeightDp.toFloat()
+    }
+    Box(
+        modifier = Modifier
+            .height(screenHeight.dp)
+    ) {
+        PleaseLogin()
+    }
+}
+
+@Composable
+fun FollowInitialUi(text: String) {
+    Column(
+        Modifier
+            .height(300.dp)
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = text,
+            color = MaterialTheme.colors.onBackground
+        )
     }
 }
 
@@ -658,7 +682,10 @@ fun PleaseLogin() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Please Login to see your following contents", color = MaterialTheme.colors.onBackground)
+        Text(
+            text = "Please Login to see your following contents",
+            color = MaterialTheme.colors.onBackground
+        )
         Spacer(modifier = Modifier.height(24.dp))
         UnifyButton("Login") {
             RouteManager.getInstance().route(context, "login-unsplash")

@@ -4,6 +4,7 @@ import androidx.paging.PagingData
 import com.search.data.datasource.DummyDataProvider
 import com.search.data.datasource.LocalDataSource
 import com.search.data.datasource.RemoteDataSource
+import com.unsplash.FollowingEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -11,32 +12,25 @@ import javax.inject.Inject
 class SearchRepository @Inject constructor(
     private val localDataSource: LocalDataSource,
     private val remoteDataSource: RemoteDataSource,
-    private val dummyDataProvider: DummyDataProvider,
 ) {
 
-    suspend fun getDummyData(): Flow<String> {
-        return dummyDataProvider.getData()
-    }
+    suspend fun isLoggedIn() = localDataSource.isLoggedIn()
 
     fun getPagingPhotos(): Flow<PagingData<String>> = remoteDataSource.getPagingPhotos()
 
-    //TODO Rahul Create data's layer Follow data
-    fun getFollowersData() =
-        flow<FollowDomainData> {
+    suspend fun getFollowersData():Flow<FollowData> =
+        flow<FollowData> {
             localDataSource.credentialsStorage.getUserId()
                 .collect { userId ->
                     if (userId.isNotEmpty()) {
-                        emit(FollowPaginatedData(getPagingPhotos()))
+                        emit(FollowDataPaginated(remoteDataSource.getFollowing(userId)))
                     } else {
-                        emit(NotLoggedInData)
+                        emit(FollowDataNotLoggedIn)
                     }
                 }
         }
 }
 
-sealed class FollowDomainData
-
-class FollowPaginatedData(data: Flow<PagingData<String>>) : FollowDomainData()
-object FollowPaginatedDataInitial : FollowDomainData()
-object NotLoggedInData : FollowDomainData()
-class Error(ex: Exception) : FollowDomainData()
+sealed class FollowData
+class FollowDataPaginated(val data: List<FollowingEntity>) : FollowData()
+object FollowDataNotLoggedIn : FollowData()

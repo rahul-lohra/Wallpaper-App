@@ -3,13 +3,13 @@ package com.unsplash.data
 import com.data.keyvaluedatasource.CredentialStorage
 import com.data.keyvaluedatasource.KeyValueStorage
 import com.squareup.moshi.JsonAdapter
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class UnsplashCredentialStorage @Inject constructor(
+class UnsplashCredentialStorage (
     private val moshiAdapter: JsonAdapter<UnsplashUserData>,
     private val keyValueStorage: KeyValueStorage
 ) :
@@ -31,9 +31,9 @@ class UnsplashCredentialStorage @Inject constructor(
     }
 
     private fun prepareStorage() {
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.IO) {
             val userDataString = keyValueStorage.getString(Keys.USER_DATA).firstOrNull()
-            if (userDataString != null) {
+            if (!userDataString.isNullOrEmpty()) {
                 userData = moshiAdapter.fromJson(userDataString)
             }
         }

@@ -5,6 +5,7 @@ package com.data.di.modules
 //import dagger.hilt.components.SingletonComponent
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.squareup.moshi.Moshi
 import com.variant.BuildVariant
 import dagger.Module
 import dagger.Provides
@@ -50,6 +51,10 @@ class NetworkModule @Inject constructor() {
     //    @AppScope
     @Provides
     fun provideMoshiConvertorFactory() = MoshiConverterFactory.create()
+
+    @Provides
+    fun provideMoshi() = Moshi.Builder().build()
+
 
     @Provides
     fun getLogginInterceptor(): Interceptor {

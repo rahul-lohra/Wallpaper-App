@@ -1,0 +1,55 @@
+{
+  "id": "fqsHga57HUQ",
+  "updated_at": "2022-10-14T13:43:51Z",
+  "username": "rahullohra",
+  "name": "Rahul Lohra",
+  "first_name": "Rahul",
+  "last_name": "Lohra",
+  "twitter_username": null,
+  "portfolio_url": null,
+  "bio": null,
+  "location": null,
+  "links": {
+    "self": "https://api.unsplash.com/users/rahullohra",
+    "html": "https://unsplash.com/@rahullohra",
+    "photos": "https://api.unsplash.com/users/rahullohra/photos",
+    "likes": "https://api.unsplash.com/users/rahullohra/likes",
+    "portfolio": "https://api.unsplash.com/users/rahullohra/portfolio",
+    "following": "https://api.unsplash.com/users/rahullohra/following",
+    "followers": "https://api.unsplash.com/users/rahullohra/followers"
+  },
+  "profile_image": {
+    "small": "https://images.unsplash.com/profile-fb-1659901147-8e1c0657579e.jpg?ixlib=rb-1.2.1&crop=faces&fit=crop&w=32&h=32",
+    "medium": "https://images.unsplash.com/profile-fb-1659901147-8e1c0657579e.jpg?ixlib=rb-1.2.1&crop=faces&fit=crop&w=64&h=64",
+    "large": "https://images.unsplash.com/profile-fb-1659901147-8e1c0657579e.jpg?ixlib=rb-1.2.1&crop=faces&fit=crop&w=128&h=128"
+  },
+  "instagram_username": null,
+  "total_collections": 0,
+  "total_likes": 8,
+  "total_photos": 0,
+  "accepted_tos": false,
+  "for_hire": false,
+  "social": {
+    "instagram_username": null,
+    "portfolio_url": null,
+    "twitter_username": null,
+    "paypal_email": null
+  },
+  "followed_by_user": false,
+  "photos": [],
+  "badge": null,
+  "tags": {
+    "custom": [],
+    "aggregated": []
+  },
+  "followers_count": 0,
+  "following_count": 6,
+  "allow_messages": true,
+  "numeric_id": 10215709,
+  "downloads": 0,
+  "meta": {
+    "index": false
+  },
+  "uid": "fqsHga57HUQ",
+  "confirmed": true
+}

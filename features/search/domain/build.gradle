@@ -5,7 +5,8 @@ apply from: "$rootProject.projectDir/buildconfig/dependencies/dependencies.gradl
 dependencies {
     implementation androidx.coreKtx
 
-//    implementation project(rootProject.libraries.domain)
+    implementation project(rootProject.libraries.dispatchers)
+    implementation project(rootProject.libraries.unsplash)
     implementation project(rootProject.search.data)
 
     implementation jetbrains.coroutinesCore
