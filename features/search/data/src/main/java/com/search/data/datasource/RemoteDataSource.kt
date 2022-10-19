@@ -18,4 +18,6 @@ class RemoteDataSource @Inject constructor(
                 PhotosPagingSource(unsplashApi)
             }).flow
     }
+
+    suspend fun getFollowing(userName: String) = unsplashApi.getFollowing(userName)
 }

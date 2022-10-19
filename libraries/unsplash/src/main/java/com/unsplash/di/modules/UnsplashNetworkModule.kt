@@ -3,6 +3,7 @@ package com.unsplash.di.modules
 import com.data.keyvaluedatasource.CredentialStorage
 import com.unsplash.UnsplashApi
 import com.unsplash.UnsplashInterceptor
+import com.unsplash.di.scope.UnSplashScope
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
@@ -14,6 +15,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 class UnsplashNetworkModule {
 
     @Provides
+    @UnSplashScope
     fun providesUnsplashApi(
         lazyOkHttpClient: dagger.Lazy<OkHttpClient>,
         moshiConverterFactory: MoshiConverterFactory,

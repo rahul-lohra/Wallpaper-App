@@ -6,9 +6,5 @@ import javax.inject.Inject
 
 class SearchUseCase @Inject constructor(private val repository: SearchRepository) {
 
-    suspend fun getData():Flow<String> {
-        return repository.getDummyData()
-    }
     fun getPagingData() = repository.getPagingPhotos()
-    fun getFollowersData() = repository.getFollowersData()
 }
