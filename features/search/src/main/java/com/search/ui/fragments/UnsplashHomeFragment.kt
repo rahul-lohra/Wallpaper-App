@@ -64,6 +64,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.logger.ServerLogger
 import com.router.RouteManager
 import com.search.R
+import com.search.data.datasource.DummyDataProvider
 import com.search.di.components.DaggerSearchComponent
 import com.search.ui.models.*
 import com.search.ui.viewmodels.SearchViewModel
@@ -145,18 +146,23 @@ fun HomeScreen(
     val scrollChange = remember {
         mutableStateOf(1f)
     }
+    val selectedTabIndex = remember {
+        mutableStateOf(0)
+    }
 
     Box {
         if (heightOfSearchBarComponent.value > 0f) {
             HeaderWithPhotosList(
                 modifier,
-                heightOfSearchBarComponent.value.toFloat()
-            ) {
-                scrollChange.value = it
-            }
+                heightOfSearchBarComponent.value.toFloat(),
+                {
+                    scrollChange.value = it
+                }, {
+                    selectedTabIndex.value = it
+                })
         }
 
-        SearchBarWithHorizontalTabs(scrollChange.value) {
+        SearchBarWithHorizontalTabs(scrollChange.value, selectedTabIndex.value) {
             heightOfSearchBarComponent.value = it
         }
     }
@@ -166,19 +172,25 @@ fun HomeScreen(
 fun HeaderWithPhotosList(
     modifier: Modifier,
     heightOfSearchBarComponent: Float,
-    scrollChangeCallback: (Float) -> Unit
+    scrollChangeCallback: (Float) -> Unit,
+    onTabSelected: (Int) -> Unit
 ) {
 
     ScrollableContent(
         modifier = modifier,
         heightOfSearchBarComponent = heightOfSearchBarComponent,
-    ) {
-        scrollChangeCallback(it)
-    }
+        {
+            scrollChangeCallback(it)
+        }, onTabSelected
+    )
 }
 
 @Composable
-fun SearchBarWithHorizontalTabs(scrollChange: Float, heightOfComponentCallback: (Int) -> Unit) {
+fun SearchBarWithHorizontalTabs(
+    scrollChange: Float,
+    selectIndex: Int,
+    heightOfComponentCallback: (Int) -> Unit
+) {
 
     val heightOfSearchBarComponent = remember {
         mutableStateOf(0)
@@ -197,7 +209,7 @@ fun SearchBarWithHorizontalTabs(scrollChange: Float, heightOfComponentCallback: 
     ) {
         Spacer(modifier = Modifier.height(24.dp))
         SearchView(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 10.dp))
-        ScrollableTabLayout()
+        ScrollableTabLayout(selectIndex)
     }
 }
 
@@ -254,6 +266,7 @@ fun ScrollableContent(
     modifier: Modifier,
     heightOfSearchBarComponent: Float,
     scrollIngPercentage: (Float) -> Unit,
+    onTabSelected: (Int) -> Unit
 ) {
 
     var screenHeight = 0
@@ -308,6 +321,7 @@ fun ScrollableContent(
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.distinctUntilChanged().collect { page ->
             selectedTab = page
+            onTabSelected(page)
         }
     }
 
@@ -395,6 +409,7 @@ fun Header(modifier: Modifier, onTabSelected: (Int) -> Unit, selectedTab: Int) {
 
 @Composable
 fun TabViewSmallTextContainer(onTabSelected: (Int) -> Unit, selectedTab: Int) {
+    val lazyDataItems = DummyDataProvider().getTabViewItems()
 
     Row(
         Modifier
@@ -407,7 +422,7 @@ fun TabViewSmallTextContainer(onTabSelected: (Int) -> Unit, selectedTab: Int) {
         TabViewSmallText(text = "Editorial", selectedTab.absoluteValue == 0) {
             onTabSelected(0)
         }
-        Box(modifier = Modifier.width(20.dp))
+        Spacer(modifier = Modifier.width(20.dp))
         TabViewSmallText(text = "Following", selectedTab.absoluteValue == 1) {
             onTabSelected(1)
         }
@@ -611,7 +626,7 @@ fun PhotosListItem(url: String) {
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun UnsplashViewPager(pagerState: PagerState) {
-    HorizontalPager(count = 2, state = pagerState, verticalAlignment = Alignment.Top) { page ->
+    HorizontalPager(count = 8, state = pagerState, verticalAlignment = Alignment.Top) { page ->
         if (page == 0) {
             var forceRecompose by remember {
                 mutableStateOf(0)

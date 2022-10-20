@@ -18,16 +18,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.search.R
 import com.search.data.datasource.DummyDataProvider
 import com.utils.onNoRippleClick
 import com.utils.toDp
 
-@Preview
 @Composable
-fun ScrollableTabLayout() {
+fun ScrollableTabLayout(selectIndex: Int) {
     val lazyDataItems = DummyDataProvider().getTabViewItems()
 
     LazyRow(
@@ -39,21 +37,22 @@ fun ScrollableTabLayout() {
                 lazyDataItems.size,
                 itemContent = { index ->
                     val textToDisplay = lazyDataItems[index]
-                    if (textToDisplay == "-") {
-                        Divider(
-                            modifier = Modifier
-                                .height(35.dp)
-                                .width(1.dp)
-                                .padding(top = 2.dp),
-                            color = colorResource(id = R.color.search_grey_3)
-                        )
-                    } else {
+                    Row() {
                         ScrollableTabView(
                             text = textToDisplay,
-                            index == 0
+                            index == selectIndex
                         )
+                        if (index == 1) {
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Divider(
+                                modifier = Modifier
+                                    .height(35.dp)
+                                    .width(1.dp)
+                                    .padding(top = 2.dp),
+                                color = colorResource(id = R.color.search_grey_3)
+                            )
+                        }
                     }
-
                 })
         })
 }
