@@ -7,8 +7,12 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -55,6 +59,7 @@ import com.data.di.component.AppDataContract
 import com.di.app.AppContract
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerState
 import com.google.accompanist.pager.rememberPagerState
 import com.logger.ServerLogger
 import com.router.RouteManager
@@ -67,6 +72,8 @@ import com.utils.onNoRippleClick
 import com.utils.toDp
 import com.utils.toPx
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.absoluteValue
@@ -241,7 +248,7 @@ fun getAlpha(tempYOffset: Float, minScroll: Float): Float {
     return 1f - tempYOffset / minScroll
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalPagerApi::class)
 @Composable
 fun ScrollableContent(
     modifier: Modifier,
@@ -293,6 +300,17 @@ fun ScrollableContent(
     val scrollableContentHeight = minScroll.absoluteValue
     val requiredHeight = (screenHeight.toFloat().toPx() + scrollableContentHeight).toDp().dp
     val topPadding = (scrollableContentHeight.toDp()).dp
+
+    val pagerState = rememberPagerState()
+    val coroutineScope = rememberCoroutineScope()
+    var selectedTab by rememberSaveable { mutableStateOf(0) }
+
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }.distinctUntilChanged().collect { page ->
+            selectedTab = page
+        }
+    }
+
     Box(contentAlignment = Alignment.TopStart) {
         Column(
             modifier
@@ -321,28 +339,38 @@ fun ScrollableContent(
             verticalArrangement = Arrangement.aligned(Alignment.Top),
         ) {
             val alphaModifier = Modifier.graphicsLayer { alpha = getAlpha(yOffset, minScroll) }
-            FirstToolbarWithHeader(alphaModifier) {
+            FirstToolbarWithHeader(alphaModifier, selectedTab.absoluteValue, {
                 if (combinedHeightToolbarAndHeader.value == 0) {
                     combinedHeightToolbarAndHeader.value = it
                 }
-            }
-            UnsplashViewPager()
+            }, { onTabSelectedIndex ->
+                coroutineScope.launch {
+                    pagerState.scrollToPage(onTabSelectedIndex)
+                    selectedTab = onTabSelectedIndex
+                }
+            })
+            UnsplashViewPager(pagerState)
         }
     }
 }
 
 @Composable
-fun FirstToolbarWithHeader(modifier: Modifier, onHeightChangeCallback: (Int) -> Unit) {
+fun FirstToolbarWithHeader(
+    modifier: Modifier,
+    selectedTab: Int,
+    onHeightChangeCallback: (Int) -> Unit,
+    onTabSelectedIndex: (Int) -> Unit
+) {
     Column(modifier.onGloballyPositioned {
         onHeightChangeCallback(it.size.height)
     }) {
         HomeToolbar(modifier)
-        Header(modifier)
+        Header(modifier, onTabSelectedIndex, selectedTab)
     }
 }
 
 @Composable
-fun Header(modifier: Modifier) {
+fun Header(modifier: Modifier, onTabSelected: (Int) -> Unit, selectedTab: Int) {
     Column(
         modifier = modifier
             .padding(top = 0.dp, start = 18.dp)
@@ -361,13 +389,12 @@ fun Header(modifier: Modifier) {
             style = com.core.compose.theme.typography.caption,
             color = MaterialTheme.colors.onSurface
         )
-        TabViewSmallTextContainer()
+        TabViewSmallTextContainer(onTabSelected, selectedTab)
     }
 }
 
 @Composable
-fun TabViewSmallTextContainer() {
-    var selected by rememberSaveable { mutableStateOf(0) }
+fun TabViewSmallTextContainer(onTabSelected: (Int) -> Unit, selectedTab: Int) {
 
     Row(
         Modifier
@@ -377,12 +404,12 @@ fun TabViewSmallTextContainer() {
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.Bottom
     ) {
-        TabViewSmallText(text = "Editorial", selected.absoluteValue == 0) {
-            selected = 0
+        TabViewSmallText(text = "Editorial", selectedTab.absoluteValue == 0) {
+            onTabSelected(0)
         }
         Box(modifier = Modifier.width(20.dp))
-        TabViewSmallText(text = "Following", selected.absoluteValue == 1) {
-            selected = 1
+        TabViewSmallText(text = "Following", selectedTab.absoluteValue == 1) {
+            onTabSelected(1)
         }
     }
 }
@@ -567,27 +594,23 @@ fun getRandomColors(): Color {
 
 @Composable
 fun PhotosListItem(url: String) {
-    Box(modifier = Modifier.border(width = 2.dp, color = getRandomColors())) {
-        SubcomposeAsyncImage(
-            model = url,
-            contentDescription = null,
-            modifier = Modifier.height(PHOTO_LIST_ITEM_HEIGHT.dp),
-            contentScale = ContentScale.Crop,
-            loading = {
-                Text(text = "Loading Image")
-            },
-            error = {
-                Text(text = "Unable to load Image")
-            }
-        )
-    }
-
+    SubcomposeAsyncImage(
+        model = url,
+        contentDescription = null,
+        modifier = Modifier.height(PHOTO_LIST_ITEM_HEIGHT.dp),
+        contentScale = ContentScale.Crop,
+        loading = {
+            Text(text = "Loading Image")
+        },
+        error = {
+            Text(text = "Unable to load Image")
+        }
+    )
 }
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun UnsplashViewPager() {
-    val pagerState = rememberPagerState()
+fun UnsplashViewPager(pagerState: PagerState) {
     HorizontalPager(count = 2, state = pagerState, verticalAlignment = Alignment.Top) { page ->
         if (page == 0) {
             var forceRecompose by remember {
@@ -678,19 +701,21 @@ fun FollowUiEntityNotLoggedInUi() {
 
 @Composable
 fun FollowInitialUi(text: String) {
-    Column(
-        Modifier
-            .height(300.dp)
-            .padding(10.dp)
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxHeight()
+            .padding(16.dp)
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = text,
-            color = MaterialTheme.colors.onBackground
-        )
-    }
+        verticalArrangement = Arrangement.Center, content = {
+            item {
+                Text(
+                    text = text,
+                    color = MaterialTheme.colors.onBackground,
+                    textAlign = TextAlign.Center
+                )
+            }
+        })
 }
 
 @Composable
