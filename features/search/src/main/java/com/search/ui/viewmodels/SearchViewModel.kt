@@ -43,7 +43,7 @@ class SearchViewModel @Inject constructor(
                 when (followDomainData) {
                     is FollowDomainDataPaginated -> {
                         FollowUiEntitySuccess(followDomainData.data.map { followDomainEntity ->
-                            (followDomainEntity.name)
+                            FollowListItemEntity(followDomainEntity.url, followDomainEntity.name)
                         })
                     }
                     is FollowDomainDataNotLoggedIn -> FollowUiEntityNotLoggedIn

@@ -13,6 +13,6 @@ data class UnsplashUserData(
     @Json(name = "profile_image") val profileImage: UnsplashProfileImage,
     @Json(name = "followers_count") val followersCount: Int,
     @Json(name = "following_count") val followingCount: Int,
-    @Json(name = "instagram_username") val instagramUsername: String,
-    @Json(name = "twitter_username") val twitterUsername: String,
+    @Json(name = "instagram_username") val instagramUsername: String?,
+    @Json(name = "twitter_username") val twitterUsername: String?,
 )

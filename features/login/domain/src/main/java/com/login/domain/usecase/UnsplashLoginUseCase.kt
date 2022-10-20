@@ -18,7 +18,7 @@ class UnsplashLoginUseCase @Inject constructor(
     private val unsplashUserUseCase: UnsplashUserUseCase
 ) :
     UnsplashLoginContract {
-    fun getLoginUri(): String {
+    override fun getLoginUri(): String {
         return HttpUrl.Builder().scheme("https").host("unsplash.com")
             .encodedPath("/oauth/authorize")
             .addQueryParameter("client_id", UnsplashApi.Config.ADDRESS_KEY)

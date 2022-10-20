@@ -11,6 +11,7 @@ import dagger.Provides
 class StorageModule(val context: Context) {
 
     @Provides
+    @AppDataScope
     fun provideAppDataStorage(): KeyValueStorage {
         return AppDataStore(context, "user_pref")
     }
