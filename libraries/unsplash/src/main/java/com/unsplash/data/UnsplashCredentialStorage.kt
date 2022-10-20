@@ -53,4 +53,12 @@ class UnsplashCredentialStorage (
     override suspend fun getUserId(): Flow<String> {
         return keyValueStorage.getString(Keys.USER_ID)
     }
+
+    override suspend fun getAccessToken(): Flow<String> {
+        return keyValueStorage.getString(Keys.ACCESS_TOKEN)
+    }
+
+    override suspend fun getRefreshToken(): Flow<String> {
+        return keyValueStorage.getString(Keys.REFRESH_TOKEN)
+    }
 }

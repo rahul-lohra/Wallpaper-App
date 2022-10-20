@@ -27,7 +27,7 @@ class FollowersUseCase @Inject constructor(
             when (followData) {
                 is FollowDataPaginated -> {
                     val list = followData.data.map {
-                        FollowDomainEntity(it.name)
+                        FollowDomainEntity(it.name, it.profileImage?.medium)
                     }
                     FollowDomainDataPaginated(list)
                 }

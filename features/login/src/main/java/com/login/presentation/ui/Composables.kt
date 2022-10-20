@@ -31,7 +31,6 @@ fun LoginPage(
                     view: WebView?,
                     request: WebResourceRequest?
                 ): WebResourceResponse? {
-                    ServerLogger.d("Webview","shouldInterceptRequest url = ${request?.url?.toString()}")
                     return super.shouldInterceptRequest(view, request)
                 }
 
@@ -39,12 +38,10 @@ fun LoginPage(
                     view: WebView?,
                     request: WebResourceRequest?
                 ): Boolean {
-                    ServerLogger.d("Webview","shouldOverrideUrlLoading url = ${request?.url?.toString()}")
                     return super.shouldOverrideUrlLoading(view, request)
                 }
 
                 override fun onPageFinished(view: WebView?, url: String?) {
-                    ServerLogger.d("Webview","onPageFinished url = ${url}")
                     if(url!=null)
                         onPageLoadFinish(url)
                     super.onPageFinished(view, url)
