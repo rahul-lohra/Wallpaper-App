@@ -12,6 +12,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -700,20 +701,21 @@ fun FollowUiEntityNotLoggedInUi() {
 
 @Composable
 fun FollowInitialUi(text: String) {
-    Column(
-        Modifier
-            .height(300.dp)
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxHeight()
             .padding(16.dp)
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = text,
-            color = MaterialTheme.colors.onBackground,
-            textAlign = TextAlign.Center
-        )
-    }
+        verticalArrangement = Arrangement.Center, content = {
+            item {
+                Text(
+                    text = text,
+                    color = MaterialTheme.colors.onBackground,
+                    textAlign = TextAlign.Center
+                )
+            }
+        })
 }
 
 @Composable
