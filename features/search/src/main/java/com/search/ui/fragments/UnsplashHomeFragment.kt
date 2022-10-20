@@ -40,6 +40,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -627,12 +628,31 @@ fun RenderFollowersUi(state: FollowUiEntity) {
 }
 
 @Composable
-fun FollowUiEntitySuccessUi(dataList: List<String>) {
-    LazyVerticalGrid(columns = GridCells.Fixed(3), content = {
+fun FollowUiEntitySuccessUi(dataList: List<FollowListItemEntity>) {
+    LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.fillMaxHeight(), content = {
         items(dataList.size, key = {
-            dataList[it]
+            dataList[it].name
         }, itemContent = {
-            Text(text = dataList[it])
+            Column(
+                modifier = Modifier
+                    .padding(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                with(dataList[it]) {
+                    SubcomposeAsyncImage(
+                        model = url,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .height(64.dp)
+                            .width(64.dp)
+                            .clip(CircleShape)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = name, textAlign = TextAlign.Center, maxLines = 1)
+                }
+            }
+
         })
     })
 }
@@ -661,6 +681,7 @@ fun FollowInitialUi(text: String) {
     Column(
         Modifier
             .height(300.dp)
+            .padding(10.dp)
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -706,6 +727,5 @@ fun UnifyButton(text: String, onClick: () -> Unit) {
         Box(contentAlignment = Alignment.Center) {
             Text(text = text)
         }
-
     }
 }
