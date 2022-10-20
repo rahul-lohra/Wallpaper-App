@@ -13,6 +13,7 @@ import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -411,22 +412,21 @@ fun Header(modifier: Modifier, onTabSelected: (Int) -> Unit, selectedTab: Int) {
 fun TabViewSmallTextContainer(onTabSelected: (Int) -> Unit, selectedTab: Int) {
     val lazyDataItems = DummyDataProvider().getTabViewItems()
 
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(end = 17.dp, bottom = 12.dp),
+    LazyRow(modifier = Modifier
+        .fillMaxWidth()
+        .fillMaxHeight()
+        .padding(end = 17.dp, bottom = 12.dp),
         horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.Bottom
-    ) {
-        TabViewSmallText(text = "Editorial", selectedTab.absoluteValue == 0) {
-            onTabSelected(0)
-        }
-        Spacer(modifier = Modifier.width(20.dp))
-        TabViewSmallText(text = "Following", selectedTab.absoluteValue == 1) {
-            onTabSelected(1)
-        }
-    }
+        verticalAlignment = Alignment.Bottom,
+        content = {
+            items(lazyDataItems.size, itemContent = { index ->
+                val textToDisplay = lazyDataItems[index]
+                TabViewSmallText(text = textToDisplay, selectedTab.absoluteValue == index) {
+                    onTabSelected(index)
+                }
+                Spacer(modifier = Modifier.width(20.dp))
+            })
+        })
 }
 
 @Composable
