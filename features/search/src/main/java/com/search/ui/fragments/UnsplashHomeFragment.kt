@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalPagerApi::class)
+
 package com.search.ui.fragments
 
+import TabViewSmallTextContainer2
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
@@ -13,7 +16,6 @@ import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -44,7 +46,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
@@ -65,17 +66,15 @@ import com.google.accompanist.pager.rememberPagerState
 import com.logger.ServerLogger
 import com.router.RouteManager
 import com.search.R
-import com.search.data.datasource.DummyDataProvider
 import com.search.di.components.DaggerSearchComponent
 import com.search.ui.models.*
+import com.search.ui.tabs.ScrollableTabLayout2
+import com.search.ui.tabs.SearchView
 import com.search.ui.viewmodels.SearchViewModel
 import com.unsplash.UnsplashContract
-import com.utils.onNoRippleClick
 import com.utils.toDp
 import com.utils.toPx
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.absoluteValue
@@ -150,12 +149,14 @@ fun HomeScreen(
     val selectedTabIndex = remember {
         mutableStateOf(0)
     }
+    val pagerState = rememberPagerState()
 
     Box {
         if (heightOfSearchBarComponent.value > 0f) {
             HeaderWithPhotosList(
                 modifier,
                 heightOfSearchBarComponent.value.toFloat(),
+                pagerState,
                 {
                     scrollChange.value = it
                 }, {
@@ -163,7 +164,7 @@ fun HomeScreen(
                 })
         }
 
-        SearchBarWithHorizontalTabs(scrollChange.value, selectedTabIndex.value) {
+        SearchBarWithHorizontalTabs(scrollChange.value, selectedTabIndex.value, pagerState) {
             heightOfSearchBarComponent.value = it
         }
     }
@@ -173,6 +174,7 @@ fun HomeScreen(
 fun HeaderWithPhotosList(
     modifier: Modifier,
     heightOfSearchBarComponent: Float,
+    pagerState: PagerState,
     scrollChangeCallback: (Float) -> Unit,
     onTabSelected: (Int) -> Unit
 ) {
@@ -180,6 +182,7 @@ fun HeaderWithPhotosList(
     ScrollableContent(
         modifier = modifier,
         heightOfSearchBarComponent = heightOfSearchBarComponent,
+        pagerState,
         {
             scrollChangeCallback(it)
         }, onTabSelected
@@ -190,6 +193,7 @@ fun HeaderWithPhotosList(
 fun SearchBarWithHorizontalTabs(
     scrollChange: Float,
     selectIndex: Int,
+    pagerState: PagerState,
     heightOfComponentCallback: (Int) -> Unit
 ) {
 
@@ -210,7 +214,7 @@ fun SearchBarWithHorizontalTabs(
     ) {
         Spacer(modifier = Modifier.height(24.dp))
         SearchView(Modifier.padding(start = 16.dp, end = 16.dp, bottom = 10.dp))
-        ScrollableTabLayout(selectIndex)
+        ScrollableTabLayout2(pagerState)
     }
 }
 
@@ -266,6 +270,7 @@ fun getAlpha(tempYOffset: Float, minScroll: Float): Float {
 fun ScrollableContent(
     modifier: Modifier,
     heightOfSearchBarComponent: Float,
+    pagerState: PagerState,
     scrollIngPercentage: (Float) -> Unit,
     onTabSelected: (Int) -> Unit
 ) {
@@ -315,17 +320,6 @@ fun ScrollableContent(
     val requiredHeight = (screenHeight.toFloat().toPx() + scrollableContentHeight).toDp().dp
     val topPadding = (scrollableContentHeight.toDp()).dp
 
-    val pagerState = rememberPagerState()
-    val coroutineScope = rememberCoroutineScope()
-    var selectedTab by rememberSaveable { mutableStateOf(0) }
-
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.distinctUntilChanged().collect { page ->
-            selectedTab = page
-            onTabSelected(page)
-        }
-    }
-
     Box(contentAlignment = Alignment.TopStart) {
         Column(
             modifier
@@ -353,17 +347,14 @@ fun ScrollableContent(
                 .nestedScroll(nestedScrollConnection),
             verticalArrangement = Arrangement.aligned(Alignment.Top),
         ) {
+
             val alphaModifier = Modifier.graphicsLayer { alpha = getAlpha(yOffset, minScroll) }
-            FirstToolbarWithHeader(alphaModifier, selectedTab.absoluteValue, {
+
+            FirstToolbarWithHeader(alphaModifier, pagerState) {
                 if (combinedHeightToolbarAndHeader.value == 0) {
                     combinedHeightToolbarAndHeader.value = it
                 }
-            }, { onTabSelectedIndex ->
-                coroutineScope.launch {
-                    pagerState.scrollToPage(onTabSelectedIndex)
-                    selectedTab = onTabSelectedIndex
-                }
-            })
+            }
             UnsplashViewPager(pagerState)
         }
     }
@@ -372,94 +363,39 @@ fun ScrollableContent(
 @Composable
 fun FirstToolbarWithHeader(
     modifier: Modifier,
-    selectedTab: Int,
+    pagerState: PagerState,
     onHeightChangeCallback: (Int) -> Unit,
-    onTabSelectedIndex: (Int) -> Unit
 ) {
     Column(modifier.onGloballyPositioned {
         onHeightChangeCallback(it.size.height)
     }) {
         HomeToolbar(modifier)
-        Header(modifier, onTabSelectedIndex, selectedTab)
+        Header(modifier, pagerState)
     }
 }
 
 @Composable
-fun Header(modifier: Modifier, onTabSelected: (Int) -> Unit, selectedTab: Int) {
+fun Header(modifier: Modifier, pagerState: PagerState) {
     Column(
         modifier = modifier
-            .padding(top = 0.dp, start = 18.dp)
+            .padding(top = 0.dp)
             .height(165.dp)
     ) {
         Text(
             "UnSplash",
+            modifier = Modifier.padding(start = 18.dp),
             style = com.core.compose.theme.typography.h1,
             color = MaterialTheme.colors.onBackground
         )
         Text(
-            modifier = Modifier.padding(end = 73.dp),
+            modifier = Modifier.padding(end = 73.dp, start = 18.dp),
             text =
             "Beautiful, free photos.\n" +
                     "Gifted by the world’s most generous community of photographers.",
             style = com.core.compose.theme.typography.caption,
             color = MaterialTheme.colors.onSurface
         )
-        TabViewSmallTextContainer(onTabSelected, selectedTab)
-    }
-}
-
-@Composable
-fun TabViewSmallTextContainer(onTabSelected: (Int) -> Unit, selectedTab: Int) {
-    val lazyDataItems = DummyDataProvider().getTabViewItems()
-
-    LazyRow(modifier = Modifier
-        .fillMaxWidth()
-        .fillMaxHeight()
-        .padding(end = 17.dp, bottom = 12.dp),
-        horizontalArrangement = Arrangement.End,
-        verticalAlignment = Alignment.Bottom,
-        content = {
-            items(lazyDataItems.size, itemContent = { index ->
-                val textToDisplay = lazyDataItems[index]
-                TabViewSmallText(text = textToDisplay, selectedTab.absoluteValue == index) {
-                    onTabSelected(index)
-                }
-                Spacer(modifier = Modifier.width(20.dp))
-            })
-        })
-}
-
-@Composable
-fun TabViewSmallText(text: String, selected: Boolean, onClick: () -> Unit) {
-    var dividerWidth by remember { mutableStateOf(0) }
-
-    val selectedColor = MaterialTheme.colors.onBackground
-    val unSelectedColor = MaterialTheme.colors.onSurface
-    Column(modifier = Modifier.onNoRippleClick { onClick() }) {
-        if (selected) {
-            if (dividerWidth > 0) {
-                Divider(
-                    color = selectedColor,
-                    modifier = Modifier.width(dividerWidth.toFloat().toDp().dp)
-                )
-            }
-            Text(
-                text = text,
-                style = com.core.compose.theme.typography.body2,
-                fontWeight = FontWeight.Bold,
-                color = selectedColor,
-                modifier = Modifier.padding(top = 11.dp),
-                onTextLayout = {
-                    dividerWidth = it.size.width
-                })
-        } else {
-            Text(
-                text = text,
-                style = com.core.compose.theme.typography.body2,
-                color = unSelectedColor
-            )
-        }
-
+        TabViewSmallTextContainer2(pagerState)
     }
 }
 

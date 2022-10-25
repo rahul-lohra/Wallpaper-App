@@ -1,4 +1,6 @@
-package com.search.ui.fragments
+@file:OptIn(ExperimentalPagerApi::class)
+
+package com.search.ui.tabs
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -6,11 +8,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.Divider
+import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.typography
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,10 +21,14 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.PagerState
 import com.search.R
 import com.search.data.datasource.DummyDataProvider
+import com.search.ui.NoRippleTheme
 import com.utils.onNoRippleClick
 import com.utils.toDp
+import kotlinx.coroutines.launch
 
 @Composable
 fun ScrollableTabLayout(selectIndex: Int) {
@@ -57,18 +63,82 @@ fun ScrollableTabLayout(selectIndex: Int) {
         })
 }
 
+@Composable
+fun ScrollableTabLayout2(pagerState: PagerState) {
+    val lazyDataItems = DummyDataProvider().getTabViewItems()
+    val coroutineScope = rememberCoroutineScope()
+    Box(modifier = Modifier.height(44.dp), contentAlignment = Alignment.BottomCenter) {
+        ScrollableTabRow(selectedTabIndex = pagerState.currentPage, backgroundColor = MaterialTheme.colors.background,indicator = {},
+            divider = {}) {
+            lazyDataItems.forEachIndexed { index, item ->
+                CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
+                    val selected = pagerState.currentPage == index
+                    Tab(modifier = Modifier.padding(horizontal = 1.dp), selected = pagerState.currentPage == index, onClick = {
+                        coroutineScope.launch {
+                            pagerState.scrollToPage(index)
+                        }
+                    }) {
+                        Row() {
+                            ScrollableTabView(
+                                text = item,
+                                selected
+                            )
+                            if (index == 1) {
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Divider(
+                                    modifier = Modifier
+                                        .height(35.dp)
+                                        .width(1.dp)
+                                        .padding(top = 2.dp),
+                                    color = colorResource(id = R.color.search_grey_3)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+//    LazyRow(
+//        modifier = Modifier.height(44.dp),
+//        horizontalArrangement = Arrangement.spacedBy(16.dp),
+//        contentPadding = PaddingValues(horizontal = 16.dp),
+//        content = {
+//            items(
+//                lazyDataItems.size,
+//                itemContent = { index ->
+//                    val textToDisplay = lazyDataItems[index]
+//                    Row() {
+//                        ScrollableTabView(
+//                            text = textToDisplay,
+//                            index == selectIndex
+//                        )
+//                        if (index == 1) {
+//                            Spacer(modifier = Modifier.width(16.dp))
+//                            Divider(
+//                                modifier = Modifier
+//                                    .height(35.dp)
+//                                    .width(1.dp)
+//                                    .padding(top = 2.dp),
+//                                color = colorResource(id = R.color.search_grey_3)
+//                            )
+//                        }
+//                    }
+//                })
+//        })
+}
+
 
 @Composable
 fun ScrollableTabView(text: String, selected: Boolean) {
-    TabViewText(text, selected) {}
+    TabViewText(text, selected)
 }
 
 @Composable
-fun TabViewText(text: String, selected: Boolean, onClick: () -> Unit) {
+fun TabViewText(text: String, selected: Boolean) {
     var dividerWidth by remember { mutableStateOf(0) }
 
     Column(modifier = Modifier
-        .onNoRippleClick { onClick() }
         .fillMaxHeight()) {
         val tvModifier = Modifier.padding(top = 11.dp)
 
